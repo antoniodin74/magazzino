@@ -8,7 +8,7 @@ mongoose.connect('mongodb://localhost:27017/login_mongodb', (err)=> {
     }
 })*/
 const mongoose = require('mongoose');
-const mongoDB = 'mongodb+srv://mongodbatlas:$mongodbatlas@cluster0.n1nxyoz.mongodb.net/Dbcliart';
+const mongoDB = 'mongodb+srv://DBadmin:$mongodb9@cluster0.n1nxyoz.mongodb.net/DBcliart';
 
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 
