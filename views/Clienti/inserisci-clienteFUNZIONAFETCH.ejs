@@ -1,0 +1,72 @@
+<%- contentFor('HeaderCss') %>
+
+
+  
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Inserisci nuovo cliente</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="/lista-clienti">Clienti</a></li>
+                    <li class="breadcrumb-item active">Inserisci nuovo cliente</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<!-- inserici-cliente.ejs -->
+
+  <form>
+    <label for="fn">First name</label><br>
+    <input type="text" name="fn" id="fn"><br>
+    <label for="ln">Last name</label><br>
+    <input type="text" name="ln" id="ln"><br>
+    <input type="file" name="file" id="files" multiple><br>
+    <button type="submit">Submit</button>
+  </form>
+  
+
+
+  
+
+<%- contentFor('FooterJs') %>
+
+
+
+<!-- init js -->
+<script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fn = document.getElementById("fn");
+    const le = document.getElementById("le");
+    const files = document.getElementById("files");
+    const formData = new FormData();
+    formData.append("fn", fn.value);
+    formData.append("ln", ln.value);
+    for (let i=0; i < files.files.length; i++) {
+        formData.append("files", files.files[i]);
+    }
+    console.log(...formData);
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => console.log(data));
+})
+</script>
+
+
+<%- contentFor('BottomJs') %>
