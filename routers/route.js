@@ -39,8 +39,11 @@ module.exports = function (app) {
       }
 
       app.get('/', isUserAllowed, function (req, res) {
+            res.redirect('/lista-clienti');
+            /*
             res.locals = { title: 'Dashboard' };
             res.render('Dashboard/index', {'user': sess.user.username, foto: sess.user.foto });
+            */
       });
 
       app.get('/dashboard-2', isUserAllowed, function (req, res) {
