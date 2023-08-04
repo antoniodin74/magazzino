@@ -1,4 +1,7 @@
+require('dotenv').config();
 var app = require('express')();
+const cookieParser = require('cookie-parser');
+const MongoStore = require('connect-mongo');
 var db = require('./config/database')
 var express = require('express');
 var path = require('path');
@@ -18,18 +21,27 @@ var flash = require('connect-flash');
 var i18n = require("i18n-express");
 app.use(bodyParser.json());
 var urlencodeParser = bodyParser.urlencoded({ extended: true });
+app.use(cookieParser());
 
 app.use(session({
   key: 'user_sid',
-  secret: 'somerandonstuffs',
+  secret: 'clikeyart_ant',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI
+  }),
   cookie: {
     expires: 1200000
   }
 }));
 
-app.use(session({ resave: false, saveUninitialized: true, secret: 'nodedemo' }));
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'nodedemo'
+}));
+
 app.use(flash());
 app.use(i18n({
   translationsPath: path.join(__dirname, 'i18n'), // <--- use here. Specify translations files path.
@@ -58,6 +70,8 @@ app.get('/', function (req, res) {
   res.redirect('/');
 });
 
-http.listen(8000, function () {
-  console.log('listening on *:8000');
+const PORT = 8000 || process.env.PORT;
+
+http.listen(PORT, function () {
+  console.log('listening on *:' + PORT);
 });

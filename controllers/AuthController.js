@@ -9,7 +9,8 @@ const bcrypt = require('bcryptjs');
 
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
-
+const jwt = require('jsonwebtoken');
+const jwtSecret = process.env.JWT_SECRET;
 var validator = require('express-validator');
 
 var axios = require("axios");
@@ -216,6 +217,10 @@ module.exports = function (app) {
 						let tempUser = { username: utente.nome, email: utente.email, foto: utente.fotoPath };
 						users.push(tempUser);
 
+						//token
+						const token = jwt.sign({ userId: utente._id }, jwtSecret);
+						res.cookie('token', token, { httpOnly: true });
+
 						// Assign value in session
 						sess = req.session;
 						sess.user = tempUser;
@@ -318,12 +323,13 @@ module.exports = function (app) {
 	
 
 	app.get('/logout', function (req, res) {
-
+		res.clearCookie('token');
 		// Assign  null value in session
+		/*
 		sess = req.session;
 		sess.user = null;
-
-		res.redirect('/login');
+		*/
+		res.redirect('/');
 	});
 
 };

@@ -5,6 +5,8 @@ var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const controller = require('../controllers/Controller');
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
+const jwtSecret = process.env.JWT_SECRET;
 
 // Configurazione Multer per gestire l'upload dei file
 const storage = multer.diskStorage({
@@ -31,11 +33,38 @@ const storage = multer.diskStorage({
 module.exports = function (app) {
 
       function isUserAllowed(req, res, next) {
+            const token = req.cookies.token;
+            if (token) {
+                  var decoded = jwt.verify(token, jwtSecret);
+                  req.UserId = decoded.userId;
+                  return next();
+            }
+            else  {
+                  req.flash('error', 'Non autorizzati');
+                  res.redirect('/login');      
+            }
+/*
+            if(!token) {
+                  req.flash('error', 'Non autorizzati');
+                  res.redirect('/login');
+            } 
+            
+            try {
+                  var decoded = jwt.verify(token, jwtSecret);
+                  req.UserId = decoded.userId;
+                  return next();
+            } catch (error) {
+                  req.flash('error', 'Non autorizzati');
+                  res.redirect('/login');
+            }
+*/
+/*
             sess = req.session;
             if (sess.user) {
                   return next();
             }
             else { res.redirect('/login'); }
+*/
       }
 
       app.get('/', isUserAllowed, function (req, res) {
