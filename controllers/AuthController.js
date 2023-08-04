@@ -325,10 +325,10 @@ module.exports = function (app) {
 	app.get('/logout', function (req, res) {
 		res.clearCookie('token');
 		// Assign  null value in session
-		/*
+		
 		sess = req.session;
 		sess.user = null;
-		*/
+		
 		res.redirect('/');
 	});
 

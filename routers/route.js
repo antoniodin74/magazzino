@@ -43,21 +43,7 @@ module.exports = function (app) {
                   req.flash('error', 'Non autorizzati');
                   res.redirect('/login');      
             }
-/*
-            if(!token) {
-                  req.flash('error', 'Non autorizzati');
-                  res.redirect('/login');
-            } 
-            
-            try {
-                  var decoded = jwt.verify(token, jwtSecret);
-                  req.UserId = decoded.userId;
-                  return next();
-            } catch (error) {
-                  req.flash('error', 'Non autorizzati');
-                  res.redirect('/login');
-            }
-*/
+
 /*
             sess = req.session;
             if (sess.user) {
