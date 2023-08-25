@@ -53,7 +53,7 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 	users: users,
 });
 
-const sendResetPasswordMail = async(name, email, token)=>{
+const sendResetPasswordMail = async(name, email, tokenMail)=>{
 	try {
 		const transporter = nodemailer.createTransport({
 			host:'smtp.gmail.com',
@@ -70,7 +70,7 @@ const sendResetPasswordMail = async(name, email, token)=>{
 			from:mail.emailUser,
 			to:email,
 			subject:'reset password',
-			html:'<p> Ciao '+name+',  per favore copia il link <a href="http://192.1.1.101:8000/auth-reset-password?token='+token+'"> e resetta la password</a>'
+			html:'<p> Ciao '+name+',  per favore copia il link <a href="http://192.1.1.101:8000/auth-reset-password?token='+tokenMail+'"> e resetta la password</a>'
 		}
 
 		transporter.sendMail(mailOptions,function(error,info){
@@ -169,7 +169,7 @@ module.exports = function (app) {
 						password: hashedPass,
 						note: req.body.note,
 						fotoPath: fotoPath,
-						stato: true
+						stato: true,
 					})
 					utente.save()
 					.then(utente => {
@@ -273,7 +273,7 @@ module.exports = function (app) {
 			if(utente){
 				const randomString = randomstring.generate();
 				const email = req.body.email;
-				Utente.findOneAndUpdate({email:email},{$set:{token:randomString}})
+				Utente.findOneAndUpdate({email:email},{$set:{tokenMail:randomString}})
 				.then(utenteupd => {
 					sendResetPasswordMail(utenteupd.nome, 'antonio.din74@gmail.com', randomString);
 					req.flash('message', 'Controlla la tua email e resetta la password!');
@@ -291,14 +291,14 @@ module.exports = function (app) {
 	});
 
 	app.get('/auth-reset-password', function (req, res) {
-		const token = req.query.token;
-			res.render('Auth/auth-reset-password', { 'message': req.flash('message'), 'error': req.flash('error'), 'token': token });
+		const tokenMail = req.query.token;
+			res.render('Auth/auth-reset-password', { 'message': req.flash('message'), 'error': req.flash('error'), 'token': tokenMail });
 	});
 
 	app.post('/reset-password', urlencodeParser, function (req, res) {
-		const token = req.body.token;
+		const tokenMail = req.body.token;
 		const newPassword = req.body.password; 
-		Utente.findOne({token:token})
+		Utente.findOne({tokenMail:tokenMail})
 		.then(utente => {
 			if(utente){
 				//const newPassword = 'anto1dino1';
@@ -306,7 +306,7 @@ module.exports = function (app) {
 					if(err) {
 						console.log(err);
 					}
-					Utente.findOneAndUpdate({token:utente.token},{$set:{password:hashedPass,token:''}})
+					Utente.findOneAndUpdate({tokenMail:utente.tokenMail},{$set:{password:hashedPass,tokenMail:''}})
 					.then(utenteupd => {
 						req.flash('message', 'Password cambiata con successo!');
 						res.redirect('/login');
@@ -318,7 +318,7 @@ module.exports = function (app) {
 					})			
 				})
 			}else{
-				req.flash('error', 'token scaduto!');
+				req.flash('error', 'tokenMail scaduto!');
 				res.redirect('/');
 			}
 		})

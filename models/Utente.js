@@ -44,7 +44,11 @@ const utenteschema = new mongoose.Schema({
     stato: {
         type: Boolean,
         default: true
-      }
+      },
+      tokenMail: {
+      type: String,
+      default: ''
+    },
 })
 
 let Utente = mongoose.model('Utente', utenteschema, 'utenti')

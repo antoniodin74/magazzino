@@ -32,7 +32,7 @@ app.use(session({
     mongoUrl: process.env.MONGODB_URI
   }),
   cookie: {
-    expires: 12
+    expires: 1200000
   }
 }));
 /*
