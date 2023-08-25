@@ -55,7 +55,7 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 
 const sendResetPasswordMail = async(name, email, tokenMail, host)=>{
 	console.log(host);
-	const url = "http://" + host + "/" + "auth-reset-password?token=";
+	const url = "http://" + host + "/" + "auth-reset-password?token=" + tokenMail;
 	console.log(url);
 	try {
 		const transporter = nodemailer.createTransport({
