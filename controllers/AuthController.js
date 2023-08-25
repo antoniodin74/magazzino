@@ -73,7 +73,7 @@ const sendResetPasswordMail = async(name, email, tokenMail, host)=>{
 			from:mail.emailUser,
 			to:email,
 			subject:'reset password',
-			html:'<p> Ciao '+name+',  per favore copia il link <a href="http://192.1.1.101:8000/auth-reset-password?token='+tokenMail+'"> e resetta la password</a>'
+			html:'<p> Ciao '+name+',  per favore copia il link <a href="'+url+'"> e resetta la password</a>'
 		}
 
 		transporter.sendMail(mailOptions,function(error,info){
