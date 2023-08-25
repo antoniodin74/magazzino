@@ -220,10 +220,11 @@ module.exports = function (app) {
 						//token
 						const token = jwt.sign({ userId: utente._id }, jwtSecret);
 						res.cookie('token', token, { httpOnly: true });
-
+						console.log(utente._id);
 						// Assign value in session
 						sess = req.session;
 						sess.user = tempUser;
+						console.log(sess.user);
 						req.flash('message', 'Utente loggato!');
 						res.redirect('/');
 					}else{
@@ -237,13 +238,15 @@ module.exports = function (app) {
 
 			}
 		})
-
+		/*
 		let tempUser = { username: req.body.email, email: req.body.email };
 		users.push(tempUser);
-
+		*/
 		// Assign value in session
+		/*
 		sess = req.session;
 		sess.user = tempUser;
+		*/
 		/*const validUser = users.filter(usr => usr.email === req.body.email && usr.password === req.body.password);
 		if (validUser['length'] === 1) {
 
