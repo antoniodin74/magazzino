@@ -32,16 +32,16 @@ app.use(session({
     mongoUrl: process.env.MONGODB_URI
   }),
   cookie: {
-    expires: 1200000
+    expires: 12
   }
 }));
-
+/*
 app.use(session({
   resave: false,
   saveUninitialized: true,
   secret: 'nodedemo'
 }));
-
+*/
 app.use(flash());
 app.use(i18n({
   translationsPath: path.join(__dirname, 'i18n'), // <--- use here. Specify translations files path.
