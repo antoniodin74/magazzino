@@ -53,7 +53,10 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 	users: users,
 });
 
-const sendResetPasswordMail = async(name, email, tokenMail)=>{
+const sendResetPasswordMail = async(name, email, tokenMail, host)=>{
+	console.log(host);
+	const url = "http://" + host + "/" + "auth-reset-password?token=";
+	console.log(url);
 	try {
 		const transporter = nodemailer.createTransport({
 			host:'smtp.gmail.com',
@@ -197,7 +200,7 @@ module.exports = function (app) {
 	
 
 	app.get('/login', function (req, res) {
-		console.log(req.headers);
+		
 
 		res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	});
@@ -269,6 +272,7 @@ module.exports = function (app) {
 	});
 
 	app.post('/post-forgot-password', urlencodeParser, function (req, res) {
+		var host = req.headers.host;
 		var utente = req.body.email
 		Utente.findOne({email:utente})
 		.then(utente => {
@@ -277,7 +281,7 @@ module.exports = function (app) {
 				const email = req.body.email;
 				Utente.findOneAndUpdate({email:email},{$set:{tokenMail:randomString}})
 				.then(utenteupd => {
-					sendResetPasswordMail(utenteupd.nome, 'antonio.din74@gmail.com', randomString);
+					sendResetPasswordMail(utenteupd.nome, 'antonio.din74@gmail.com', randomString, host);
 					req.flash('message', 'Controlla la tua email e resetta la password!');
 					res.redirect('/login');
 				})
