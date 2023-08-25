@@ -72,6 +72,6 @@ app.get('/', function (req, res) {
 
 const PORT = 8000 || process.env.PORT;
 
-http.listen(PORT, function () {
+const server = http.listen(PORT, function () {
   console.log('listening on *:' + PORT);
-});
+})  ;

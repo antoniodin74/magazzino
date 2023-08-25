@@ -197,6 +197,8 @@ module.exports = function (app) {
 	
 
 	app.get('/login', function (req, res) {
+		console.log(req.headers);
+
 		res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	});
 
