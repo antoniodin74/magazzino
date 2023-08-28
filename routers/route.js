@@ -40,7 +40,7 @@ module.exports = function (app) {
                   return next();
             }
             else  {
-                  req.flash('error', 'Non autorizzati');
+                  //req.flash('error', 'Non autorizzati');
                   res.redirect('/login');      
             }
 
@@ -437,7 +437,7 @@ module.exports = function (app) {
                   const utente = await controller.getClienti();
                   if(utente){
                         res.locals = { title: 'Clienti' };
-                        res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente });
+                        res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente, 'Tipo' : sess.user.tipo, 'Email' : sess.user.email });
                   }else{
                         req.flash('message', 'Utenti non trovati!');
                         res.redirect('/login');

@@ -146,7 +146,10 @@ module.exports = function (app) {
 					} else {
 						var fotoPath = "";
 					} 
+					console.log(req.body.email);
+					var partner = req.body.email;
 					let tempUser = { username: req.body.nome, email: req.body.email, foto: fotoPath};
+					
 					// Assign value in session
 					users.push(tempUser);
 					sess = req.session;
@@ -157,6 +160,8 @@ module.exports = function (app) {
 					} else {
 						var fotoPath = "";
 					} 
+					console.log(sess.user.email);
+					var partner = sess.user.email;
 				}
 
 				bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
@@ -173,11 +178,15 @@ module.exports = function (app) {
 						note: req.body.note,
 						fotoPath: fotoPath,
 						stato: true,
+						partner : partner
 					})
 					utente.save()
 					.then(utente => {
 						req.flash('message', 'Utente registrato!');
 						if (req.body.fieldHidden == "registraCliente") {
+						//token
+						const token = jwt.sign({ userId: utente._id }, jwtSecret);
+						res.cookie('token', token, { httpOnly: true });
 							res.redirect('/');
 						} else {
 							res.redirect('/lista-clienti');
@@ -200,8 +209,6 @@ module.exports = function (app) {
 	
 
 	app.get('/login', function (req, res) {
-		
-
 		res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	});
 
@@ -219,19 +226,24 @@ module.exports = function (app) {
 						res.redirect('/login');
 					}
 					if(result){
-						let tempUser = { username: utente.nome, email: utente.email, foto: utente.fotoPath };
-						users.push(tempUser);
+						if(!utente.stato){
+							req.flash('message', 'Utente disattivato!');
+							res.redirect('/login');
+						}else{
+							let tempUser = { username: utente.nome, email: utente.email, foto: utente.fotoPath, tipo: utente.tipo };
+							users.push(tempUser);
 
-						//token
-						const token = jwt.sign({ userId: utente._id }, jwtSecret);
-						res.cookie('token', token, { httpOnly: true });
-						console.log(utente._id);
-						// Assign value in session
-						sess = req.session;
-						sess.user = tempUser;
-						console.log(sess.user);
-						req.flash('message', 'Utente loggato!');
-						res.redirect('/');
+							//token
+							const token = jwt.sign({ userId: utente._id }, jwtSecret);
+							res.cookie('token', token, { httpOnly: true });
+							//console.log(utente._id);
+							// Assign value in session
+							sess = req.session;
+							sess.user = tempUser;
+							//console.log(sess.user);
+							req.flash('message', 'Utente loggato!');
+							res.redirect('/');
+						}
 					}else{
 						req.flash('message', 'Password errata!');
 						res.redirect('/login');
@@ -240,7 +252,6 @@ module.exports = function (app) {
 			}else{
 				req.flash('message', 'Utente non trovato!');
 				res.redirect('/login');
-
 			}
 		})
 		/*
