@@ -40,30 +40,34 @@
                 </div>
 
                 <hr class="my-4">
-
-                <div class="text-muted">
-                    <h5 class="font-size-16">Partita Iva</h5>
-                    <p><%= utente.piva%></p>
-                    <div class="table-responsive mt-4">
-                        <div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="text-muted">
                             <p class="mb-1">Nome :</p>
                             <h5 class="font-size-16"><%= utente.nome%></h5>
-                        </div>
-                        <div class="mt-4">
-                            <p class="mb-1">Telefono :</p>
-                            <h5 class="font-size-16"></h5>
-                        </div>
-                        <div class="mt-4">
+                            <p class="mb-1">Cognome :</p>
+                            <h5 class="font-size-16"><%= utente.cognome%></h5>
                             <p class="mb-1">E-mail :</p>
                             <h5 class="font-size-16"><%= utente.email%></h5>
-                            <input id="email" name="emailHidden" type="email" class="form-control" value="<%= utente.email%>" >
+                            <input id="email" name="emailHidden" type="email" class="form-control" value="<%= utente.email%>" hidden>
                         </div>
-                        <div class="mt-4">
-                            <p class="mb-1">Location :</p>
-                            <h5 class="font-size-16"></h5>
-                        </div>
-
                     </div>
+                    <div class="col-sm-6">
+                        <div class="text-muted text-sm-end">
+                            <p class="mb-1">Partner :</p>
+                            <h5 class="font-size-16"><%= utente.partner%></h5>
+                            <p class="mb-1">P.iva :</p>
+                            <h5 class="font-size-16"><%= utente.piva%></h5>
+                            <p class="mb-1">Tipo :</p>
+                            <% if (utente.tipo==='A') { %>
+                            <div class="badge bg-pill bg-soft-primary font-size-12">Admin</div>
+                            <%} else {%>
+                            <div class="badge bg-pill bg-soft-warning font-size-12">Cliente</div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+               
                 </div>
             </div>
         </div>

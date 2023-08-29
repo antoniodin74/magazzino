@@ -52,14 +52,16 @@
                             <th>Cognome</th>
                             <th>Partita iva</th>
                             <th>Email</th>
+                            <th>Partner</th>
                             <th>Tipo</th>
                             <th>Status</th>
                             <th style="width: 120px;">Action</th>
                         </tr>
                     </thead>
+                    <!--Admin vede tutti i clienti, gli altri solo il proprio più i patner creati-->
                     <tbody>
                         <% for (let dato of Dati) { %>
-                            <% if (Tipo ==='A' || Tipo !== 'A' && (Email === dato.partner || Email === dato.email)) { %>
+                            <% if (Tipo ==='A' || Tipo !== 'A' && (EmailLogin === dato.partner || EmailLogin === dato.email)) { %>
                             
                             <tr>
                             <td>
@@ -78,6 +80,7 @@
                             <td><%= dato.cognome%></td>
                             <td><%= dato.piva%></td>
                             <td class="email"><%= dato.email%></td>
+                            <td class="partner"><%= dato.partner%></td>
                             <td>
                                 <% if (dato.stato===true) { %>
                                 <div class="badge bg-pill bg-soft-success font-size-12">Active</div>
