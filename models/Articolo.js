@@ -8,7 +8,7 @@ const articoloschema = new mongoose.Schema({
         type: String,
         required: true
     },
-    quantitàArticolo: {
+    quantitaArticolo: {
         type: Number
     },
     costoArticolo: {

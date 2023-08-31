@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
+const Articolo = require('../models/Articolo');
 const controller = require('../controllers/Controller');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
@@ -538,4 +539,53 @@ module.exports = function (app) {
                         
                   }
 	});
+
+      // Articolo
+      app.get('/inserisci-articolo', isUserAllowed, function (req, res) {
+            res.locals = { title: 'Inserisci Articolo' };
+            res.render('Articoli/inserisci-articolo');
+      });
+
+      app.get('/lista-articoli', isUserAllowed, async (req, res) => {
+            try {
+                  const articolo = await controller.getArticoli();
+                  console.log(articolo);
+                  if(articolo){
+                        res.locals = { title: 'Articoli' };
+                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                  }else{
+                        req.flash('message', 'Articoli non trovati!');
+                        res.redirect('/login');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Articoli non trovati!');
+                  res.redirect('/login');
+            }
+      });
+
+      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {
+            upload(req, res, function (err){
+                  console.log(req.body.quantita);
+                  let articolo = new Articolo ({
+                        codiceArticolo : req.body.codice,
+                        descrizioneArticolo: req.body.descrizione,
+                        quantitaArticolo: req.body.quantita,
+                        costoArticolo: req.body.costo,
+                  })
+                  articolo.save()
+                  .then(articolo => {
+                        req.flash('message', 'Articolo inserito!');
+                        res.redirect('/lista-articoli');
+                  })
+                  .catch(error => {
+                        req.flash('error', 'Articolo non inserito!');
+                  })
+
+                  if (err instanceof multer.MulterError) {
+                          res.send(err)
+                  } else if (err) {
+                          res.send(err)
+                  }
+            })
+      });
 }

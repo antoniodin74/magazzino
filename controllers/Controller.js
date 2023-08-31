@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
+const Articolo = require('../models/Articolo');
 
 async function getClienti() {
 	try {
@@ -38,8 +39,21 @@ async function updCliente(objUtente) {
 	}
 };
 
+async function getArticoli() {
+	try {
+	  const articoli = await Articolo.find();
+	  return articoli;
+	} catch (error) {
+	  throw new Error('Impossibile ottenere i articoli');
+	}
+  };
+
+
+
   module.exports =  {
 	getClienti,
 	getCliente,
-	updCliente
+	updCliente,
+	getArticoli,
+	
 };
