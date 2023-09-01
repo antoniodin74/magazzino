@@ -4,6 +4,7 @@ var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const Articolo = require('../models/Articolo');
+const Contatore = require('../models/Contatore');
 const controller = require('../controllers/Controller');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
@@ -521,7 +522,6 @@ module.exports = function (app) {
 	});
 
       app.post('/disabilitaCliente', urlencodeParser, async (req, res) =>  {
-                  console.log(req.body);
                   let objUtente = {
                         email: req.body.emailHidden,
                         stato: false
@@ -549,7 +549,6 @@ module.exports = function (app) {
       app.get('/lista-articoli', isUserAllowed, async (req, res) => {
             try {
                   const articolo = await controller.getArticoli();
-                  console.log(articolo);
                   if(articolo){
                         res.locals = { title: 'Articoli' };
                         res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
@@ -563,29 +562,56 @@ module.exports = function (app) {
             }
       });
 
-      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {
-            upload(req, res, function (err){
-                  console.log(req.body.quantita);
-                  let articolo = new Articolo ({
-                        codiceArticolo : req.body.codice,
-                        descrizioneArticolo: req.body.descrizione,
-                        quantitaArticolo: req.body.quantita,
-                        costoArticolo: req.body.costo,
-                  })
-                  articolo.save()
-                  .then(articolo => {
-                        req.flash('message', 'Articolo inserito!');
-                        res.redirect('/lista-articoli');
-                  })
-                  .catch(error => {
-                        req.flash('error', 'Articolo non inserito!');
-                  })
+      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {     
+                  var coll = 'Articolo'
+                  Contatore.findOne({collezione:coll})
+                  .then(contatore => {
+                        if(contatore){
+                              const contatoreIncr = contatore.valoreContatore + 1;
+                              Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
+                              .then(contatoreUpd => {
 
-                  if (err instanceof multer.MulterError) {
-                          res.send(err)
-                  } else if (err) {
-                          res.send(err)
-                  }
-            })
+                                    let contatoreNew = contatoreUpd.valoreContatore;
+
+                                    upload(req, res, function (err){
+                                          let articolo = new Articolo ({
+                                                codiceArticolo : contatoreNew,
+                                                descrizioneArticolo: req.body.descrizione,
+                                                quantitaArticolo: req.body.quantita,
+                                                costoArticolo: req.body.costo,
+                                          })
+                                          articolo.save()
+                                          .then(articolo => {
+                                                req.flash('message', 'Articolo inserito!');
+                                                res.redirect('/lista-articoli');
+                                          })
+                                          .catch(error => {
+                                                req.flash('error', 'Articolo non inserito!');
+                                          })
+                                          if (err instanceof multer.MulterError) {
+                                                res.send(err)
+                                          } else if (err) {
+                                                res.send(err)
+                                          }
+                                    })
+                              })
+                              .catch(error => {
+                                    console.log(error);
+                              })
+                        }else{
+                              let contatore = new Contatore ({
+                              collezione : 'Articolo',
+                              valoreContatore: 1
+                              })
+                              contatore.save()
+                              .then(contatoreSave => {
+                                    
+
+                              })
+                              .catch(error => {
+                                    console.log(error);
+                              })
+                        }
+                  })      
       });
 }
