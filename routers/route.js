@@ -581,13 +581,13 @@ module.exports = function (app) {
                                     noteArticolo: req.body.note,
                                     fotoPathArticolo:fotoPath
                               })
-                              articolo.save()
+                              articolo.save(err)
                               .then(articolo => {
                                     req.flash('message', 'Articolo inserito!');
                                     res.redirect('/lista-articoli');
                               })
                               .catch(error => {
-                                    console.log(error);
+                                    console.log(error.errors);
                                     req.flash('error', 'Articolo non inserito!');
                                     res.redirect('/lista-articoli');
                               })
