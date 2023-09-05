@@ -563,6 +563,7 @@ module.exports = function (app) {
       });
 
       app.post('/inserisci-articolo', isUserAllowed, async (req, res) => { 
+            
             try {
                   const contatoreNew = await controller.getContatoreArt();
                   if(contatoreNew){
@@ -586,6 +587,7 @@ module.exports = function (app) {
                                     res.redirect('/lista-articoli');
                               })
                               .catch(error => {
+                                    console.log(error);
                                     req.flash('error', 'Articolo non inserito!');
                                     res.redirect('/lista-articoli');
                               })
