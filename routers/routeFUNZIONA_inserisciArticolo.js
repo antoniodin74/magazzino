@@ -562,48 +562,56 @@ module.exports = function (app) {
             }
       });
 
-      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => { 
-            try {
-                  const contatoreNew = await controller.getContatoreArt();
-                  if(contatoreNew){
-                        upload(req, res, function (err){
-                              if (req.file !== undefined) {
-                                    var fotoPath = req.file.path;
-                              } else {
-                                    var fotoPath = "";
-                              } 
-                              let articolo = new Articolo ({
-                                    codiceArticolo : contatoreNew,
-                                    descrizioneArticolo: req.body.descrizione,
-                                    quantitaArticolo: req.body.quantita,
-                                    costoArticolo: req.body.costo,
-                                    noteArticolo: req.body.note,
-                                    fotoPathArticolo:fotoPath
+      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {     
+            var coll = 'Articolo'
+            Contatore.findOne({collezione:coll})
+            .then(contatore => {
+                  if(contatore){
+                        let contatoreArt = contatore.valoreContatore;
+                        contatoreArt++;
+                        const contatoreIncr = contatoreArt;
+                        Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
+                        .then(contatoreUpd => {
+                              let contatoreNew = contatoreUpd.valoreContatore;
+                              upload(req, res, function (err){
+                                    let articolo = new Articolo ({
+                                          codiceArticolo : contatoreNew,
+                                          descrizioneArticolo: req.body.descrizione,
+                                          quantitaArticolo: req.body.quantita,
+                                          costoArticolo: req.body.costo,
+                                    })
+                                    articolo.save()
+                                    .then(articolo => {
+                                          req.flash('message', 'Articolo inserito!');
+                                          res.redirect('/lista-articoli');
+                                    })
+                                    .catch(error => {
+                                          req.flash('error', 'Articolo non inserito!');
+                                    })
+                                    if (err instanceof multer.MulterError) {
+                                          res.send(err)
+                                    } else if (err) {
+                                          res.send(err)
+                                    }
                               })
-                              articolo.save()
-                              .then(articolo => {
-                                    req.flash('message', 'Articolo inserito!');
-                                    res.redirect('/lista-articoli');
-                              })
-                              .catch(error => {
-                                    req.flash('error', 'Articolo non inserito!');
-                                    res.redirect('/lista-articoli');
-                              })
-                              if (err instanceof multer.MulterError) {
-                                    res.send(err)
-                              } else if (err) {
-                                    res.send(err)
-                              }
+                        })
+                        .catch(error => {
+                              console.log(error);
                         })
                   }else{
-                        console.log('Articolo non inserito!');
-                        req.flash('error', 'Articolo non inserito!');
-                        res.redirect('/lista-articoli');
+                        let contatore = new Contatore ({
+                        collezione : 'Articolo',
+                        valoreContatore: 1
+                        })
+                        contatore.save()
+                        .then(contatoreSave => {
+                              req.flash('message', 'Articolo inserito!');
+                              res.redirect('/lista-articoli');
+                        })
+                        .catch(error => {
+                              req.flash('error', 'Articolo non inserito!');
+                        })
                   }
-            } catch (error) {
-                  console.log(error);
-                  req.flash('error', 'Articolo non inserito!');
-                  res.redirect('/lista-articoli');
-            }
+            })      
       });
 }

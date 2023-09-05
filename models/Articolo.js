@@ -6,13 +6,23 @@ const articoloschema = new mongoose.Schema({
     },
     descrizioneArticolo: {
         type: String,
-        required: true
+        default: ''
     },
     quantitaArticolo: {
-        type: Number
+        type: Number,
+        default: 0
     },
     costoArticolo: {
         type: Number,
+        default: 0
+    },
+    noteArticolo: {
+        type: String,
+        default: ''
+    },
+    fotoPathArticolo: {
+        type: String,
+        default: ''
     }
 })
 
