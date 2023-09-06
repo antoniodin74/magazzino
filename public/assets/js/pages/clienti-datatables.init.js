@@ -20,6 +20,18 @@ $(document).ready(function() {
       // Eseguire il redirect alla route /lista-clienti
       window.location.href = '/inserisci-cliente';
     });
+
+    // Funzione per rimuovere l'elemento dopo 3 secondi
+    setTimeout(function() {
+        var elemento1 = document.getElementById("elementoDaRimuovere1");
+        var elemento2 = document.getElementById("elementoDaRimuovere2");
+        if (elemento1) {
+            elemento1.parentNode.removeChild(elemento1);
+        }
+        if (elemento2) {
+            elemento2.parentNode.removeChild(elemento2);
+        }
+    }, 3000); // 3000 millisecondi (3 secondi)
 });
 /*
 $(document).ready(function() {

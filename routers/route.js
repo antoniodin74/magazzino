@@ -10,18 +10,40 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 
-// Configurazione Multer per gestire l'upload dei file
-const storage = multer.diskStorage({
+// Configurazione Multer Clienti per gestire l'upload dei file
+const storageClienti = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, 'uploads');
+	  cb(null, 'uploads/clienti');
 	},
 	filename: function (req, file, cb) {
 	  cb(null, Date.now() + '-' + file.originalname);
 	}
   });
   
-  var upload = multer({
-	storage: storage,
+  var uploadClienti = multer({
+	storage: storageClienti,
+	fileFilter: (req, file, cb) => {
+		  if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+				cb(null, true);
+		  } else {
+				cb(null, false);
+				return cb(new Error('Ammesse solo estensioni .png, jpg'));
+		  }
+		  }
+	}).single('file');
+
+// Configurazione Multer Articoli per gestire l'upload dei file
+const storageArticoli = multer.diskStorage({
+	destination: function (req, file, cb) {
+	  cb(null, 'uploads/articoli');
+	},
+	filename: function (req, file, cb) {
+	  cb(null, Date.now() + '-' + file.originalname);
+	}
+  });
+  
+  var uploadArticoli = multer({
+	storage: storageArticoli,
 	fileFilter: (req, file, cb) => {
 		  if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 				cb(null, true);
@@ -485,7 +507,7 @@ module.exports = function (app) {
       });
 
       app.post('/aggiornaCliente', urlencodeParser, async (req, res) =>  {
-            upload(req, res, async function (err){
+            uploadClienti(req, res, async function (err){
                   if (req.file !== undefined) {
                         var fotoPath = req.file.path;
                   } else {
@@ -543,31 +565,31 @@ module.exports = function (app) {
       // Articolo
       app.get('/inserisci-articolo', isUserAllowed, function (req, res) {
             res.locals = { title: 'Inserisci Articolo' };
-            res.render('Articoli/inserisci-articolo');
+            res.render('Articoli/inserisci-articolo', { 'message': req.flash('message'), 'error': req.flash('error') });
       });
 
       app.get('/lista-articoli', isUserAllowed, async (req, res) => {
             try {
                   const articolo = await controller.getArticoli();
-                  if(articolo){
+                  if(articolo[0]!==undefined){
                         res.locals = { title: 'Articoli' };
                         res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
+                        res.locals = { title: 'Articoli' };
                         req.flash('message', 'Articoli non trovati!');
-                        res.redirect('/login');
+                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }
             } catch (error) {
-                  req.flash('message', 'Articoli non trovati!');
-                  res.redirect('/login');
+                  req.flash('error', 'Errore lettura dati!');
+                  res.render('/lista-clienti');
             }
       });
 
       app.post('/inserisci-articolo', isUserAllowed, async (req, res) => { 
-            
             try {
                   const contatoreNew = await controller.getContatoreArt();
                   if(contatoreNew){
-                        upload(req, res, function (err){
+                        uploadArticoli(req, res, function (err){
                               if (req.file !== undefined) {
                                     var fotoPath = req.file.path;
                               } else {
@@ -587,8 +609,8 @@ module.exports = function (app) {
                                     res.redirect('/lista-articoli');
                               })
                               .catch(error => {
-                                    console.log(error.errors);
-                                    req.flash('error', 'Articolo non inserito!');
+                                    console.log(error);
+                                    req.flash('error', 'Articolo non inserito1!');
                                     res.redirect('/lista-articoli');
                               })
                               if (err instanceof multer.MulterError) {
@@ -599,7 +621,7 @@ module.exports = function (app) {
                         })
                   }else{
                         console.log('Articolo non inserito!');
-                        req.flash('error', 'Articolo non inserito!');
+                        req.flash('error', 'Articolo non inserito2!');
                         res.redirect('/lista-articoli');
                   }
             } catch (error) {

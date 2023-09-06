@@ -69,6 +69,7 @@ async function getContatoreArt() {
 			} catch (error) {
 				console.log('Impossibile aggiornare contatore');
 				throw new Error('Impossibile aggiornare contatore');
+				
 			}
 		} else {
 			const contatoreSave = await updContatoreArt();
@@ -85,45 +86,6 @@ async function getContatoreArt() {
 		console.log('Impossibile aggiornare contatore');
 		throw new Error('Impossibile aggiornare contatore');
 	}
-
-
-/*
-	var coll = 'Articolo'
-    Contatore.findOne({collezione:coll})
-	.then(contatore => {
-		if(contatore){
-			console.log(contatore);
-			let contatoreArt = contatore.valoreContatore;
-			contatoreArt++;
-			const contatoreIncr = contatoreArt;
-			Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
-			.then(contatoreUpd => {
-				let contatoreNew = contatoreUpd.valoreContatore;
-				return contatoreNew;
-			})
-			.catch(error => {
-				console.log(error);
-			})
-		}else{
-			let contatoreNew = new Contatore ({
-				collezione : 'Articolo',
-				valoreContatore: 1
-				})
-				contatoreNew.save()
-				.then(contatoreSave => {
-					let contatoreNuovo = contatoreSave.valoreContatore;
-					console.log(contatoreNuovo);
-					return contatoreNuovo;
-				})
-				.catch(error => {
-					console.log(error);
-				})
-		}
-	})
-	.catch(error => {
-		console.log(error);
-	})
-	*/
 }
 
 async function updContatoreArt() {

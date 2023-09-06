@@ -21,7 +21,7 @@ const multer = require('multer');
 // Configurazione Multer per gestire l'upload dei file
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, 'uploads');
+	  cb(null, 'uploads/clienti');
 	},
 	filename: function (req, file, cb) {
 	  cb(null, Date.now() + '-' + file.originalname);
@@ -54,9 +54,9 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 });
 
 const sendResetPasswordMail = async(name, email, tokenMail, host)=>{
-	console.log(host);
+	//console.log(host);
 	const url = "http://" + host + "/" + "auth-reset-password?token=" + tokenMail;
-	console.log(url);
+	//console.log(url);
 	try {
 		const transporter = nodemailer.createTransport({
 			host:'smtp.gmail.com',
@@ -146,7 +146,6 @@ module.exports = function (app) {
 					} else {
 						var fotoPath = "";
 					} 
-					console.log(req.body.email);
 					var partner = req.body.email;
 					let tempUser = { username: req.body.nome, email: req.body.email, foto: fotoPath};
 					
@@ -160,7 +159,6 @@ module.exports = function (app) {
 					} else {
 						var fotoPath = "";
 					} 
-					console.log(sess.user.email);
 					var partner = sess.user.email;
 				}
 

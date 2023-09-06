@@ -13,9 +13,8 @@ const articoloschema = new mongoose.Schema({
         default:0
     },
     costoArticolo: {
-        type: Number,
-        min:0,
-        max: 9999999999
+        type: mongoose.Schema.Types.Decimal128,
+        default:0
     },
     noteArticolo: {
         type: String,
