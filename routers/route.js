@@ -630,4 +630,59 @@ module.exports = function (app) {
                   res.redirect('/lista-articoli');
             }
       });
+
+      app.get('/aggiorna-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const cdArticolo = (req.query.cdArticolo);
+            try {
+                  const articolo = await controller.getArticolo(cdArticolo);
+                  if(articolo){
+                        res.locals = { title: 'Modifica Articolo' };
+                        res.render('Articoli/aggiorna-articolo', { 'message': req.flash('message'), 'error': req.flash('error'), 'articolo': articolo });
+                  }else{
+                        req.flash('message', 'Articolo non trovato!');
+                        res.redirect('/lista-articoli');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Articolo non trovato!');
+                  res.redirect('/lista-articoli');
+            }
+      });
+
+      app.post('/aggiorna-articolo', urlencodeParser, async (req, res) =>  {
+            uploadArticoli(req, res, async function (err){
+                  if (req.file !== undefined) {
+                        var fotoPath = req.file.path;
+                  } else {
+                        var fotoPath = "";
+                  } 
+                  let objArticolo = {
+                        descrizioneArticolo: req.body.descrizione,
+                        quantitaArticolo: req.body.quantita,
+                        costoArticolo: req.body.costo,
+                        noteArticolo: req.body.note,
+                        fotoPathArticolo:fotoPath
+                  }
+                  
+                  const cdArticolo = req.body.codiceHidden;
+                  try {
+                        const articolo = await controller.updArticolo(objArticolo,cdArticolo);
+                        if(articolo){
+                              req.flash('message', 'Articolo aggiornato!');
+                              res.redirect('/lista-articoli');
+                        }else{
+                              req.flash('message', 'Articolo non aggiornato!');
+                              res.redirect('/lista-articoli');
+                        }
+                  } catch (error) {
+                        
+                  }
+
+                  if (err instanceof multer.MulterError) {
+                        res.send(err)
+                  } else if (err) {
+                        res.send(err)
+                  }
+            })
+            
+	});
 }

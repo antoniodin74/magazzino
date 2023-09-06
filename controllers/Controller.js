@@ -102,6 +102,31 @@ async function updContatoreArt() {
 	}
 }
 
+async function getArticolo(cdArticolo) {
+	try {
+		const articolo = await Articolo.findOne({codiceArticolo:cdArticolo});
+		return articolo;
+	} catch (error) {
+		throw new Error('Impossibile trovare articolo');
+	}
+	};
+
+async function updArticolo(objArticolo,cdArticolo) {
+	//console.log(objArticolo);
+	//console.log(cdArticolo);
+	try {
+		let articolo = await Articolo.findOneAndUpdate(
+			{codiceArticolo:cdArticolo},
+			{
+				$set: objArticolo
+			},
+			)
+		return articolo;
+	} catch (error) {
+		throw new Error('Impossibile trovare il articolo');
+	}
+};
+
 
 
   module.exports =  {
@@ -109,5 +134,7 @@ async function updContatoreArt() {
 	getCliente,
 	updCliente,
 	getArticoli,
-	getContatoreArt
+	getContatoreArt,
+	getArticolo,
+	updArticolo
 };
