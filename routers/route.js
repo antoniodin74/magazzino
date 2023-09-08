@@ -685,4 +685,42 @@ module.exports = function (app) {
             })
             
 	});
+
+      app.get('/disabilita-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const cdArticolo = (req.query.cdArticolo);
+            try {
+                  const articolo = await controller.getArticolo(cdArticolo);
+                  if(articolo){
+                        res.locals = { title: 'Modifica Articolo' };
+                        res.render('Articoli/disabilita-articolo', { 'message': req.flash('message'), 'error': req.flash('error'), 'articolo': articolo });
+                  }else{
+                        req.flash('message', 'Articolo non trovato!');
+                        res.redirect('/lista-articolo');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Articolo non trovato!');
+                  res.redirect('/lista-articolo');
+            }
+      });
+
+      app.post('/disabilita-articolo', urlencodeParser, async (req, res) =>  {
+            const cdArticolo = req.body.cdArticoloHidden;
+            let objArticolo = {
+                  codiceArticolo: req.body.cdArticoloHidden,
+                  statoArticolo: false
+            }
+            try {
+                  const articolo = await controller.updArticolo(objArticolo,cdArticolo);
+                  if(articolo){
+                        req.flash('message', 'Articolo aggiornato!');
+                        res.redirect('/lista-articoli');
+                  }else{
+                        req.flash('message', 'Articolo non disabilitato!');
+                        res.redirect('/lista-articoli');
+                  }
+            } catch (error) {
+                  
+            }
+});
+
 }

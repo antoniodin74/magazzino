@@ -23,6 +23,10 @@ const articoloschema = new mongoose.Schema({
     fotoPathArticolo: {
         type: String,
         default: ''
+    },
+    statoArticolo: {
+        type: Boolean,
+        default: true
     }
 })
 
