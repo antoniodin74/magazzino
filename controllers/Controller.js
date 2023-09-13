@@ -42,7 +42,7 @@ async function updCliente(objUtente) {
 
 async function getArticoli() {
 	try {
-	  const articoli = await Articolo.find();
+	  const articoli = await Articolo.find({statoArticolo:{ $ne: false }});
 	  return articoli;
 	} catch (error) {
 	  throw new Error('Impossibile ottenere i articoli');
@@ -111,9 +111,8 @@ async function getArticolo(cdArticolo) {
 	}
 	};
 
-async function updArticolo(objArticolo,cdArticolo) {
-	//console.log(objArticolo);
-	//console.log(cdArticolo);
+async function updArticolo(objArticolo) {
+	const cdArticolo = objArticolo.codiceArticolo;
 	try {
 		let articolo = await Articolo.findOneAndUpdate(
 			{codiceArticolo:cdArticolo},

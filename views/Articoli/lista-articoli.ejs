@@ -76,6 +76,7 @@
                             <td>
                                 <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
                                 <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
                             </td>
                         </tr>
                         <%}%> 
@@ -102,6 +103,12 @@ $(document).ready(function() {
         var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
       // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
         window.location.href = '/disabilita-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
+    });
+    $('.tabArticoli').on('click', '.linkDettaglio', function() {
+      // Ottieni il valore del codice articolo corrispondente
+        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
+      // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+        window.location.href = '/dettaglio-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
     });
     $('.tabArticoli').on('click', function() {
     });

@@ -10,7 +10,7 @@
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Lista Articoli</a></li>
+                    <li class="breadcrumb-item"><a href="/lista-articoli">Lista Articoli</a></li>
                     <li class="breadcrumb-item active">Dettaglio Articolo</li>
                 </ol>
             </div>
@@ -21,7 +21,6 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
-<form method="post" action="/disabilita-articolo">
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -75,14 +74,6 @@
                                                 <img src="public/assets/images/product/img-6.png" alt="" class="img-fluid mx-auto d-block">
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row text-center mt-2">
-                                        <div class="col-sm-12 d-grid">
-                                            <button type="submit" class="btn btn-primary btn-block waves-effect waves-light mt-2 me-1">
-                                                <i class="uil uil-shopping-cart-alt me-2"></i>Elimina
-                                            </button>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -270,9 +261,6 @@
     </div>
 </div>
 <!-- end row -->
-
-</form>
-<!-- end form -->
 
 <%- contentFor('FooterJs') %>
 

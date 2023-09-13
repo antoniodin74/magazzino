@@ -655,7 +655,10 @@ module.exports = function (app) {
                   } else {
                         var fotoPath = "";
                   } 
+                  console.log(fotoPath);
+                  const cdArticolo = req.body.codiceHidden;
                   let objArticolo = {
+                        codiceArticolo : cdArticolo,
                         descrizioneArticolo: req.body.descrizione,
                         quantitaArticolo: req.body.quantita,
                         costoArticolo: req.body.costo,
@@ -663,9 +666,9 @@ module.exports = function (app) {
                         fotoPathArticolo:fotoPath
                   }
                   
-                  const cdArticolo = req.body.codiceHidden;
+                  
                   try {
-                        const articolo = await controller.updArticolo(objArticolo,cdArticolo);
+                        const articolo = await controller.updArticolo(objArticolo);
                         if(articolo){
                               req.flash('message', 'Articolo aggiornato!');
                               res.redirect('/lista-articoli');
@@ -695,22 +698,22 @@ module.exports = function (app) {
                         res.render('Articoli/disabilita-articolo', { 'message': req.flash('message'), 'error': req.flash('error'), 'articolo': articolo });
                   }else{
                         req.flash('message', 'Articolo non trovato!');
-                        res.redirect('/lista-articolo');
+                        res.redirect('/lista-articoli');
                   }
             } catch (error) {
                   req.flash('message', 'Articolo non trovato!');
-                  res.redirect('/lista-articolo');
+                  res.redirect('/lista-articoli');
             }
       });
 
       app.post('/disabilita-articolo', urlencodeParser, async (req, res) =>  {
             const cdArticolo = req.body.cdArticoloHidden;
             let objArticolo = {
-                  codiceArticolo: req.body.cdArticoloHidden,
+                  codiceArticolo: cdArticolo,
                   statoArticolo: false
             }
             try {
-                  const articolo = await controller.updArticolo(objArticolo,cdArticolo);
+                  const articolo = await controller.updArticolo(objArticolo);
                   if(articolo){
                         req.flash('message', 'Articolo aggiornato!');
                         res.redirect('/lista-articoli');
@@ -721,6 +724,22 @@ module.exports = function (app) {
             } catch (error) {
                   
             }
-});
+      });
 
+      app.get('/dettaglio-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const cdArticolo = (req.query.cdArticolo);
+            try {
+                  const articolo = await controller.getArticolo(cdArticolo);
+                  if(articolo){
+                        res.locals = { title: 'Dettaglio Articolo' };
+                        res.render('Articoli/dettaglio-articolo', { 'message': req.flash('message'), 'error': req.flash('error'), 'articolo': articolo });
+                  }else{
+                        req.flash('message', 'Dettaglio non trovato!');
+                        res.redirect('/lista-articoli');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Dettaglio non trovato!');
+                  res.redirect('/lista-articoli');
+            }
+      });
 }
