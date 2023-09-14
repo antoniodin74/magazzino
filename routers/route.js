@@ -472,6 +472,23 @@ module.exports = function (app) {
             }
       });
 
+      app.post('/lista-clienti-selezioni', isUserAllowed, async (req, res) => {
+            console.log(req.body);
+            try {
+                  const utente = await controller.getClienti();
+                  if(utente){
+                        res.locals = { title: 'Clienti' };
+                        res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                  }else{
+                        req.flash('message', 'Utenti non trovati!');
+                        res.redirect('/login');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Utenti non trovati!');
+                  res.redirect('/login');
+            }
+      });
+
       app.get('/aggiorna-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
             const email = (req.query.email);
             try {
@@ -561,6 +578,23 @@ module.exports = function (app) {
                         
                   }
 	});
+
+      app.get('/dettaglio-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
+            const email = (req.query.email);
+            try {
+                  const utente = await controller.getCliente(email);
+                  if(utente){
+                        res.locals = { title: 'Dettaglio Cliente' };
+                        res.render('Clienti/dettaglio-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
+                  }else{
+                        req.flash('message', 'Utente non trovato!');
+                        res.redirect('/lista-clienti');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Utente non trovato!');
+                  res.redirect('/lista-clienti');
+            }
+      });
 
       // Articolo
       app.get('/inserisci-articolo', isUserAllowed, function (req, res) {
@@ -655,7 +689,6 @@ module.exports = function (app) {
                   } else {
                         var fotoPath = "";
                   } 
-                  console.log(fotoPath);
                   const cdArticolo = req.body.codiceHidden;
                   let objArticolo = {
                         codiceArticolo : cdArticolo,
