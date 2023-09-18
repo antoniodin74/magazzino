@@ -775,4 +775,10 @@ module.exports = function (app) {
                   res.redirect('/lista-articoli');
             }
       });
+
+       // Ordine
+       app.get('/inserisci-ordine', isUserAllowed, function (req, res) {
+            res.locals = { title: 'Inserisci Ordine' };
+            res.render('Ordini/inserisci-ordine', { 'message': req.flash('message'), 'error': req.flash('error') });
+      });
 }
