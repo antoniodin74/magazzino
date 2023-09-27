@@ -1,11 +1,5 @@
 <%- contentFor('HeaderCss') %>
 
-<!-- DataTables -->
-<link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-
-<!-- Responsive datatable examples -->
-<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />  
 <%- contentFor('breadcrumb') %>
 
 <!-- start page title -->
@@ -16,8 +10,8 @@
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">UI Elements</a></li>
-                    <li class="breadcrumb-item active">Modals</li>
+                    <li class="breadcrumb-item"><a href="/lista-ordini">Lista Ordini</a></li>
+                    <li class="breadcrumb-item active">Inserisci Ordine</li>
                 </ol>
             </div>
 
@@ -27,25 +21,72 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
+ <!-- Full screen modal -->
+ <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">Fullscreen modal</button>
+ 
 
+                        <!-- sample modal content -->
+                        <div id="exampleModalFullscreen" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-fullscreen">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title mt-0" id="exampleModalFullscreenLabel">Fullscreen Modal Heading</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5>Overflowing text to show scroll behavior</h5>
+                                        <p>Cras mattis consectetur purus sit amet fermentum.
+                                            Cras justo odio, dapibus ac facilisis in,
+                                            egestas eget quam. Morbi leo risus, porta ac
+                                            consectetur ac, vestibulum at eros.</p>
+                                        <p>Praesent commodo cursus magna, vel scelerisque
+                                            nisl consectetur et. Vivamus sagittis lacus vel
+                                            augue laoreet rutrum faucibus dolor auctor.</p>
+                                        <p>Aenean lacinia bibendum nulla sed consectetur.
+                                            Praesent commodo cursus magna, vel scelerisque
+                                            nisl consectetur et. Donec sed odio dui. Donec
+                                            ullamcorper nulla non metus auctor
+                                            fringilla.</p>
+                                        <p>Cras mattis consectetur purus sit amet fermentum.
+                                            Cras justo odio, dapibus ac facilisis in,
+                                            egestas eget quam. Morbi leo risus, porta ac
+                                            consectetur ac, vestibulum at eros.</p>
+                                        <p>Praesent commodo cursus magna, vel scelerisque
+                                            nisl consectetur et. Vivamus sagittis lacus vel
+                                            augue laoreet rutrum faucibus dolor auctor.</p>
+                                        <p>Aenean lacinia bibendum nulla sed consectetur.
+                                            Praesent commodo cursus magna, vel scelerisque
+                                            nisl consectetur et. Donec sed odio dui. Donec
+                                            ullamcorper nulla non metus auctor
+                                            fringilla.</p>
+                                        <p>Cras mattis consectetur purus sit amet fermentum.
+                                            Cras justo odio, dapibus ac facilisis in,
+                                            egestas eget quam. Morbi leo risus, porta ac
+                                            consectetur ac, vestibulum at eros.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary waves-effect waves-light">Save changes</button>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-
-                <h4 class="card-title mb-4">Basic Wizard</h4>
+                <h4 class="card-title mb-4">Inserisci Ordine</h4>
 
                 <div id="basic-example">
                     <!-- Seller Details -->
-                    <h3>Seller Details</h3>
+                    <h3>Dati Cliente</h3>
                     <section>
                         <form>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-firstname-input">First name</label>
-                                        <!-- <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#myModal"> -->
-                                        <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#myModal">
+                                        <input type="text" class="form-control" id="basicpill-firstname-input">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -206,173 +247,25 @@
                     </section>
                 </div>
 
-               
-
-                <div>
-                    <div>
-                       
-
-                      
-                        <!-- sample modal content -->
-                        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title mt-0" id="myModalLabel">Modal Heading</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                       
-
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                
-                                                
-                                                <div>
-                                                    
-                                                    <div class="table-responsive mb-4">
-                                                        <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
-                                                            <thead>
-                                                                <tr>
-                                                                    <!--
-                                                                    <th style="width: 20px;">
-                                                                        <div class="form-check text-center">
-                                                                            <input type="checkbox" class="form-check-input" id="customercheck">
-                                                                            <label class="form-check-label" for="customercheck"></label>
-                                                                        </div>
-                                                                    </th>
-                                                                    -->
-                                                                    <th>Nome</th>
-                                                                    <th>Cognome</th>
-                                                                    <th>Partita iva</th>
-                                                                    <th>Email</th>
-                                                                    <th>Partner</th>
-                                                                    <th>Tipo</th>
-                                                                    <th>Status</th>
-                                                                    <th style="width: 120px;">Action</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <!--Admin vede tutti i clienti, gli altri solo il proprio più i patner creati-->
-                                                            <tbody id="modal-body">
-                                                               
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- end row -->
-
-                                            
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-dismiss="modal">Save changes</button>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
-                    </div>
-
-                </div>
-
             </div>
+            <!-- end card body -->
         </div>
+        <!-- end card -->
     </div>
-</div><!-- end row -->
+    <!-- end col -->
+
+</div>
+<!-- end row -->
 
 <%- contentFor('FooterJs') %>
+
+
 <!-- jquery step -->
 <script src="public/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
 
 <!-- form wizard init -->
 <script src="public/assets/js/pages/form-wizard.init.js"></script>
+
 <script src="public/assets/js/pages/ordini.init.js"></script>
 
-
-<!-- Required datatable js -->
-<script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-<!-- Buttons examples -->
-<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-<script src="public/assets/libs/jszip/jszip.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-
-<!-- Responsive examples -->
-<script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-
-
-
-
-<script>
-    
-
-    // Funzione per recuperare i dati da MongoDB
-    async function fetchDataFromMongoDB() {
-      // Il tuo codice per recuperare i dati da MongoDB
-      // ...
-      await fetch(`/lista-clienti-fetch`)
-        .then(function(res) {
-            return res.json();
-        }).then(function(utente){
-            console.log(utente);
-           
-      //var dataList = document.getElementById('modal-body');
-      utente.forEach(item => {
-        var tbody = document.getElementById("modal-body");
-        var tr = document.createElement("tr");
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.nome;
-        td.appendChild(span);
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.cognome;
-        td.appendChild(span);
-        tr.appendChild(td);
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.email;
-        td.appendChild(span);
-        tr.appendChild(td);
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.piva;
-        td.appendChild(span);
-        tr.appendChild(td);
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.tipo;
-        td.appendChild(span);
-        tr.appendChild(td);
-        var td = document.createElement("td");
-        var span = document.createElement("span");
-        span.textContent = item.stato;
-        td.appendChild(span);
-        tr.appendChild(td);
-        });
-      
-
-      // Apre la modal
-      //var inputElement = document.getElementById("basicpill-firstname-input");
-      //inputElement.setAttribute("data-bs-toggle", "modal");
-      //inputElement.setAttribute("data-bs-target", "#myModal");
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }
-
-    
-  </script>
 <%- contentFor('BottomJs') %>

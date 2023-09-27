@@ -471,6 +471,22 @@ module.exports = function (app) {
                   res.redirect('/login');
             }
       });
+      app.get('/lista-clienti-fetch', isUserAllowed, async (req, res) => {
+            
+            try {
+                  const utente = await controller.getClienti();
+                  if(utente){
+                        console.log(utente);
+                        res.locals = { title: 'Ordine' };
+                        //res.render('Ordini/inserisci-ordine', { 'data' : utente}); 
+                        res.json(utente);
+                  }else{
+                        console.log('no clienti');
+                  }
+            } catch (error) {
+                  console.log(error);
+            }
+      });
 
       app.post('/lista-clienti-selezioni', isUserAllowed, async (req, res) => {
             console.log(req.body);
