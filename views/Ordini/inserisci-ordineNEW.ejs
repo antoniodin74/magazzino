@@ -1,4 +1,5 @@
 <%- contentFor('HeaderCss') %>
+
 <!-- DataTables -->
 <link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 <link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
@@ -15,8 +16,8 @@
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="/lista-ordini">Lista Ordini</a></li>
-                    <li class="breadcrumb-item active">Inserisci Ordine</li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">UI Elements</a></li>
+                    <li class="breadcrumb-item active">Modals</li>
                 </ol>
             </div>
 
@@ -26,54 +27,25 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
- <!-- Full screen modal --> 
-                        <!-- sample modal content -->
-                        <div id="exampleModalFullscreen" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-fullscreen">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title mt-0" id="exampleModalFullscreenLabel">Clienti</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="table-responsive mb-4">
-                                            <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Nome</th>
-                                                        <th>Cognome</th>
-                                                        <th>Partita iva</th>
-                                                        <th>Email</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="modal-body">
-                                                      
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Ok</button>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Inserisci Ordine</h4>
+
+                <h4 class="card-title mb-4">Basic Wizard</h4>
 
                 <div id="basic-example">
                     <!-- Seller Details -->
-                    <h3>Dati Cliente</h3>
+                    <h3>Seller Details</h3>
                     <section>
                         <form>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-firstname-input">First name</label>
-                                        <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+                                        <!-- <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#myModal"> -->
+                                        <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#myModal">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -234,67 +206,125 @@
                     </section>
                 </div>
 
+                    <div>
+                        <!-- sample modal content -->
+                        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title mt-0" id="myModalLabel">Clienti</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">   
+                                                <div class="table-responsive mb-4">
+                                                    <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Nome</th>
+                                                                <th>Cognome</th>
+                                                                <th>Partita iva</th>
+                                                                <th>Email</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <!--Admin vede tutti i clienti, gli altri solo il proprio più i patner creati-->
+                                                        <tbody id="modal-body">
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end row -->   
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-dismiss="modal">Save changes</button>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                    </div>
             </div>
-            <!-- end card body -->
         </div>
-        <!-- end card -->
     </div>
-    <!-- end col -->
-
-</div>
-<!-- end row -->
+</div><!-- end row -->
 
 <%- contentFor('FooterJs') %>
 <script>
+    // Funzione per recuperare i dati da MongoDB
     async function fetchDataFromMongoDB() {
-        await fetch(`/lista-clienti-fetch`)
-       .then(function(res){
-           return res.json();
-       })
-       .then(function(utente){
-           console.log(utente);
-           // Rimuovi tutte le righe esistenti
-           var table = $('#datatable-buttons').DataTable();
-            table.clear().draw();
-           // Aggiungi nuove righe (esempio)
-           var newData = [];
-           utente.forEach(item => {
-            var dati = [item.nome, item.cognome, item.piva, item.email];
-            newData.push(dati);
-                    //[item.nome, 'di nocera', '2838742327', 'anto.dino@gmail.com']
-                })
-            console.log(newData);
-            table.rows.add(newData).draw();
-            // Aggiorna i dati
-            table.draw();   
-           //var dataList = document.getElementById('modal-body');
-           /*
-           var oddRows = document.querySelectorAll("tr.odd");
-           for (var i = 0; i < oddRows.length; i++) {
-               oddRows[i].remove();
-               }
-               */
-               /*
-           utente.forEach(item => {
-               var tbody = document.getElementById("modal-body");
-               var tr = document.createElement("tr");
-               var td = document.createElement("td");
-               var span = document.createElement("span");
-               span.textContent = item.nome;
-               td.appendChild(span);
-               tr.appendChild(td);
-               tbody.appendChild(tr);
-           })
-           */
+      // Il tuo codice per recuperare i dati da MongoDB
+      // ...
+      await fetch(`/lista-clienti-fetch`)
+        .then(function(res) {
+            return res.json();
+        }).then(function(utente){
+            console.log(utente);
            
-             
- 
-       })
-   }
- </script>
+      //var dataList = document.getElementById('modal-body');
+      var oddRows = document.querySelectorAll("tr.odd");
+      for (var i = 0; i < oddRows.length; i++) {
+        oddRows[i].remove();
+        }
 
+      let cont = 0;
+      utente.forEach(item => {
+        cont++;
+        var tbody = document.getElementById("modal-body");
+        var tr = document.createElement("tr");
+        if (cont % 2 === 0) {
+            var classe = 'even';
+        } else {
+            var classe = 'odd';
+        }
+        tr.classList.add(classe);
+        var td = document.createElement("td");
+        var classeTd = 'sorting_1';
+        td.classList.add(classeTd);
+        var span = document.createElement("span");
+        span.textContent = item.nome;
+        td.appendChild(span);
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+
+        var td = document.createElement("td");
+        var span = document.createElement("span");
+        span.textContent = item.cognome;
+        td.appendChild(span);
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        var span = document.createElement("span");
+        span.textContent = item.piva;
+        td.appendChild(span);
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        var span = document.createElement("span");
+        span.textContent = item.email;
+        td.appendChild(span);
+        tr.appendChild(td);
+        });
+        
+        $('.datatable').DataTable();
+        $(".dataTables_length select").addClass('form-select form-select-sm');
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+  </script>
 <!-- jquery step -->
 <script src="public/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+
+<!-- form wizard init -->
+<script src="public/assets/js/pages/form-wizard.init.js"></script>
+
+
+
 <!-- Required datatable js -->
 <script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -312,10 +342,9 @@
 <!-- Responsive examples -->
 <script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-<!-- form wizard init -->
-<script src="public/assets/js/pages/form-wizard.init.js"></script>
-<!-- init js -->
-<script src="public/assets/js/pages/ordini-inserisci.js"></script>
+
+<script src="public/assets/js/pages/ordini.init.js"></script>
+
 
 
 <%- contentFor('BottomJs') %>
