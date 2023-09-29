@@ -476,9 +476,7 @@ module.exports = function (app) {
             try {
                   const utente = await controller.getClienti();
                   if(utente){
-                        console.log(utente);
                         res.locals = { title: 'Ordine' };
-                        //res.render('Ordini/inserisci-ordine', { 'data' : utente}); 
                         res.json(utente);
                   }else{
                         console.log('no clienti');

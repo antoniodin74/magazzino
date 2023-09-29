@@ -27,37 +27,36 @@
 
 <%- contentFor('body') %>
  <!-- Full screen modal --> 
-                        <!-- sample modal content -->
-                        <div id="exampleModalFullscreen" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-fullscreen">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title mt-0" id="exampleModalFullscreenLabel">Clienti</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="table-responsive mb-4">
-                                            <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Nome</th>
-                                                        <th>Cognome</th>
-                                                        <th>Partita iva</th>
-                                                        <th>Email</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="modal-body">
-                                                      
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Ok</button>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+<div id="exampleModalFullscreen" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="exampleModalFullscreenLabel">Clienti</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive mb-4">
+                    <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Cognome</th>
+                                <th>Partita iva</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-body">
+                                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="buttonOk" class="btn btn-light waves-effect" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -72,13 +71,13 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-firstname-input">First name</label>
+                                        <label for="basicpill-firstname-input">Nome</label>
                                         <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-lastname-input">Last name</label>
+                                        <label for="basicpill-lastname-input">Cognome</label>
                                         <input type="text" class="form-control" id="basicpill-lastname-input">
                                     </div>
                                 </div>
@@ -87,7 +86,7 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-phoneno-input">Phone</label>
+                                        <label for="basicpill-phoneno-input">Telefono</label>
                                         <input type="text" class="form-control" id="basicpill-phoneno-input">
                                     </div>
                                 </div>
@@ -99,10 +98,22 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
-                                        <label for="basicpill-address-input">Address</label>
-                                        <textarea id="basicpill-address-input" class="form-control" rows="2"></textarea>
+                                        <label for="basicpill-address-input">Indirizzo</label>
+                                        <input type="text" class="form-control" id="basicpill-address-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label for="basicpill-citta-input">Città</label>
+                                        <input type="text" class="form-control" id="basicpill-citta-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label for="basicpill-cap-input">Cap</label>
+                                        <input type="text" class="form-control" id="basicpill-cap-input">
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +263,6 @@
            return res.json();
        })
        .then(function(utente){
-           console.log(utente);
            // Rimuovi tutte le righe esistenti
            var table = $('#datatable-buttons').DataTable();
             table.clear().draw();
@@ -261,34 +271,63 @@
            utente.forEach(item => {
             var dati = [item.nome, item.cognome, item.piva, item.email];
             newData.push(dati);
-                    //[item.nome, 'di nocera', '2838742327', 'anto.dino@gmail.com']
                 })
-            console.log(newData);
             table.rows.add(newData).draw();
-            // Aggiorna i dati
-            table.draw();   
-           //var dataList = document.getElementById('modal-body');
-           /*
-           var oddRows = document.querySelectorAll("tr.odd");
-           for (var i = 0; i < oddRows.length; i++) {
-               oddRows[i].remove();
-               }
-               */
-               /*
-           utente.forEach(item => {
-               var tbody = document.getElementById("modal-body");
-               var tr = document.createElement("tr");
-               var td = document.createElement("td");
-               var span = document.createElement("span");
-               span.textContent = item.nome;
-               td.appendChild(span);
-               tr.appendChild(td);
-               tbody.appendChild(tr);
-           })
-           */
-           
-             
- 
+            // Gestisci l'evento di clic sulla riga
+            $('#datatable-buttons tbody').on('click', 'tr', function () {
+                // Ottieni i dati della riga cliccata
+                var data = table.row(this).data();
+
+                // Estrai il contenuto della colonna "Nome"
+                var nome = data[0]; // La colonna "Nome" è la prima (indice 0)
+                var cognome = data[1]; // La colonna "Nome" è la prima (indice 0)
+                var telefono = '';
+                var indirizzo = data[2]; // La colonna "Nome" è la prima (indice 0)
+                var citta = data[3]; // La colonna "Nome" è la prima (indice 0)
+                var cap = data[4]; // La colonna "Nome" è la prima (indice 0)
+                var email = data[5]; // La colonna "Nome" è la prima (indice 0)
+
+                // Fai qualcosa con il valore del nome, ad esempio, mostra in console
+
+                // Ottieni il riferimento al pulsante con l'ID "buttonOk"
+                var buttonOk = document.getElementById("buttonOk");
+
+                // Simula il clic sul pulsante
+                if (buttonOk) {
+                    // Ottieni il riferimento all'elemento di input
+                    var inputElementfirstname = document.getElementById("basicpill-firstname-input");
+                    var inputElementlastname = document.getElementById("basicpill-lastname-input");
+                    var inputElementphoneno = document.getElementById("basicpill-phoneno-input");
+                    var inputElementemail = document.getElementById("basicpill-email-input");
+                    var inputElementaddress = document.getElementById("basicpill-address-input");
+                    var inputElementcitta = document.getElementById("basicpill-citta-input");
+                    var inputElementcap = document.getElementById("basicpill-cap-input");
+
+                    // Imposta il nuovo valore dell'input
+                    if (inputElementfirstname) {
+                        inputElementfirstname.value = nome;
+                    }
+                    if (inputElementlastname) {
+                        inputElementlastname.value = cognome;
+                    }
+                    if (inputElementphoneno) {
+                        inputElementphoneno.value = telefono;
+                    }
+                    if (inputElementemail) {
+                        inputElementemail.value = email;
+                    }
+                    if (inputElementaddress) {
+                        inputElementaddress.value = indirizzo;
+                    }
+                    if (inputElementcitta) {
+                        inputElementcitta.value = citta;
+                    }
+                    if (inputElementcap) {
+                        inputElementcap.value = cap;
+                    }
+                    buttonOk.click();
+                }
+            });
        })
    }
  </script>
