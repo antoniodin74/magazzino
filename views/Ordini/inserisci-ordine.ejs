@@ -26,7 +26,7 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
- <!-- Full screen modal --> 
+ <!-- Full screen modal Cliente --> 
 <div id="exampleModalFullscreen" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
@@ -41,8 +41,11 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>Cognome</th>
-                                <th>Partita iva</th>
+                                <th>Telefono</th>
                                 <th>Email</th>
+                                <th>Indirizzo</th>
+                                <th>Citta</th>
+                                <th>Cap</th>
                             </tr>
                         </thead>
                         <tbody id="modal-body">
@@ -57,6 +60,40 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<!-- Full screen modal Articolo --> 
+<div id="exampleModalFullscreenArticolo" class="modal fade" tabindex="-1"  aria-labelledby="#exampleModalFullscreenLabelArticolo" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="exampleModalFullscreenLabelArticolo">Articoli</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive mb-4">
+                    <table id="datatable-buttons-Articolo" class="table table-centered datatable nowrap mb-0 table-card-list tabArticolo">
+                        <thead>
+                            <tr>
+                                <th>Codice</th>
+                                <th>Descrizione</th>
+                                <th>Quantità</th>
+                                <th>Costo</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-body-Articolo">
+                                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="buttonOkArticolo" class="btn btn-light waves-effect" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -78,7 +115,7 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-lastname-input">Cognome</label>
-                                        <input type="text" class="form-control" id="basicpill-lastname-input">
+                                        <input type="text" class="form-control" id="basicpill-lastname-input" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -87,13 +124,13 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-phoneno-input">Telefono</label>
-                                        <input type="text" class="form-control" id="basicpill-phoneno-input">
+                                        <input type="text" class="form-control" id="basicpill-phoneno-input" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-email-input">Email</label>
-                                        <input type="email" class="form-control" id="basicpill-email-input">
+                                        <input type="email" class="form-control" id="basicpill-email-input" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -101,19 +138,19 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label for="basicpill-address-input">Indirizzo</label>
-                                        <input type="text" class="form-control" id="basicpill-address-input">
+                                        <input type="text" class="form-control" id="basicpill-address-input" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label for="basicpill-citta-input">Città</label>
-                                        <input type="text" class="form-control" id="basicpill-citta-input">
+                                        <input type="text" class="form-control" id="basicpill-citta-input" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label for="basicpill-cap-input">Cap</label>
-                                        <input type="text" class="form-control" id="basicpill-cap-input">
+                                        <input type="text" class="form-control" id="basicpill-cap-input" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -121,113 +158,76 @@
                     </section>
 
                     <!-- Company Document -->
-                    <h3>Company Document</h3>
+                    <h3>Dati Articolo</h3>
                     <section>
                         <form>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-pancard-input">PAN Card</label>
-                                        <input type="text" class="form-control" id="basicpill-pancard-input">
+                                        <label for="basicpill-pancard-input">Codice</label>
+                                        <input type="text" class="form-control" id="basicpill-pancard-input" onclick="fetchDataFromMongoDBArticolo()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreenArticolo">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-vatno-input">VAT/TIN No.</label>
-                                        <input type="text" class="form-control" id="basicpill-vatno-input">
+                                        <label for="basicpill-vatno-input">Descrizione</label>
+                                        <input type="text" class="form-control" id="basicpill-vatno-input" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-cstno-input">CST No.</label>
-                                        <input type="text" class="form-control" id="basicpill-cstno-input">
+                                        <label for="basicpill-cstno-input">Quantità</label>
+                                        <input type="text" class="form-control" id="basicpill-cstno-input" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-servicetax-input">Service Tax No.</label>
-                                        <input type="text" class="form-control" id="basicpill-servicetax-input">
+                                        <label for="basicpill-servicetax-input">Costo unitario</label>
+                                        <input type="text" class="form-control" id="basicpill-servicetax-input" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <div class="mb-3">
-                                        <label for="basicpill-companyuin-input">Company UIN</label>
-                                        <input type="text" class="form-control" id="basicpill-companyuin-input">
+                                        <label for="basicpill-companyuin-input">Note</label>
+                                        <textarea id="basicpill-companyuin-input" class="form-control" rows="2" disabled></textarea>
                                     </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="basicpill-declaration-input">Declaration</label>
-                                        <input type="text" class="form-control" id="basicpill-Declaration-input">
-                                    </div>
-                                </div>
+                                </div>                         
                             </div>
                         </form>
                     </section>
 
                     <!-- Bank Details -->
-                    <h3>Bank Details</h3>
+                    <h3>Dati Ordine</h3>
                     <section>
                         <div>
                             <form>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label for="basicpill-namecard-input">Name on Card</label>
-                                            <input type="text" class="form-control" id="basicpill-namecard-input">
+                                            <label for="basicpill-cardno-input">Quantità</label>
+                                            <input type="text" class="form-control" id="basicpill-cardno-input" type="number" step="any" required>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label>Credit Card Type</label>
-                                            <select class="form-select">
-                                                  <option selected>Select Card Type</option>
-                                                  <option value="AE">American Express</option>
-                                                  <option value="VI">Visa</option>
-                                                  <option value="MC">MasterCard</option>
-                                                  <option value="DI">Discover</option>
-                                            </select>
+                                            <label for="basicpill-card-verification-input">Sconto</label>
+                                            <input type="text" class="form-control" id="basicpill-card-verification-input" type="number" step="any" required>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="basicpill-cardno-input">Credit Card Number</label>
-                                            <input type="text" class="form-control" id="basicpill-cardno-input">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="basicpill-card-verification-input">Card Verification Number</label>
-                                            <input type="text" class="form-control" id="basicpill-card-verification-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="basicpill-expiration-input">Expiration Date</label>
-                                            <input type="text" class="form-control" id="basicpill-expiration-input">
-                                        </div>
-                                    </div>
-
                                 </div>
                             </form>
                           </div>
                     </section>
 
                     <!-- Confirm Details -->
-                    <h3>Confirm Detail</h3>
+                    <h3>Riepilogo</h3>
                     <section>
                         <div class="row justify-content-center">
                             <div class="col-lg-6">
@@ -269,24 +269,32 @@
            // Aggiungi nuove righe (esempio)
            var newData = [];
            utente.forEach(item => {
-            var dati = [item.nome, item.cognome, item.piva, item.email];
+            const nome = (item.nome !== undefined) ? item.nome : " ";
+            const cognome = (item.cognome !== undefined) ? item.cognome : " ";
+            const telefono = (item.telefono !== undefined) ? item.telefono : " ";
+            const email = (item.email !== undefined) ? item.email : " ";
+            const indirizzo = (item.indirizzo !== undefined) ? item.indirizzo : " ";
+            const citta = (item.citta !== undefined) ? item.citta : " ";
+            const cap = (item.cap !== undefined) ? item.cap : " ";
+            var dati = [nome, cognome, telefono, email, indirizzo, citta, cap];
             newData.push(dati);
-                })
+            })
+            console.log(newData);
             table.rows.add(newData).draw();
+
             // Gestisci l'evento di clic sulla riga
             $('#datatable-buttons tbody').on('click', 'tr', function () {
                 // Ottieni i dati della riga cliccata
                 var data = table.row(this).data();
 
                 // Estrai il contenuto della colonna "Nome"
-                var nome = data[0]; // La colonna "Nome" è la prima (indice 0)
-                var cognome = data[1]; // La colonna "Nome" è la prima (indice 0)
-                var telefono = '';
-                var indirizzo = data[2]; // La colonna "Nome" è la prima (indice 0)
-                var citta = data[3]; // La colonna "Nome" è la prima (indice 0)
-                var cap = data[4]; // La colonna "Nome" è la prima (indice 0)
-                var email = data[5]; // La colonna "Nome" è la prima (indice 0)
-
+                var nome = data[0]; 
+                var cognome = data[1]; 
+                var telefono = data[2];
+                var email = data[3]; 
+                var indirizzo = data[4]; 
+                var citta = data[5]; 
+                var cap = data[6]; 
                 // Fai qualcosa con il valore del nome, ad esempio, mostra in console
 
                 // Ottieni il riferimento al pulsante con l'ID "buttonOk"
@@ -306,6 +314,8 @@
                     // Imposta il nuovo valore dell'input
                     if (inputElementfirstname) {
                         inputElementfirstname.value = nome;
+                        // Aggiungi l'attributo "disabled" all'elemento input
+                        inputElementfirstname.disabled = true;
                     }
                     if (inputElementlastname) {
                         inputElementlastname.value = cognome;
@@ -326,6 +336,79 @@
                         inputElementcap.value = cap;
                     }
                     buttonOk.click();
+                }
+            });
+       })
+   }
+   async function fetchDataFromMongoDBArticolo() {
+        await fetch(`/lista-articoli-fetch`)
+       .then(function(res){
+           return res.json();
+       })
+       .then(function(articolo){
+           // Rimuovi tutte le righe esistenti
+           var tableArticolo = $('#datatable-buttons-Articolo').DataTable();
+            tableArticolo.clear().draw();
+           // Aggiungi nuove righe (esempio)
+           var newDataArticolo = [];
+           articolo.forEach(itemarticolo => {
+            const codiceArticolo = (itemarticolo.codiceArticolo !== undefined) ? itemarticolo.codiceArticolo : " ";
+            const descrizioneArticolo = (itemarticolo.descrizioneArticolo !== undefined) ? itemarticolo.descrizioneArticolo : " ";
+            const quantitaArticolo = (itemarticolo.quantitaArticolo.$numberDecimal !== undefined) ? itemarticolo.quantitaArticolo.$numberDecimal : " ";
+            const costoArticolo = (itemarticolo.costoArticolo.$numberDecimal !== undefined) ? itemarticolo.costoArticolo.$numberDecimal : " ";
+            const noteArticolo = (itemarticolo.noteArticolo !== undefined) ? itemarticolo.noteArticolo : " ";
+            var datiarticolo = [codiceArticolo, descrizioneArticolo, quantitaArticolo, costoArticolo, noteArticolo];
+            newDataArticolo.push(datiarticolo);
+            })
+            console.log(newDataArticolo);
+
+            tableArticolo.rows.add(newDataArticolo).draw();
+
+            // Gestisci l'evento di clic sulla riga
+            $('#datatable-buttons-Articolo tbody').on('click', 'tr', function () {
+                // Ottieni i dati della riga cliccata
+                var dataArticolo = tableArticolo.row(this).data();
+
+                // Estrai il contenuto della colonna "Nome"
+                var codiceArticolo = dataArticolo[0]; 
+                var descrizioneArticolo = dataArticolo[1]; 
+                var quantitaArticolo = dataArticolo[2];
+                var costoArticolo = dataArticolo[3]; 
+                var noteArticolo = dataArticolo[4];
+                // Fai qualcosa con il valore del nome, ad esempio, mostra in console
+
+                // Ottieni il riferimento al pulsante con l'ID "buttonOkArticolo"
+                var buttonOkArticolo = document.getElementById("buttonOkArticolo");
+
+                // Simula il clic sul pulsante
+                if (buttonOkArticolo) {
+                    // Ottieni il riferimento all'elemento di input
+                    var inputElementpancard = document.getElementById("basicpill-pancard-input");
+                    var inputElementvatno= document.getElementById("basicpill-vatno-input");
+                    var inputElementcstno = document.getElementById("basicpill-cstno-input");
+                    var inputElementservicetax = document.getElementById("basicpill-servicetax-input");
+                    var inputElementcompanyuin = document.getElementById("basicpill-companyuin-input");
+                
+                    // Imposta il nuovo valore dell'input
+                    if (inputElementpancard) {
+                        inputElementpancard.value = codiceArticolo;
+                        // Aggiungi l'attributo "disabled" all'elemento input
+                        inputElementpancard.disabled = true;
+                    }
+                    if (inputElementvatno) {
+                        inputElementvatno.value = descrizioneArticolo;
+                    }
+                    if (inputElementcstno) {
+                        inputElementcstno.value = quantitaArticolo;
+                    }
+                    if (inputElementservicetax) {
+                        inputElementservicetax.value = costoArticolo;
+                    }
+                    if (inputElementcompanyuin) {
+                        inputElementcompanyuin.value = noteArticolo;
+                    }
+                   
+                    buttonOkArticolo.click();
                 }
             });
        })

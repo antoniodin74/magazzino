@@ -8,6 +8,10 @@ const utenteschema = new mongoose.Schema({
         type: String,
         required: true
     },
+    telefono: {
+        type: String,
+        required: true
+    },
     indirizzo: {
         type: String,
     },

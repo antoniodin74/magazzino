@@ -633,6 +633,21 @@ module.exports = function (app) {
             }
       });
 
+      app.get('/lista-articoli-fetch', isUserAllowed, async (req, res) => {
+            
+            try {
+                  const articolo = await controller.getArticoli();
+                  if(articolo){
+                        res.locals = { title: 'Articolo' };
+                        res.json(articolo);
+                  }else{
+                        console.log('no articoli');
+                  }
+            } catch (error) {
+                  console.log(error);
+            }
+      });
+
       app.post('/inserisci-articolo', isUserAllowed, async (req, res) => { 
             try {
                   const contatoreNew = await controller.getContatoreArt();
