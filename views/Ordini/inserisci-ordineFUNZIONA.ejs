@@ -272,23 +272,37 @@
                     <h5 class="font-size-16 mb-0">Riepilogo ordine <span class="float-end ml-2">#MN0124</span></h5>
                 </div>
                 <div class="table-responsive">
-                    <table id="tableOrdini" class="table table-centered mb-0 table-nowrap">
+                    <table class="table table-centered mb-0 table-nowrap">
                         <thead>
                             <tr>
                                 <th class="border-top-0" style="width: 110px;" scope="col">Articolo</th>
-                                <th class="border-top-0" scope="col">Codice</th>
                                 <th class="border-top-0" scope="col">Descrizione</th>
                                 <th class="border-top-0" scope="col">Prezzo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            <tr>
+                                <th scope="row"><img src="public/assets/images/product/img-1.png" alt="product-img" title="product-img" class="avatar-md"></th>
+                                <td>
+                                    <h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">Nike N012 Running Shoes</a></h5>
+                                    <p class="text-muted mb-0">$ 260 x 2</p>
+                                </td>
+                                <td>$ 520</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><img src="public/assets/images/product/img-2.png" alt="product-img" title="product-img" class="avatar-md"></th>
+                                <td>
+                                    <h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">Adidas Running Shoes</a></h5>
+                                    <p class="text-muted mb-0">$ 260 x 1</p>
+                                </td>
+                                <td>$ 260</td>
+                            </tr>
                             <tr>
                                 <td colspan="2">
                                     <h5 class="font-size-14 m-0">SubTotale :</h5>
                                 </td>
-                                <td id="subTotale">
-                                     0
+                                <td>
+                                    $ 780
                                 </td>
                             </tr>
                             <tr>
@@ -296,7 +310,7 @@
                                     <h5 class="font-size-14 m-0">Sconto :</h5>
                                 </td>
                                 <td>
-                                    Є 0
+                                    - $ 78
                                 </td>
                             </tr>
 
@@ -305,7 +319,7 @@
                                     <h5 class="font-size-14 m-0">Trasporto :</h5>
                                 </td>
                                 <td>
-                                    Є 0
+                                    $ 25
                                 </td>
                             </tr>
                             <tr>
@@ -313,7 +327,7 @@
                                     <h5 class="font-size-14 m-0">Tasse :</h5>
                                 </td>
                                 <td>
-                                    Є 0
+                                    $ 18.20
                                 </td>
                             </tr>                              
                                 
@@ -322,7 +336,7 @@
                                     <h5 class="font-size-14 m-0">Totale:</h5>
                                 </td>
                                 <td>
-                                    Є 0
+                                    $ 745.2
                                 </td>
                             </tr>
                         </tbody>
@@ -336,32 +350,6 @@
 <!-- end row -->
 
 <%- contentFor('FooterJs') %>
-
-
-<!-- jquery step -->
-<script src="public/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
-<!-- Required datatable js -->
-<script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-<!-- Buttons examples -->
-<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-<script src="public/assets/libs/jszip/jszip.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-
-<!-- Responsive examples -->
-<script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-<!-- form wizard init -->
-<script src="public/assets/js/pages/form-wizard.init.js"></script>
-<!-- init js -->
-<script src="public/assets/js/pages/ordini-inserisci.js"></script>
-
 <script>
     async function fetchDataFromMongoDB() {
         await fetch(`/lista-clienti-fetch`)
@@ -385,6 +373,7 @@
             var dati = [nome, cognome, telefono, email, indirizzo, citta, cap];
             newData.push(dati);
             })
+            console.log(newData);
             table.rows.add(newData).draw();
 
             // Gestisci l'evento di clic sulla riga
@@ -462,10 +451,10 @@
             const quantitaArticolo = (itemarticolo.quantitaArticolo.$numberDecimal !== undefined) ? itemarticolo.quantitaArticolo.$numberDecimal : " ";
             const costoArticolo = (itemarticolo.costoArticolo.$numberDecimal !== undefined) ? itemarticolo.costoArticolo.$numberDecimal : " ";
             const noteArticolo = (itemarticolo.noteArticolo !== undefined) ? itemarticolo.noteArticolo : " ";
-            const fotoPathArticolo = (itemarticolo.fotoPathArticolo !== undefined) ? itemarticolo.fotoPathArticolo : " ";
-            var datiarticolo = [codiceArticolo, descrizioneArticolo, quantitaArticolo, costoArticolo, noteArticolo, fotoPathArticolo];
+            var datiarticolo = [codiceArticolo, descrizioneArticolo, quantitaArticolo, costoArticolo, noteArticolo];
             newDataArticolo.push(datiarticolo);
             })
+            console.log(newDataArticolo);
 
             tableArticolo.rows.add(newDataArticolo).draw();
 
@@ -473,13 +462,13 @@
             $('#datatable-buttons-Articolo tbody').on('click', 'tr', function () {
                 // Ottieni i dati della riga cliccata
                 var dataArticolo = tableArticolo.row(this).data();
+
                 // Estrai il contenuto della colonna "Nome"
                 var codiceArticolo = dataArticolo[0]; 
                 var descrizioneArticolo = dataArticolo[1]; 
                 var quantitaArticolo = dataArticolo[2];
                 var costoArticolo = dataArticolo[3]; 
                 var noteArticolo = dataArticolo[4];
-                var fotoPathArticolo = dataArticolo[5];
                 // Fai qualcosa con il valore del nome, ad esempio, mostra in console
 
                 // Ottieni il riferimento al pulsante con l'ID "buttonOkArticolo"
@@ -513,49 +502,36 @@
                         inputElementcompanyuin.value = noteArticolo;
                     }
                    
-                    aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoArticolo,codiceArticolo);
                     buttonOkArticolo.click();
                 }
             });
        })
    }
-    function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoArticolo,codiceArticolo){
-        // Seleziona la tabella
-        var table = document.querySelector('#tableOrdini');
-
-        // Crea una nuova riga
-        var newRow = table.insertRow(1); // L'argomento 1 indica che la riga verrà inserita all'inizio della tabella
-
-        // Crea celle e aggiungi dati
-        var Articolo = newRow.insertCell(0);
-        var Codice = newRow.insertCell(1);
-        var Descrizione = newRow.insertCell(2);
-        var Prezzo = newRow.insertCell(3);
-
-        Articolo.innerHTML = '<th scope="row"><img src="'+fotoPathArticolo+'" alt="product-img" title="product-img" class="avatar-md"></th>';
-        Codice.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+codiceArticolo+'</td>';
-        Descrizione.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+descrizioneArticolo+'</a></h5><p class="text-muted mb-0">$ 260 x 2</p></td>';
-        Prezzo.innerHTML = '<td>$'+costoArticolo+'</td>';
-
-        // Puoi personalizzare i dati e le celle come preferisci
-// Seleziona il tag td con id "subTotale"
-var subTotaleElement = document.getElementById('subTotale');
-
-// Verifica se l'elemento è stato trovato
-if (subTotaleElement) {
-  // Ottieni il valore corrente come numero intero
-  var valoreCorrente = parseInt(subTotaleElement.textContent);
-console.log(valoreCorrente);
-  // Aggiungi 1 al valore corrente
-  valoreCorrente += 1;
-
-  // Aggiorna il testo nel tag td con il nuovo valore
-  subTotaleElement.textContent = valoreCorrente;
-} else {
-  console.error('Elemento con id "subTotale" non trovato.');
-}
-        // Ora hai aggiunto una nuova riga in alto alla tabella
-    }
  </script>
+
+<!-- jquery step -->
+<script src="public/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+<!-- Required datatable js -->
+<script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<!-- Buttons examples -->
+<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="public/assets/libs/jszip/jszip.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<!-- form wizard init -->
+<script src="public/assets/js/pages/form-wizard.init.js"></script>
+<!-- init js -->
+<script src="public/assets/js/pages/ordini-inserisci.js"></script>
+
 
 <%- contentFor('BottomJs') %>
