@@ -75,7 +75,7 @@
                             <tr>
                                 <th>Codice</th>
                                 <th>Descrizione</th>
-                                <th>Quantità</th>
+                                <th>Quantità disponibile</th>
                                 <th>Costo</th>
                                 <th>Note</th>
                             </tr>
@@ -159,49 +159,50 @@
                     <!-- Company Document -->
                     <h3>Dati Articolo</h3>
                     <section>
-                        <form>
+                        <form id="frmdatiOrdine">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
+                                        <input type="text" class="form-control" id="hiddenFotoPath" hidden>
                                         <label for="basicpill-pancard-input">Codice</label>
-                                        <input type="text" class="form-control" id="basicpill-pancard-input" onclick="fetchDataFromMongoDBArticolo()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreenArticolo">
+                                        <input type="text" class="form-control" id="codiceArticolo" onclick="fetchDataFromMongoDBArticolo()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreenArticolo">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-vatno-input">Descrizione</label>
-                                        <input type="text" class="form-control" id="basicpill-vatno-input" disabled>
+                                        <input type="text" class="form-control" id="descrizioneArticolo" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-cstno-input">Quantità</label>
-                                        <input type="text" class="form-control" id="basicpill-cstno-input" disabled>
+                                        <label for="basicpill-cstno-input">Quantità disponibile</label>
+                                        <input type="text" class="form-control" id="quantitaDisponibile" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-servicetax-input">Costo unitario</label>
-                                        <input type="text" class="form-control" id="basicpill-servicetax-input" disabled>
+                                        <input type="text" class="form-control" id="costoUnitario" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-cardno-input">Quantità</label>
-                                        <input type="text" class="form-control" id="basicpill-cardno-input" type="number" step="any" required>
+                                        <label for="basicpill-cardno-input">Quantità ordine</label>
+                                        <input type="text" class="form-control" id="quantitaOrdine" type="number" step="any" required>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="basicpill-card-verification-input">Sconto</label>
-                                        <input type="text" class="form-control" id="basicpill-card-verification-input" type="number" step="any" required>
+                                        <input type="text" class="form-control" id="scontoOrdine" id="qscontoOrdine" type="number" step="any" required>
                                     </div>
                                 </div>
                             </div>
@@ -209,11 +210,19 @@
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <label for="basicpill-companyuin-input">Note</label>
-                                        <textarea id="basicpill-companyuin-input" class="form-control" rows="2"></textarea>
+                                        <textarea id="noteArticolo" class="form-control" rows="2"></textarea>
                                     </div>
                                 </div>                         
                             </div>
+                            
                         </form>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <button id="buttonOrdini1" class="btn btn-light waves-effect" onclick="aggiungiAOrdine()">AGGIUNGI A CARRELLO</button>
+                                </div>
+                            </div>                         
+                        </div>
                     </section>
 
                     <!-- Bank Details -->
@@ -287,8 +296,8 @@
                                 <td colspan="2">
                                     <h5 class="font-size-14 m-0">SubTotale :</h5>
                                 </td>
-                                <td id="subTotale">
-                                     0
+                                <td>
+                                    <span>Є</span> <span id="subTotale">0</span>
                                 </td>
                             </tr>
                             <tr>
@@ -363,199 +372,253 @@
 <script src="public/assets/js/pages/ordini-inserisci.js"></script>
 
 <script>
-    async function fetchDataFromMongoDB() {
-        await fetch(`/lista-clienti-fetch`)
-       .then(function(res){
-           return res.json();
-       })
-       .then(function(utente){
-           // Rimuovi tutte le righe esistenti
-           var table = $('#datatable-buttons').DataTable();
-            table.clear().draw();
-           // Aggiungi nuove righe (esempio)
-           var newData = [];
-           utente.forEach(item => {
-            const nome = (item.nome !== undefined) ? item.nome : " ";
-            const cognome = (item.cognome !== undefined) ? item.cognome : " ";
-            const telefono = (item.telefono !== undefined) ? item.telefono : " ";
-            const email = (item.email !== undefined) ? item.email : " ";
-            const indirizzo = (item.indirizzo !== undefined) ? item.indirizzo : " ";
-            const citta = (item.citta !== undefined) ? item.citta : " ";
-            const cap = (item.cap !== undefined) ? item.cap : " ";
-            var dati = [nome, cognome, telefono, email, indirizzo, citta, cap];
-            newData.push(dati);
-            })
-            table.rows.add(newData).draw();
+async function fetchDataFromMongoDB() {
+    await fetch(`/lista-clienti-fetch`)
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(utente){
+        // Rimuovi tutte le righe esistenti
+        var table = $('#datatable-buttons').DataTable();
+        table.clear().draw();
+        // Aggiungi nuove righe (esempio)
+        var newData = [];
+        utente.forEach(item => {
+        const nome = (item.nome !== undefined) ? item.nome : " ";
+        const cognome = (item.cognome !== undefined) ? item.cognome : " ";
+        const telefono = (item.telefono !== undefined) ? item.telefono : " ";
+        const email = (item.email !== undefined) ? item.email : " ";
+        const indirizzo = (item.indirizzo !== undefined) ? item.indirizzo : " ";
+        const citta = (item.citta !== undefined) ? item.citta : " ";
+        const cap = (item.cap !== undefined) ? item.cap : " ";
+        var dati = [nome, cognome, telefono, email, indirizzo, citta, cap];
+        newData.push(dati);
+        })
+        table.rows.add(newData).draw();
 
-            // Gestisci l'evento di clic sulla riga
-            $('#datatable-buttons tbody').on('click', 'tr', function () {
-                // Ottieni i dati della riga cliccata
-                var data = table.row(this).data();
+        // Gestisci l'evento di clic sulla riga
+        $('#datatable-buttons tbody').on('click', 'tr', function () {
+            // Ottieni i dati della riga cliccata
+            var data = table.row(this).data();
 
-                // Estrai il contenuto della colonna "Nome"
-                var nome = data[0]; 
-                var cognome = data[1]; 
-                var telefono = data[2];
-                var email = data[3]; 
-                var indirizzo = data[4]; 
-                var citta = data[5]; 
-                var cap = data[6]; 
-                // Fai qualcosa con il valore del nome, ad esempio, mostra in console
+            // Estrai il contenuto della colonna "Nome"
+            var nome = data[0]; 
+            var cognome = data[1]; 
+            var telefono = data[2];
+            var email = data[3]; 
+            var indirizzo = data[4]; 
+            var citta = data[5]; 
+            var cap = data[6]; 
+            // Fai qualcosa con il valore del nome, ad esempio, mostra in console
 
-                // Ottieni il riferimento al pulsante con l'ID "buttonOk"
-                var buttonOk = document.getElementById("buttonOk");
+            // Ottieni il riferimento al pulsante con l'ID "buttonOk"
+            var buttonOk = document.getElementById("buttonOk");
 
-                // Simula il clic sul pulsante
-                if (buttonOk) {
-                    // Ottieni il riferimento all'elemento di input
-                    var inputElementfirstname = document.getElementById("basicpill-firstname-input");
-                    var inputElementlastname = document.getElementById("basicpill-lastname-input");
-                    var inputElementphoneno = document.getElementById("basicpill-phoneno-input");
-                    var inputElementemail = document.getElementById("basicpill-email-input");
-                    var inputElementaddress = document.getElementById("basicpill-address-input");
-                    var inputElementcitta = document.getElementById("basicpill-citta-input");
-                    var inputElementcap = document.getElementById("basicpill-cap-input");
+            // Simula il clic sul pulsante
+            if (buttonOk) {
+                // Ottieni il riferimento all'elemento di input
+                var inputElementfirstname = document.getElementById("basicpill-firstname-input");
+                var inputElementlastname = document.getElementById("basicpill-lastname-input");
+                var inputElementphoneno = document.getElementById("basicpill-phoneno-input");
+                var inputElementemail = document.getElementById("basicpill-email-input");
+                var inputElementaddress = document.getElementById("basicpill-address-input");
+                var inputElementcitta = document.getElementById("basicpill-citta-input");
+                var inputElementcap = document.getElementById("basicpill-cap-input");
 
-                    // Imposta il nuovo valore dell'input
-                    if (inputElementfirstname) {
-                        inputElementfirstname.value = nome;
-                        // Aggiungi l'attributo "disabled" all'elemento input
-                        inputElementfirstname.disabled = true;
-                    }
-                    if (inputElementlastname) {
-                        inputElementlastname.value = cognome;
-                    }
-                    if (inputElementphoneno) {
-                        inputElementphoneno.value = telefono;
-                    }
-                    if (inputElementemail) {
-                        inputElementemail.value = email;
-                    }
-                    if (inputElementaddress) {
-                        inputElementaddress.value = indirizzo;
-                    }
-                    if (inputElementcitta) {
-                        inputElementcitta.value = citta;
-                    }
-                    if (inputElementcap) {
-                        inputElementcap.value = cap;
-                    }
-                    buttonOk.click();
+                // Imposta il nuovo valore dell'input
+                if (inputElementfirstname) {
+                    inputElementfirstname.value = nome;
+                    // Aggiungi l'attributo "disabled" all'elemento input
+                    inputElementfirstname.disabled = true;
                 }
-            });
-       })
-   }
-   async function fetchDataFromMongoDBArticolo() {
-        await fetch(`/lista-articoli-fetch`)
-       .then(function(res){
-           return res.json();
-       })
-       .then(function(articolo){
-           // Rimuovi tutte le righe esistenti
-           var tableArticolo = $('#datatable-buttons-Articolo').DataTable();
-            tableArticolo.clear().draw();
-           // Aggiungi nuove righe (esempio)
-           var newDataArticolo = [];
-           articolo.forEach(itemarticolo => {
-            const codiceArticolo = (itemarticolo.codiceArticolo !== undefined) ? itemarticolo.codiceArticolo : " ";
-            const descrizioneArticolo = (itemarticolo.descrizioneArticolo !== undefined) ? itemarticolo.descrizioneArticolo : " ";
-            const quantitaArticolo = (itemarticolo.quantitaArticolo.$numberDecimal !== undefined) ? itemarticolo.quantitaArticolo.$numberDecimal : " ";
-            const costoArticolo = (itemarticolo.costoArticolo.$numberDecimal !== undefined) ? itemarticolo.costoArticolo.$numberDecimal : " ";
-            const noteArticolo = (itemarticolo.noteArticolo !== undefined) ? itemarticolo.noteArticolo : " ";
-            const fotoPathArticolo = (itemarticolo.fotoPathArticolo !== undefined) ? itemarticolo.fotoPathArticolo : " ";
-            var datiarticolo = [codiceArticolo, descrizioneArticolo, quantitaArticolo, costoArticolo, noteArticolo, fotoPathArticolo];
-            newDataArticolo.push(datiarticolo);
-            })
-
-            tableArticolo.rows.add(newDataArticolo).draw();
-
-            // Gestisci l'evento di clic sulla riga
-            $('#datatable-buttons-Articolo tbody').on('click', 'tr', function () {
-                // Ottieni i dati della riga cliccata
-                var dataArticolo = tableArticolo.row(this).data();
-                // Estrai il contenuto della colonna "Nome"
-                var codiceArticolo = dataArticolo[0]; 
-                var descrizioneArticolo = dataArticolo[1]; 
-                var quantitaArticolo = dataArticolo[2];
-                var costoArticolo = dataArticolo[3]; 
-                var noteArticolo = dataArticolo[4];
-                var fotoPathArticolo = dataArticolo[5];
-                // Fai qualcosa con il valore del nome, ad esempio, mostra in console
-
-                // Ottieni il riferimento al pulsante con l'ID "buttonOkArticolo"
-                var buttonOkArticolo = document.getElementById("buttonOkArticolo");
-
-                // Simula il clic sul pulsante
-                if (buttonOkArticolo) {
-                    // Ottieni il riferimento all'elemento di input
-                    var inputElementpancard = document.getElementById("basicpill-pancard-input");
-                    var inputElementvatno= document.getElementById("basicpill-vatno-input");
-                    var inputElementcstno = document.getElementById("basicpill-cstno-input");
-                    var inputElementservicetax = document.getElementById("basicpill-servicetax-input");
-                    var inputElementcompanyuin = document.getElementById("basicpill-companyuin-input");
-                
-                    // Imposta il nuovo valore dell'input
-                    if (inputElementpancard) {
-                        inputElementpancard.value = codiceArticolo;
-                        // Aggiungi l'attributo "disabled" all'elemento input
-                        inputElementpancard.disabled = true;
-                    }
-                    if (inputElementvatno) {
-                        inputElementvatno.value = descrizioneArticolo;
-                    }
-                    if (inputElementcstno) {
-                        inputElementcstno.value = quantitaArticolo;
-                    }
-                    if (inputElementservicetax) {
-                        inputElementservicetax.value = costoArticolo;
-                    }
-                    if (inputElementcompanyuin) {
-                        inputElementcompanyuin.value = noteArticolo;
-                    }
-                   
-                    aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoArticolo,codiceArticolo);
-                    buttonOkArticolo.click();
+                if (inputElementlastname) {
+                    inputElementlastname.value = cognome;
                 }
-            });
-       })
-   }
-    function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoArticolo,codiceArticolo){
-        // Seleziona la tabella
-        var table = document.querySelector('#tableOrdini');
-
-        // Crea una nuova riga
-        var newRow = table.insertRow(1); // L'argomento 1 indica che la riga verrà inserita all'inizio della tabella
-
-        // Crea celle e aggiungi dati
-        var Articolo = newRow.insertCell(0);
-        var Codice = newRow.insertCell(1);
-        var Descrizione = newRow.insertCell(2);
-        var Prezzo = newRow.insertCell(3);
-
-        Articolo.innerHTML = '<th scope="row"><img src="'+fotoPathArticolo+'" alt="product-img" title="product-img" class="avatar-md"></th>';
-        Codice.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+codiceArticolo+'</td>';
-        Descrizione.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+descrizioneArticolo+'</a></h5><p class="text-muted mb-0">$ 260 x 2</p></td>';
-        Prezzo.innerHTML = '<td>$'+costoArticolo+'</td>';
-
-        // Puoi personalizzare i dati e le celle come preferisci
-// Seleziona il tag td con id "subTotale"
-var subTotaleElement = document.getElementById('subTotale');
-
-// Verifica se l'elemento è stato trovato
-if (subTotaleElement) {
-  // Ottieni il valore corrente come numero intero
-  var valoreCorrente = parseInt(subTotaleElement.textContent);
-console.log(valoreCorrente);
-  // Aggiungi 1 al valore corrente
-  valoreCorrente += 1;
-
-  // Aggiorna il testo nel tag td con il nuovo valore
-  subTotaleElement.textContent = valoreCorrente;
-} else {
-  console.error('Elemento con id "subTotale" non trovato.');
+                if (inputElementphoneno) {
+                    inputElementphoneno.value = telefono;
+                }
+                if (inputElementemail) {
+                    inputElementemail.value = email;
+                }
+                if (inputElementaddress) {
+                    inputElementaddress.value = indirizzo;
+                }
+                if (inputElementcitta) {
+                    inputElementcitta.value = citta;
+                }
+                if (inputElementcap) {
+                    inputElementcap.value = cap;
+                }
+                buttonOk.click();
+            }
+        });
+    })
 }
-        // Ora hai aggiunto una nuova riga in alto alla tabella
+async function fetchDataFromMongoDBArticolo() {
+    await fetch(`/lista-articoli-fetch`)
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(articolo){
+        // Rimuovi tutte le righe esistenti
+        var tableArticolo = $('#datatable-buttons-Articolo').DataTable();
+        tableArticolo.clear().draw();
+        // Aggiungi nuove righe (esempio)
+        var newDataArticolo = [];
+        articolo.forEach(itemarticolo => {
+        const codiceArticolo = (itemarticolo.codiceArticolo !== undefined) ? itemarticolo.codiceArticolo : " ";
+        const descrizioneArticolo = (itemarticolo.descrizioneArticolo !== undefined) ? itemarticolo.descrizioneArticolo : " ";
+        const quantitaArticolo = (itemarticolo.quantitaArticolo.$numberDecimal !== undefined) ? itemarticolo.quantitaArticolo.$numberDecimal : " ";
+        const costoArticolo = (itemarticolo.costoArticolo.$numberDecimal !== undefined) ? itemarticolo.costoArticolo.$numberDecimal : " ";
+        const noteArticolo = (itemarticolo.noteArticolo !== undefined) ? itemarticolo.noteArticolo : " ";
+        const fotoPathArticolo = (itemarticolo.fotoPathArticolo !== undefined) ? itemarticolo.fotoPathArticolo : " ";
+        var datiarticolo = [codiceArticolo, descrizioneArticolo, quantitaArticolo, costoArticolo, noteArticolo, fotoPathArticolo];
+        newDataArticolo.push(datiarticolo);
+        })
+
+        tableArticolo.rows.add(newDataArticolo).draw();
+
+        // Gestisci l'evento di clic sulla riga
+        $('#datatable-buttons-Articolo tbody').on('click', 'tr', function () {
+            // Ottieni i dati della riga cliccata
+            var dataArticolo = tableArticolo.row(this).data();
+            // Estrai il contenuto della colonna "Nome"
+            var codiceArticolo = dataArticolo[0]; 
+            var descrizioneArticolo = dataArticolo[1]; 
+            var quantitaArticolo = dataArticolo[2];
+            var costoArticolo = dataArticolo[3]; 
+            var noteArticolo = dataArticolo[4];
+            var fotoPathArticolo = dataArticolo[5];
+            // Fai qualcosa con il valore del nome, ad esempio, mostra in console
+
+            // Ottieni il riferimento al pulsante con l'ID "buttonOkArticolo"
+            var buttonOkArticolo = document.getElementById("buttonOkArticolo");
+
+            // Simula il clic sul pulsante
+            if (buttonOkArticolo) {
+                // Ottieni il riferimento all'elemento di input
+                var inputhiddenFotoPath = document.getElementById("hiddenFotoPath");
+                var inputcodiceArticolo = document.getElementById("codiceArticolo");
+                var inputdescrizioneArticolo= document.getElementById("descrizioneArticolo");
+                var inputquantitaArticolo = document.getElementById("quantitaDisponibile");
+                var inputcostoArticolo = document.getElementById("costoUnitario");
+                var inputnoteArticolo = document.getElementById("noteArticolo");
+                
+            
+                // Imposta il nuovo valore dell'input
+                if (inputhiddenFotoPath) {
+                    inputhiddenFotoPath.value = fotoPathArticolo;
+                }
+                if (inputcodiceArticolo) {
+                    inputcodiceArticolo.value = codiceArticolo;
+                    // Aggiungi l'attributo "disabled" all'elemento input
+                    inputcodiceArticolo.disabled = true;
+                }
+                if (inputdescrizioneArticolo) {
+                    inputdescrizioneArticolo.value = descrizioneArticolo;
+                }
+                if (inputquantitaArticolo) {
+                    inputquantitaArticolo.value = quantitaArticolo;
+                }
+                if (inputcostoArticolo) {
+                    inputcostoArticolo.value = costoArticolo;
+                }
+                if (inputnoteArticolo) {
+                    inputnoteArticolo.value = noteArticolo;
+                }
+                
+                //aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoArticolo,codiceArticolo);
+                buttonOkArticolo.click();
+            }
+        });
+    })
+}
+
+function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceArticolo){
+    // Seleziona la tabella
+    var table = document.querySelector('#tableOrdini');
+
+    // Crea una nuova riga
+    var newRow = table.insertRow(1); // L'argomento 1 indica che la riga verrà inserita all'inizio della tabella
+
+    // Crea celle e aggiungi dati
+    var Articolo = newRow.insertCell(0);
+    var Codice = newRow.insertCell(1);
+    var Descrizione = newRow.insertCell(2);
+    var Prezzo = newRow.insertCell(3);
+
+    if(fotoPathArticolo){
+        Articolo.innerHTML = '<th scope="row"><img src="'+fotoPathArticolo+'" alt="product-img" title="product-img" class="avatar-md"></th>';
     }
+    
+    Codice.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+codiceArticolo+'</td>';
+    Descrizione.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+descrizioneArticolo+'</a></h5><p class="text-muted mb-0">$ 260 x 2</p></td>';
+    Prezzo.innerHTML = '<td>$'+costoUnitario+'</td>';
+
+    // Puoi personalizzare i dati e le celle come preferisci
+    // Seleziona il tag td con id "subTotale"
+    var subTotaleElement = document.getElementById('subTotale');
+
+    // Verifica se l'elemento è stato trovato
+    if (subTotaleElement) {
+    // Ottieni il valore corrente come numero intero
+    var valoreCorrente = parseInt(subTotaleElement.textContent);
+    // Aggiungi 1 al valore corrente
+    valoreCorrente = valoreCorrente+costoUnitario;
+
+    // Aggiorna il testo nel tag td con il nuovo valore
+    subTotaleElement.textContent = valoreCorrente;
+    } else {
+    console.error('Elemento con id "subTotale" non trovato.');
+    }
+            // Ora hai aggiunto una nuova riga in alto alla tabella
+}
+
+function aggiungiAOrdine() {
+    // Quando il pulsante viene cliccato, chiama la funzione aggiungiRiga con fotoPathArticolo come argomento
+    var hiddenFotoPathInput = document.getElementById('hiddenFotoPath');
+    if (hiddenFotoPathInput) {
+    var fotoPathArticolo = hiddenFotoPathInput.value;
+    } 
+    var inputcodiceArticolo = document.getElementById('codiceArticolo');
+    if (inputcodiceArticolo) {
+    var codiceArticolo = inputcodiceArticolo.value;
+    } 
+    var inputdescrizioneArticolo = document.getElementById('descrizioneArticolo');
+    if (inputdescrizioneArticolo) {
+    var descrizioneArticolo = inputdescrizioneArticolo.value;
+    } 
+    var inputcostoUnitario = document.getElementById('costoUnitario');
+    if (inputcostoUnitario) {
+    var costoUnitario = inputcostoUnitario.value;
+    } 
+    if(codiceArticolo){
+        aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceArticolo);
+    }
+    
+
+    var datiOrdineForm = document.getElementById('frmdatiOrdine');
+    if (datiOrdineForm) {
+        datiOrdineForm.reset();
+    }
+    var codiceArticoloInput = document.getElementById('codiceArticolo');
+    if (codiceArticoloInput) {
+    codiceArticoloInput.removeAttribute('disabled');
+    }
+    var descrizioneArticoloInput = document.getElementById('descrizioneArticolo');
+    if (descrizioneArticoloInput) {
+        descrizioneArticoloInput.removeAttribute('disabled');
+    }
+    var quantitaDisponibileInput = document.getElementById('quantitaDisponibile');
+    if (quantitaDisponibileInput) {
+        quantitaDisponibileInput.removeAttribute('disabled');
+    }
+    var costoUnitarioInput = document.getElementById('costoUnitario');
+    if (costoUnitarioInput) {
+        costoUnitarioInput.removeAttribute('disabled');
+    }
+}
+
  </script>
 
 <%- contentFor('BottomJs') %>
