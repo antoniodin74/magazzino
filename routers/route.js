@@ -810,4 +810,9 @@ module.exports = function (app) {
             res.locals = { title: 'Inserisci Ordine' };
             res.render('Ordini/inserisci-ordine', { 'message': req.flash('message'), 'error': req.flash('error') });
       });
+
+      app.get('/stampa-ordine', isUserAllowed, function (req, res) {
+            res.locals = { title: 'Stampa Ordine' };
+            res.render('Ordini/stampa-ordine', { 'message': req.flash('message'), 'error': req.flash('error') });
+      });
 }

@@ -95,6 +95,7 @@
 
 
 <div class="row">
+    <!-- Dati Cliente/Articolo --> 
     <div class="col-lg-8">
         <div class="card">
             <div class="card-body">
@@ -225,46 +226,133 @@
                         </div>
                     </section>
 
-                    <!-- Bank Details -->
-                    <h3>Dati Ordine</h3>
-                    <section>
-                        <div>
-                            <form>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="basicpill-cardno-input">Quantità</label>
-                                            <input type="text" class="form-control" id="basicpill-cardno-input" type="number" step="any" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="basicpill-card-verification-input">Sconto</label>
-                                            <input type="text" class="form-control" id="basicpill-card-verification-input" type="number" step="any" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                          </div>
-                    </section>
-
-                    <!-- Confirm Details -->
+                    <!-- Confirm Riepilogo -->
                     <h3>Riepilogo</h3>
                     <section>
-                        <div class="row justify-content-center">
-                            <div class="col-lg-6">
-                                <div class="text-center">
-                                    <div class="mb-4">
-                                        <i class="mdi mdi-check-circle-outline text-success display-4"></i>
-                                    </div>
-                                    <div>
-                                        <h5>Confirm Detail</h5>
-                                        <p class="text-muted">If several languages coalesce, the grammar of the resulting</p>
+                        <div class="row" id="riepilogo">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="invoice-title">
+                                            <h4 class="float-end font-size-16">Ordine #MN0131 <span class="badge bg-success font-size-12 ms-2">Provvisorio</span></h4>
+                                            <div class="text-muted">
+                                                <p class="mb-1">Via Casa dei Miri, 8 Gragnano 80054</p>
+                                                <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> admin@gmail.com</p>
+                                                <p><i class="uil uil-phone me-1"></i> 081-553-1374</p>
+                                            </div>
+                                        </div>
+                        
+                                        <hr class="my-4">
+                        
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="text-muted">
+                                                    <h5 class="font-size-16 mb-3">Spedire a:</h5>
+                                                    <h5 class="font-size-15 mb-2">Co.Na.Te.Co. S.p.A.</h5>
+                                                    <p class="mb-1">Varco Bausa, Napoli 80011</p>
+                                                    <p class="mb-1">ced@conateco.com</p>
+                                                    <p>081-553-1301</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="text-muted text-sm-end">
+                                                    <div class="mt-4">
+                                                        <h5 class="font-size-16 mb-1">Data ordine:</h5>
+                                                        <p>09 Jul, 2020</p>
+                                                    </div>
+                                                    <div class="mt-4">
+                                                        <h5 class="font-size-16 mb-1">Ordine N°:</h5>
+                                                        <p>#1123456</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        
+                                        
+                                        <div class="py-2">
+                                            <h5 class="font-size-15">Riepilogo Ordine</h5>
+                        
+                                            <div class="table-responsive">
+                                                <table class="table table-nowrap table-centered mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 70px;">N°</th>
+                                                            <th>Articolo</th>
+                                                            <th>Prezzo</th>
+                                                            <th>Qta</th>
+                                                            <th class="text-end" style="width: 120px;">Totale</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">01</th>
+                                                            <td>
+                                                                <h5 class="font-size-15 mb-1">Nike N012 Running Shoes</h5>
+                                                                <ul class="list-inline mb-0">
+                                                                    <li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li>
+                                                                    <li class="list-inline-item">Size : <span class="fw-medium">08</span></li>
+                                                                </ul>
+                                                            </td>
+                                                            <td>$260</td>
+                                                            <td>1</td>
+                                                            <td class="text-end">$260.00</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th scope="row">02</th>
+                                                            <td>
+                                                                <h5 class="font-size-15 mb-1">Adidas Running Shoes</h5>
+                                                                <ul class="list-inline mb-0">
+                                                                    <li class="list-inline-item">Color : <span class="fw-medium">Black</span></li>
+                                                                    <li class="list-inline-item">Size : <span class="fw-medium">09</span></li>
+                                                                </ul>
+                                                            </td>
+                                                            <td>$250</td>
+                                                            <td>1</td>
+                                                            <td class="text-end">$250.00</td>
+                                                        </tr>
+                        
+                        
+                                                        <tr>
+                                                            <th scope="row" colspan="4" class="text-end">Subtotale</th>
+                                                            <td class="text-end">$510.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" colspan="4" class="border-0 text-end">
+                                                                Sconto :</th>
+                                                            <td class="border-0 text-end">- $50.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" colspan="4" class="border-0 text-end">
+                                                                Trasporto :</th>
+                                                            <td class="border-0 text-end">$25.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" colspan="4" class="border-0 text-end">
+                                                                Tasse</th>
+                                                            <td class="border-0 text-end">$13.00</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" colspan="4" class="border-0 text-end">Totale</th>
+                                                            <td class="border-0 text-end"><h4 class="m-0">$498.00</h4></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="d-print-none mt-4">
+                                                <div class="float-end">
+                                                    <a href="javascript:javascript:visualizzaVistaStampa()" class="btn btn-success waves-effect waves-light me-1">Stampa</a>
+
+                                                    <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></a>
+                                                    <a href="#" class="btn btn-primary w-md waves-effect waves-light">Send</a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- end row -->
                     </section>
                 </div>
 
@@ -274,6 +362,7 @@
         <!-- end card -->
     </div>
     <!-- end col -->
+    <!-- Dati Riepilogo Ordine --> 
     <div class="col-xl-4">
         <div class="card checkout-order-summary">
             <div class="card-body">
@@ -287,6 +376,7 @@
                                 <th class="border-top-0" style="width: 110px;" scope="col">Articolo</th>
                                 <th class="border-top-0" scope="col">Codice</th>
                                 <th class="border-top-0" scope="col">Descrizione</th>
+                                <th class="border-top-0" scope="col">Qta</th>
                                 <th class="border-top-0" scope="col">Prezzo</th>
                             </tr>
                         </thead>
@@ -331,7 +421,7 @@
                                     <h5 class="font-size-14 m-0">Totale:</h5>
                                 </td>
                                 <td>
-                                    Є 0
+                                    <span>Є</span> <span id="Totale">0</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -534,7 +624,7 @@ async function fetchDataFromMongoDBArticolo() {
     })
 }
 
-function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceArticolo){
+function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario,codiceArticolo){
     // Seleziona la tabella
     var table = document.querySelector('#tableOrdini');
 
@@ -545,15 +635,20 @@ function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceA
     var Articolo = newRow.insertCell(0);
     var Codice = newRow.insertCell(1);
     var Descrizione = newRow.insertCell(2);
-    var Prezzo = newRow.insertCell(3);
+    var Qta = newRow.insertCell(3)
+    var Prezzo = newRow.insertCell(4);
+    if(!quantitaOrdine){
+        quantitaOrdine = 1;
+    }
 
     if(fotoPathArticolo){
         Articolo.innerHTML = '<th scope="row"><img src="'+fotoPathArticolo+'" alt="product-img" title="product-img" class="avatar-md"></th>';
     }
     
     Codice.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+codiceArticolo+'</td>';
-    Descrizione.innerHTML = '<td><h5 class="font-size-14 text-truncate"><a href="ecommerce-product-detail" class="text-dark">'+descrizioneArticolo+'</a></h5><p class="text-muted mb-0">$ 260 x 2</p></td>';
-    Prezzo.innerHTML = '<td>$'+costoUnitario+'</td>';
+    Descrizione.innerHTML = '<td>'+descrizioneArticolo+'</td>';
+    Qta.innerHTML = '<td>'+quantitaOrdine+'</td>';
+    Prezzo.innerHTML = '<td>Є '+costoUnitario+'</td>';
 
     // Puoi personalizzare i dati e le celle come preferisci
     // Seleziona il tag td con id "subTotale"
@@ -562,12 +657,21 @@ function aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceA
     // Verifica se l'elemento è stato trovato
     if (subTotaleElement) {
     // Ottieni il valore corrente come numero intero
-    var valoreCorrente = parseInt(subTotaleElement.textContent);
+    var valoreCorrente = parseFloat(subTotaleElement.textContent);
     // Aggiungi 1 al valore corrente
-    valoreCorrente = valoreCorrente+costoUnitario;
+    valoreCorrente += (costoUnitario * quantitaOrdine);
 
     // Aggiorna il testo nel tag td con il nuovo valore
     subTotaleElement.textContent = valoreCorrente;
+    } else {
+    console.error('Elemento con id "subTotale" non trovato.');
+    }
+
+    var TotaleElement = document.getElementById('Totale');
+    if (TotaleElement) {
+    var valoreCorrenteTotale = parseFloat(TotaleElement.textContent); 
+    valoreCorrenteTotale += (costoUnitario * quantitaOrdine);
+    TotaleElement.textContent = valoreCorrenteTotale;
     } else {
     console.error('Elemento con id "subTotale" non trovato.');
     }
@@ -588,12 +692,16 @@ function aggiungiAOrdine() {
     if (inputdescrizioneArticolo) {
     var descrizioneArticolo = inputdescrizioneArticolo.value;
     } 
+    var inputquantitaOrdine = document.getElementById('quantitaOrdine');
+    if (inputquantitaOrdine) {
+    var quantitaOrdine = inputquantitaOrdine.value;
+    } 
     var inputcostoUnitario = document.getElementById('costoUnitario');
     if (inputcostoUnitario) {
     var costoUnitario = inputcostoUnitario.value;
     } 
     if(codiceArticolo){
-        aggiungiRiga(fotoPathArticolo,descrizioneArticolo,costoUnitario,codiceArticolo);
+        aggiungiRiga(fotoPathArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario,codiceArticolo);
     }
     
 
@@ -607,18 +715,28 @@ function aggiungiAOrdine() {
     }
     var descrizioneArticoloInput = document.getElementById('descrizioneArticolo');
     if (descrizioneArticoloInput) {
-        descrizioneArticoloInput.removeAttribute('disabled');
+       // descrizioneArticoloInput.removeAttribute('disabled');
     }
     var quantitaDisponibileInput = document.getElementById('quantitaDisponibile');
     if (quantitaDisponibileInput) {
-        quantitaDisponibileInput.removeAttribute('disabled');
+        //quantitaDisponibileInput.removeAttribute('disabled');
     }
     var costoUnitarioInput = document.getElementById('costoUnitario');
     if (costoUnitarioInput) {
-        costoUnitarioInput.removeAttribute('disabled');
+        //costoUnitarioInput.removeAttribute('disabled');
     }
 }
+function visualizzaVistaStampa() {
+    var larghezzaFinestra = 400; // Larghezza desiderata in pixel
+    var altezzaFinestra = 600;  // Altezza desiderata in pixel
+    var opzioniFinestra = 'width=' + larghezzaFinestra + ',height=' + altezzaFinestra;
 
- </script>
+    // Apri la vista di stampa in una nuova finestra o in un'altra modalità a tua scelta.
+    var printWindow = window.open('stampa-ordine', '_blank', opzioniFinestra);
+    printWindow.focus();
+}
+
+
+</script>
 
 <%- contentFor('BottomJs') %>
