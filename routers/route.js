@@ -9,6 +9,9 @@ const controller = require('../controllers/Controller');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
+const fs = require('fs');
+const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 
 // Configurazione Multer Clienti per gestire l'upload dei file
 const storageClienti = multer.diskStorage({
@@ -487,7 +490,6 @@ module.exports = function (app) {
       });
 
       app.post('/lista-clienti-selezioni', isUserAllowed, async (req, res) => {
-            console.log(req.body);
             try {
                   const utente = await controller.getClienti();
                   if(utente){
@@ -811,8 +813,88 @@ module.exports = function (app) {
             res.render('Ordini/inserisci-ordine', { 'message': req.flash('message'), 'error': req.flash('error') });
       });
 
-      app.get('/stampa-ordine', isUserAllowed, function (req, res) {
+      
+      app.get('/stampa-ordine', isUserAllowed, urlencodeParser, async (req, res) =>  {
+           // Ottenere il contenuto del div con id "riepilogo"
+            const riepilogoContent = req.query.email;
+            // Ora puoi fare ciò che vuoi con il contenuto (stamparlo, elaborarlo, ecc.)
+            console.log('Contenuto del riepilogo:', riepilogoContent);
+
+            // Qui puoi renderizzare una pagina con il contenuto del riepilogo
+            // res.render('pagina-stampa-ordine', { riepilogoContent });
             res.locals = { title: 'Stampa Ordine' };
-            res.render('Ordini/stampa-ordine', { 'message': req.flash('message'), 'error': req.flash('error') });
-      });
+            res.render('Ordini/stampa-ordine', { Dati : riepilogoContent });
+	});
+      app.post('/stampa-ordine1', isUserAllowed, urlencodeParser, async (req, res) =>  {
+            
+            const hiddenContent =req.body.txtContenuto;
+            //const hiddenContent1 ='<div><h1>Contenuto HTML da mostrare</h1></div>';
+            //console.log(hiddenContent1);
+             res.locals = { title: 'Stampa Ordine' };
+             res.render('Ordini/stampa-ordine', { hiddenContent });
+       });
+       app.post('/stampa-ordine2', isUserAllowed, urlencodeParser, async (req, res) =>  {
+            const hiddenContent =req.body.txtContenuto;
+
+            // Opzioni per la conversione PDF
+            const pdfOptions = {
+                  format: 'Letter', // Formato della pagina (ad esempio, Letter, A4)
+                  border: '10mm', // Margini del documento
+                  type: 'pdf',
+                  quality: '75', // Qualità del PDF
+                  timeout: 30000,
+                  base: 'file:///' + __dirname + '/', // Percorso base per risorse relative
+            };
+            
+            // Converti HTML in PDF
+            pdf.create(hiddenContent, pdfOptions).toFile('output.pdf', (err, res) => {
+                  if (err) return console.error(err);
+                  console.log('PDF creato con successo:', res.filename);
+            });
+       });
+
+       app.post('/stampa-ordine3', isUserAllowed, urlencodeParser, async (req, res) =>  {
+            
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            const contenuto =req.body.txtContenuto;
+  // Naviga alla pagina HTML generata dal contenuto
+  await page.setContent(contenuto);
+
+  // Seleziona il tag div specifico tramite il selettore CSS
+  const divSelector = '#riepilogoContenuto1';
+
+  // Calcola la posizione del tag div sulla pagina
+  const divPosition = await page.evaluate((selector) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      return { x, y, width, height };
+    }
+    return null;
+  }, divSelector);
+
+  if (divPosition) {
+    // Crea un PDF includendo solo il tag div specifico e regolandone la posizione
+    const pdfPath = 'output.pdf';
+    await page.pdf({
+      path: pdfPath,
+      printBackground: true,
+      width: divPosition.width + 'px',
+      height: divPosition.height + 'px',
+      pageRanges: '1',
+      margin: {
+        left: divPosition.x + 'px',
+        top: divPosition.y + 'px',
+      },
+    });
+
+    console.log('PDF creato con successo:', pdfPath);
+  } else {
+    console.log('Elemento non trovato.');
+  }
+
+  await browser.close();
+       });
+
 }

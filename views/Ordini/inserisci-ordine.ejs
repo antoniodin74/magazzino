@@ -103,7 +103,7 @@
                 <div id="basic-example">
                     <!-- Seller Details -->
                     <h3>Dati Cliente</h3>
-                    <section>
+                    <section >
                         <form>
                             <div class="row">
                                 <div class="col-lg-6">
@@ -229,7 +229,8 @@
                     <!-- Confirm Riepilogo -->
                     <h3>Riepilogo</h3>
                     <section>
-                        <div class="row" id="riepilogo">
+                        <div id="riepilogoContenuto">
+                        <div id="riepilogoContenuto1" class="row" >
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
@@ -340,20 +341,24 @@
                                                 </table>
                                             </div>
                                             <div class="d-print-none mt-4">
-                                                <div class="float-end">
-                                                    <a href="javascript:javascript:visualizzaVistaStampa()" class="btn btn-success waves-effect waves-light me-1">Stampa</a>
-
-                                                    <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></a>
-                                                    <a href="#" class="btn btn-primary w-md waves-effect waves-light">Send</a>
-                                                </div>
+                                               
+                                               
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        </div>
                         <!-- end row -->
+                        <div class="float-end">
+                            <form method="post" action="/stampa-ordine3" onsubmit="setDivContent()">
+                                <input type="hidden" name="txtContenuto" id="txtContenuto" value="">                                     
+                                <button type="submit" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></button>
+                            </form>
+                        </div>
                     </section>
+                    
                 </div>
 
             </div>
@@ -435,6 +440,8 @@
 <!-- end row -->
 
 <%- contentFor('FooterJs') %>
+
+
 
 
 <!-- jquery step -->
@@ -726,17 +733,14 @@ function aggiungiAOrdine() {
         //costoUnitarioInput.removeAttribute('disabled');
     }
 }
-function visualizzaVistaStampa() {
-    var larghezzaFinestra = 400; // Larghezza desiderata in pixel
-    var altezzaFinestra = 600;  // Altezza desiderata in pixel
-    var opzioniFinestra = 'width=' + larghezzaFinestra + ',height=' + altezzaFinestra;
 
-    // Apri la vista di stampa in una nuova finestra o in un'altra modalità a tua scelta.
-    var printWindow = window.open('stampa-ordine', '_blank', opzioniFinestra);
-    printWindow.focus();
+function setDivContent() {
+    // Get the content of the div with id "div1"
+    var divContent = document.getElementById("riepilogoContenuto").innerHTML;
+
+    // Set the content as the value of the hidden input
+    document.getElementById("txtContenuto").value = divContent;
 }
-
-
 </script>
 
 <%- contentFor('BottomJs') %>
