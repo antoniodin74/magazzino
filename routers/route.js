@@ -11,7 +11,6 @@ const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 const fs = require('fs');
 const pdf = require('html-pdf');
-const puppeteer = require('puppeteer');
 
 // Configurazione Multer Clienti per gestire l'upload dei file
 const storageClienti = multer.diskStorage({
@@ -853,48 +852,5 @@ module.exports = function (app) {
             });
        });
 
-       app.post('/stampa-ordine3', isUserAllowed, urlencodeParser, async (req, res) =>  {
-            
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            const contenuto =req.body.txtContenuto;
-  // Naviga alla pagina HTML generata dal contenuto
-  await page.setContent(contenuto);
-
-  // Seleziona il tag div specifico tramite il selettore CSS
-  const divSelector = '#riepilogoContenuto1';
-
-  // Calcola la posizione del tag div sulla pagina
-  const divPosition = await page.evaluate((selector) => {
-    const element = document.querySelector(selector);
-    if (element) {
-      const { x, y, width, height } = element.getBoundingClientRect();
-      return { x, y, width, height };
-    }
-    return null;
-  }, divSelector);
-
-  if (divPosition) {
-    // Crea un PDF includendo solo il tag div specifico e regolandone la posizione
-    const pdfPath = 'output.pdf';
-    await page.pdf({
-      path: pdfPath,
-      printBackground: true,
-      width: divPosition.width + 'px',
-      height: divPosition.height + 'px',
-      pageRanges: '1',
-      margin: {
-        left: divPosition.x + 'px',
-        top: divPosition.y + 'px',
-      },
-    });
-
-    console.log('PDF creato con successo:', pdfPath);
-  } else {
-    console.log('Elemento non trovato.');
-  }
-
-  await browser.close();
-       });
-
+      
 }
