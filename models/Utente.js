@@ -10,7 +10,6 @@ const utenteschema = new mongoose.Schema({
     },
     telefono: {
         type: String,
-        required: true
     },
     indirizzo: {
         type: String,

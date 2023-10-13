@@ -108,8 +108,8 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="basicpill-firstname-input">Nome</label>
-                                        <input type="text" class="form-control" id="basicpill-firstname-input" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+                                        <label for="nomeCliente">Nome</label>
+                                        <input type="text" class="form-control" id="nomeCliente" onclick="fetchDataFromMongoDB()" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -237,7 +237,7 @@
                                         <div class="invoice-title">
                                             <h4 class="float-end font-size-16">Ordine #MN0131 <span class="badge bg-success font-size-12 ms-2">Provvisorio</span></h4>
                                             <div class="text-muted">
-                                                <p class="mb-1">Via Casa dei Miri, 8 Gragnano 80054</p>
+                                                <p id="indirizzo" class="mb-1"></p>
                                                 <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> admin@gmail.com</p>
                                                 <p><i class="uil uil-phone me-1"></i> 081-553-1374</p>
                                             </div>
@@ -514,7 +514,7 @@ async function fetchDataFromMongoDB() {
             // Simula il clic sul pulsante
             if (buttonOk) {
                 // Ottieni il riferimento all'elemento di input
-                var inputElementfirstname = document.getElementById("basicpill-firstname-input");
+                var inputElementfirstname = document.getElementById("nomeCliente");
                 var inputElementlastname = document.getElementById("basicpill-lastname-input");
                 var inputElementphoneno = document.getElementById("basicpill-phoneno-input");
                 var inputElementemail = document.getElementById("basicpill-email-input");
@@ -539,6 +539,8 @@ async function fetchDataFromMongoDB() {
                 }
                 if (inputElementaddress) {
                     inputElementaddress.value = indirizzo;
+                    const indirizzoParagrafo = document.getElementById('indirizzo');
+                    indirizzoParagrafo.textContent = indirizzo;
                 }
                 if (inputElementcitta) {
                     inputElementcitta.value = citta;
@@ -741,6 +743,10 @@ function setDivContent() {
     // Set the content as the value of the hidden input
     document.getElementById("txtContenuto").value = divContent;
 }
+
+
+  
+    </script>
 </script>
 
 <%- contentFor('BottomJs') %>
