@@ -286,7 +286,19 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        
+                                                        <tr>
+                                                            <th id="codiceRiepilogo" scope="row">01</th>
+                                                            <td>
+                                                                <h5 id="descrizioneRiepilogo" class="font-size-15 mb-1">Nike N012 Running Shoes</h5>
+                                                                <ul class="list-inline mb-0">
+                                                                    <li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li>
+                                                                    <li class="list-inline-item">Size : <span class="fw-medium">08</span></li>
+                                                                </ul>
+                                                            </td>
+                                                            <td id="costoUniRiepilogo">$260</td>
+                                                            <td id="quanitaRiepilogo">1</td>
+                                                            <td id="totaleRiepilogo" class="text-end">$260.00</td>
+                                                        </tr>
                                                         <tr>
                                                             <th scope="row" colspan="4" class="text-end">Subtotale</th>
                                                             <td class="text-end">
@@ -697,18 +709,42 @@ function aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine
     var Codice = newRow.insertCell(0);
     var Descrizione = newRow.insertCell(1);
     var Prezzo = newRow.insertCell(2);
-    var Qta = newRow.insertCell(3);
-    var Totale = newRow.insertCell(4);
+    var Qta = newRow.insertCell(3)
     if(!quantitaOrdine){
         quantitaOrdine = 1;
     }
     
-    Codice.innerHTML = '<th scope="row">'+codiceArticolo+'</th>';
-    Descrizione.innerHTML = '<td><h5 class="font-size-15 mb-1">'+descrizioneArticolo+'</h5><ul class="list-inline mb-0"><li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li><li class="list-inline-item">Size : <span class="fw-medium">08</span></li></ul></td>';
-    Qta.innerHTML = '<td id="quanitaRiepilogo">'+quantitaOrdine+'</td>';
-    Prezzo.innerHTML = '<td id="costoUniRiepilogo">Є'+costoUnitario+'</td>';
-    Totale.innerHTML = '<td class="text-end"><span>Є</span> <span id="totaleRiepilogo">260</span></td>';
-    // Ora hai aggiunto una nuova riga in alto alla tabella
+    Codice.innerHTML = '<th id="codiceRiepilogo" scope="row">'+codiceArticolo+'</th>';
+    Descrizione.innerHTML = '<td><h5 id="descrizioneRiepilogo" class="font-size-15 mb-1">Nike N012 Running Shoes</h5><ul class="list-inline mb-0"><li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li><li class="list-inline-item">Size : <span class="fw-medium">08</span></li></ul></td>';
+    Qta.innerHTML = '<td>'+quantitaOrdine+'</td>';
+    Prezzo.innerHTML = '<td>Є '+costoUnitario+'</td>';
+
+    // Puoi personalizzare i dati e le celle come preferisci
+    // Seleziona il tag td con id "subTotale"
+    var subTotaleElement = document.getElementById('subTotale');
+
+    // Verifica se l'elemento è stato trovato
+    if (subTotaleElement) {
+    // Ottieni il valore corrente come numero intero
+    var valoreCorrente = parseFloat(subTotaleElement.textContent);
+    // Aggiungi 1 al valore corrente
+    valoreCorrente += (costoUnitario * quantitaOrdine);
+
+    // Aggiorna il testo nel tag td con il nuovo valore
+    subTotaleElement.textContent = valoreCorrente;
+    } else {
+    console.error('Elemento con id "subTotale" non trovato.');
+    }
+
+    var TotaleElement = document.getElementById('Totale');
+    if (TotaleElement) {
+    var valoreCorrenteTotale = parseFloat(TotaleElement.textContent); 
+    valoreCorrenteTotale += (costoUnitario * quantitaOrdine);
+    TotaleElement.textContent = valoreCorrenteTotale;
+    } else {
+    console.error('Elemento con id "subTotale" non trovato.');
+    }
+            // Ora hai aggiunto una nuova riga in alto alla tabella
 }
 function aggiungiAOrdineProvvisorio() {
     // Quando il pulsante viene cliccato, chiama la funzione aggiungiRiga con fotoPathArticolo come argomento

@@ -170,6 +170,7 @@ module.exports = function (app) {
 					let utente = new Utente ({
 						nome : req.body.nome,
 						cognome: req.body.cognome,
+						telefono: req.body.telefono,
 						piva: req.body.piva,
 						indirizzo : req.body.indirizzo,
 						citta: req.body.citta,
