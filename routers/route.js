@@ -5,12 +5,12 @@ var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const Articolo = require('../models/Articolo');
 const Contatore = require('../models/Contatore');
+const Ordine = require('../models/Ordine');
 const controller = require('../controllers/Controller');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
-const fs = require('fs');
-const pdf = require('html-pdf');
+
 
 // Configurazione Multer Clienti per gestire l'upload dei file
 const storageClienti = multer.diskStorage({
@@ -813,44 +813,67 @@ module.exports = function (app) {
       });
 
       
-      app.get('/stampa-ordine', isUserAllowed, urlencodeParser, async (req, res) =>  {
-           // Ottenere il contenuto del div con id "riepilogo"
-            const riepilogoContent = req.query.email;
-            // Ora puoi fare ciò che vuoi con il contenuto (stamparlo, elaborarlo, ecc.)
-            console.log('Contenuto del riepilogo:', riepilogoContent);
-
-            // Qui puoi renderizzare una pagina con il contenuto del riepilogo
-            // res.render('pagina-stampa-ordine', { riepilogoContent });
-            res.locals = { title: 'Stampa Ordine' };
-            res.render('Ordini/stampa-ordine', { Dati : riepilogoContent });
-	});
-      app.post('/stampa-ordine1', isUserAllowed, urlencodeParser, async (req, res) =>  {
-            
+      app.post('/stampa-ordine', isUserAllowed, urlencodeParser, async (req, res) =>  {  
             const hiddenContent =req.body.txtContenuto;
-            //const hiddenContent1 ='<div><h1>Contenuto HTML da mostrare</h1></div>';
-            //console.log(hiddenContent1);
              res.locals = { title: 'Stampa Ordine' };
              res.render('Ordini/stampa-ordine', { hiddenContent });
        });
-       app.post('/stampa-ordine2', isUserAllowed, urlencodeParser, async (req, res) =>  {
-            const hiddenContent =req.body.txtContenuto;
 
-            // Opzioni per la conversione PDF
-            const pdfOptions = {
-                  format: 'Letter', // Formato della pagina (ad esempio, Letter, A4)
-                  border: '10mm', // Margini del documento
-                  type: 'pdf',
-                  quality: '75', // Qualità del PDF
-                  timeout: 30000,
-                  base: 'file:///' + __dirname + '/', // Percorso base per risorse relative
-            };
-            
-            // Converti HTML in PDF
-            pdf.create(hiddenContent, pdfOptions).toFile('output.pdf', (err, res) => {
-                  if (err) return console.error(err);
-                  console.log('PDF creato con successo:', res.filename);
-            });
-       });
+       app.post('/inserisci-ordine', isUserAllowed, urlencodeParser, async (req, res) => { 
+            console.log(req.body);
+            try {
+                  const contatoreNew = await controller.getContatoreOrd();
+                  let rigaNew = await controller.getRigaOrd(contatoreNew);
+                  if(!rigaNew){
+                        rigaNew=1;
+                  }
+                  if(contatoreNew){
+                              let ordine = new Ordine ({
+                                    codiceOrdine : contatoreNew,
+                                    rigaOrdine: rigaNew,
+                                    codiceArticolo : "6",
+                                    quantitaOrdine: 2,
+                                    prezzoOrdine:12,
+                                    valoreOrdine: 24,   
+                                    clienteOrdine: "admin@gmail.com"                                 
+                              })
+                              ordine.save()
+                              .then(ordine => {
+                                    req.flash('message', 'Ordine inserito!');
+                                    res.redirect('/lista-ordini');
+                              })
+                              .catch(error => {
+                                    console.log(error);
+                                    req.flash('error', 'Ordine non inserito!');
+                                    res.redirect('/lista-ordini');
+                              })
+                  }else{
+                        console.log('Ordine non inserito!');
+                        req.flash('error', 'Ordine non inserito!');
+                        res.redirect('/lista-ordini');
+                  }
+            } catch (error) {
+                  console.log(error);
+                  req.flash('error', 'Ordine non inserito!');
+                  res.redirect('/lista-ordini');
+            }
+      });
 
-      
+      app.get('/lista-ordini', isUserAllowed, async (req, res) => {
+            try {
+                  const articolo = await controller.getArticoli();
+                  if(articolo[0]!==undefined){
+                        res.locals = { title: 'Articoli' };
+                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                  }else{
+                        res.locals = { title: 'Articoli' };
+                        req.flash('message', 'Articoli non trovati!');
+                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                  }
+            } catch (error) {
+                  req.flash('error', 'Errore lettura dati!');
+                  res.render('/lista-clienti');
+            }
+      });
+
 }

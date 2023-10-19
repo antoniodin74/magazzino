@@ -5,7 +5,7 @@ const ordineschema = new mongoose.Schema({
         required: true
     },
     rigaOrdine: {
-        type: mongoose.Schema.Types.Decimal128,
+        type: Number,
         default:0
     },
     codiceArticolo: {
@@ -13,6 +13,10 @@ const ordineschema = new mongoose.Schema({
         required: true
     },
     quantitaOrdine: {
+        type: mongoose.Schema.Types.Decimal128,
+        default:0
+    },
+    prezzoOrdine: {
         type: mongoose.Schema.Types.Decimal128,
         default:0
     },

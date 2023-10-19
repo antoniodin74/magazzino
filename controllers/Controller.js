@@ -5,6 +5,7 @@ var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const Articolo = require('../models/Articolo');
 const Contatore = require('../models/Contatore');
+const Ordine = require('../models/Ordine');
 
 async function getClienti() {
 	try {
@@ -127,6 +128,68 @@ async function updArticolo(objArticolo) {
 	}
 };
 
+async function getContatoreOrd() {
+	try {
+		var coll = 'Ordine'
+		const contatore = await Contatore.findOne({collezione:coll});
+		if(contatore){
+			let contatoreOrd = contatore.valoreContatore;
+			contatoreOrd++;
+			const contatoreIncr = contatoreOrd;
+			try {
+				const contatoreUpd = await Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
+				if(contatoreUpd) {
+					const contatoreNew = contatoreUpd.valoreContatore;
+					return contatoreNew;
+				} else {
+					console.log('Impossibile aggiornare contatore');
+					throw new Error('Impossibile aggiornare contatore');
+				}	
+			} catch (error) {
+				console.log('Impossibile aggiornare contatore');
+				throw new Error('Impossibile aggiornare contatore');
+				
+			}
+		} else {
+			const contatoreSave = await updContatoreOrd();
+			if(contatoreSave){
+				const contatoreNew = contatoreSave.valoreContatore;
+				return contatoreNew;
+			} else {
+				console.log('aggiornamento primo contatore ordine non riuscito');
+				throw new Error('aggiornamento primo contatore ordine non riuscito');
+			}
+		}
+		
+	} catch (error) {
+		console.log('Impossibile aggiornare contatore');
+		throw new Error('Impossibile aggiornare contatore');
+	}
+}
+
+async function updContatoreOrd() {
+	try {
+		let contatoreNew = new Contatore ({
+			collezione : 'Ordine',
+			valoreContatore: 1
+			})
+		const contatoreSave = await contatoreNew.save()
+		return contatoreSave
+	} catch (error) {
+		console.log('aggiornamento primo contatore ordine non riuscito');
+		throw new Error('aggiornamento primo contatore ordine non riuscito');
+	}
+}
+
+async function getRigaOrd(cdOrdine){
+	try {
+		const rigaOrdine = await Ordine.findOne({codiceOrdine:cdOrdine});
+		return rigaOrdine;
+	} catch (error) {
+		throw new Error('Impossibile trovare il ordine');
+	}
+}
+
 
 
   module.exports =  {
@@ -136,5 +199,8 @@ async function updArticolo(objArticolo) {
 	getArticoli,
 	getContatoreArt,
 	getArticolo,
-	updArticolo
+	updArticolo,
+	getContatoreOrd,
+	updContatoreOrd,
+	getRigaOrd
 };

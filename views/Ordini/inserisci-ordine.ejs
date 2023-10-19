@@ -317,7 +317,7 @@
                                                         <tr>
                                                             <th scope="row" colspan="4" class="border-0 text-end">Totale</th>
                                                             <td class="border-0 text-end">
-                                                                <h4 class="m-0"><span>Є</span> <span id="subTotaleRiepilogo"></span></h4>
+                                                                <h4 class="m-0"><span>Є</span> <span id="totaleRiepilogo"></span></h4>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -335,7 +335,7 @@
                         </div>
                         <!-- end row -->
                         <div class="float-end">
-                            <form method="post" action="/stampa-ordine1" onsubmit="setDivContent()">
+                            <form method="post" action="/stampa-ordine" onsubmit="setDivContent()">
                                 <input type="hidden" name="txtContenuto" id="txtContenuto" value="">                                     
                                 <button type="submit" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></button>
                             </form>
@@ -450,6 +450,7 @@
 <script src="public/assets/js/pages/form-wizard.init.js"></script>
 <!-- init js -->
 <script src="public/assets/js/pages/ordini-inserisci.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
 async function fetchDataCliente() {
@@ -661,7 +662,7 @@ function aggiungiRigaProvvisorio(fotoPathArticolo,descrizioneArticolo,quantitaOr
     // Puoi personalizzare i dati e le celle come preferisci
     // Seleziona il tag td con id "subTotale"
     var subTotaleElement = document.getElementById('subTotale');
-
+    var subTotaleRiepilogo = document.getElementById('subTotaleRiepilogo');
     // Verifica se l'elemento è stato trovato
     if (subTotaleElement) {
     // Ottieni il valore corrente come numero intero
@@ -671,15 +672,18 @@ function aggiungiRigaProvvisorio(fotoPathArticolo,descrizioneArticolo,quantitaOr
 
     // Aggiorna il testo nel tag td con il nuovo valore
     subTotaleElement.textContent = valoreCorrente;
+    subTotaleRiepilogo.textContent = valoreCorrente;
     } else {
     console.error('Elemento con id "subTotale" non trovato.');
     }
 
     var TotaleElement = document.getElementById('Totale');
+    var totaleRiepilogo = document.getElementById('totaleRiepilogo');
     if (TotaleElement) {
     var valoreCorrenteTotale = parseFloat(TotaleElement.textContent); 
     valoreCorrenteTotale += (costoUnitario * quantitaOrdine);
     TotaleElement.textContent = valoreCorrenteTotale;
+    totaleRiepilogo.textContent = valoreCorrenteTotale;
     } else {
     console.error('Elemento con id "subTotale" non trovato.');
     }
@@ -687,6 +691,9 @@ function aggiungiRigaProvvisorio(fotoPathArticolo,descrizioneArticolo,quantitaOr
 }
 
 function aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario){
+    if(!quantitaOrdine){
+        quantitaOrdine = 1;
+    }
     // Seleziona la tabella
     var table = document.querySelector('#tableOrdiniRiepilogo');
 
@@ -695,21 +702,20 @@ function aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine
 
     // Crea celle e aggiungi dati
     var Codice = newRow.insertCell(0);
+    Codice.innerHTML = '<h5 class="font-size-15 mb-1">'+codiceArticolo+'</h5>';
     var Descrizione = newRow.insertCell(1);
+    Descrizione.innerHTML = '<h5 class="font-size-15 mb-1">'+descrizioneArticolo+'</h5><ul class="list-inline mb-0"><li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li><li class="list-inline-item">Size : <span class="fw-medium">08</span></li></ul>';
     var Prezzo = newRow.insertCell(2);
+    Prezzo.innerHTML = 'Є'+costoUnitario;
     var Qta = newRow.insertCell(3);
+    Qta.innerHTML = quantitaOrdine;
     var Totale = newRow.insertCell(4);
-    if(!quantitaOrdine){
-        quantitaOrdine = 1;
-    }
+    Totale.classList.add("text-end");
+    Totale.innerHTML = '<span>Є</span> <span>260</span>';
     
-    Codice.innerHTML = '<th scope="row">'+codiceArticolo+'</th>';
-    Descrizione.innerHTML = '<td><h5 class="font-size-15 mb-1">'+descrizioneArticolo+'</h5><ul class="list-inline mb-0"><li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li><li class="list-inline-item">Size : <span class="fw-medium">08</span></li></ul></td>';
-    Qta.innerHTML = '<td id="quanitaRiepilogo">'+quantitaOrdine+'</td>';
-    Prezzo.innerHTML = '<td id="costoUniRiepilogo">Є'+costoUnitario+'</td>';
-    Totale.innerHTML = '<td class="text-end"><span>Є</span> <span id="totaleRiepilogo">260</span></td>';
     // Ora hai aggiunto una nuova riga in alto alla tabella
 }
+
 function aggiungiAOrdineProvvisorio() {
     // Quando il pulsante viene cliccato, chiama la funzione aggiungiRiga con fotoPathArticolo come argomento
     var hiddenFotoPathInput = document.getElementById('hiddenFotoPath');
@@ -735,6 +741,16 @@ function aggiungiAOrdineProvvisorio() {
     if(codiceArticolo){
         aggiungiRigaProvvisorio(fotoPathArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario,codiceArticolo);
         aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario);
+        // Definisci un array vuoto per gli oggetti
+        let ordine = ordine || [];
+
+        // Crea e aggiungi oggetti all'array
+        const ordine1 = {
+        codiceArticolo: 'Articolo123',
+        quantitaOrdine: 5
+        };
+        ordini.push(ordine1);
+        console.log(ordine);
     }
     
 
@@ -766,7 +782,7 @@ function setDivContent() {
     // Set the content as the value of the hidden input
     document.getElementById("txtContenuto").value = divContent;
 }  
-    </script>
+ 
 </script>
 
 <%- contentFor('BottomJs') %>
