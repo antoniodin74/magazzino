@@ -182,15 +182,26 @@ async function updContatoreOrd() {
 }
 
 async function getRigaOrd(cdOrdine){
+	console.log('controller: '+cdOrdine);
+	var rigaOrdineIncr= 0;
 	try {
-		const rigaOrdine = await Ordine.findOne({codiceOrdine:cdOrdine});
-		return rigaOrdine;
+		const ordine = await Ordine.findOne({codiceOrdine:cdOrdine});
+		if(ordine){
+			let rigaOrdine = ordine.rigaOrdine;
+			rigaOrdine++;
+			rigaOrdineIncr = rigaOrdine;
+			console.log('controller1: '+ rigaOrdineIncr);
+		}else{
+			rigaOrdineIncr=1;
+			console.log('controller2: '+ rigaOrdineIncr);
+		}
+		
+		return rigaOrdineIncr;
 	} catch (error) {
 		throw new Error('Impossibile trovare il ordine');
+		console.log('controller3: ');
 	}
 }
-
-
 
   module.exports =  {
 	getClienti,

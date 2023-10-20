@@ -820,45 +820,46 @@ module.exports = function (app) {
        });
 
        app.post('/inserisci-ordine', isUserAllowed, urlencodeParser, async (req, res) => { 
-            //console.log(req.body);
+            console.log(req.body);
              // Dati da inviare
-            var ordiniDaInserire = [
+            var dati = [
                   {codiceArticolo: "6", quantitaOrdine: 2, prezzoOrdine: 3, valoreOrdine: 4, clienteOrdine: "admin@gmail.com"},
                   {codiceArticolo: "5", quantitaOrdine: 12, prezzoOrdine: 13, valoreOrdine: 14, clienteOrdine: "admin1@gmail.com"}
             ];
             try {
-                  //reperisco numero ordine
                   const contatoreNew = await controller.getContatoreOrd();
                   if(contatoreNew){
-                        //ciclo righe ordine
-                        for (var i = 0; i < ordiniDaInserire.length; i++) {
-                              //reperisco numero riga
+                        for (var i = 0; i < dati.length; i++) {
                               let rigaNew = await controller.getRigaOrd(contatoreNew);
-                              if(rigaNew) {
-                                    rigaNew = Number(rigaNew);
-                                    var ordineNew = ordiniDaInserire[i];
-                                    let nuovoOrdine = new Ordine ({
-                                          codiceOrdine : contatoreNew,
-                                          rigaOrdine: rigaNew,
-                                          codiceArticolo : ordineNew.codiceArticolo,
-                                          quantitaOrdine: ordineNew.quantitaOrdine,
-                                          prezzoOrdine: ordineNew.prezzoOrdine,
-                                          valoreOrdine: ordineNew.valoreOrdine,   
-                                          clienteOrdine: ordineNew.clienteOrdine                                  
-                                    })
-                                    try {
-                                          const result = await nuovoOrdine.save()
-                                          if(result) {
-                                                console.log('Ordine salvato con successo:', result);
-                                          }else{
-                                                console.error('Errore nel salvataggio dell\'ordine:', error);
-                                          }
-                                    } catch (error) {
-                                          console.log(error);
-                                    }
+                              if(!rigaNew){
+                                    rigaNew=1;
                               }
-                        }
-                        res.redirect('/lista-ordini');
+
+                              console.log(dati);
+                              var dati = dati[i];
+                              //console.log("Nome: " + persona.nome + ", Età: " + persona.età);
+                             
+                              let ordine = new Ordine ({
+                                    codiceOrdine : contatoreNew,
+                                    rigaOrdine: rigaNew,
+                                    codiceArticolo : dati.codiceArticolo,
+                                    quantitaOrdine: dati.quantitaOrdine,
+                                    prezzoOrdine: dati.prezzoOrdine,
+                                    valoreOrdine: dati.valoreOrdine,   
+                                    clienteOrdine: dati.clienteOrdine                                 
+                              })
+                              ordine.save()
+                              .then(ordine => {
+                                    req.flash('message', 'Ordine inserito!');
+                                    console.log(ordine);
+                                    //res.redirect('/lista-ordini');
+                              })
+                              .catch(error => {
+                                    console.log(error);
+                                    req.flash('error', 'Ordine non inserito!');
+                                    //res.redirect('/lista-ordini');
+                              })
+                          }
                               
                   }else{
                         console.log('Ordine non inserito!');

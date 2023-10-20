@@ -11,7 +11,7 @@ link.addEventListener('click', function(event) {
     event.preventDefault();
 
     // Esegui le azioni desiderate quando il link con href="#finish" viene cliccato
-    alert("Hai cliccato sul link per finire!");
+    //alert("Hai cliccato sul link per finire!");
      // Dati da inviare
      var dati = {
         colonna1: "1",
