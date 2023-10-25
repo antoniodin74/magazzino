@@ -702,16 +702,22 @@ function aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine
 
     // Crea celle e aggiungi dati
     var Codice = newRow.insertCell(0);
+    Codice.classList.add("codiceRiepilogo");
     Codice.innerHTML = '<h5 class="font-size-15 mb-1">'+codiceArticolo+'</h5>';
     var Descrizione = newRow.insertCell(1);
     Descrizione.innerHTML = '<h5 class="font-size-15 mb-1">'+descrizioneArticolo+'</h5><ul class="list-inline mb-0"><li class="list-inline-item">Color : <span class="fw-medium">Gray</span></li><li class="list-inline-item">Size : <span class="fw-medium">08</span></li></ul>';
     var Prezzo = newRow.insertCell(2);
-    Prezzo.innerHTML = 'Є'+costoUnitario;
+    Prezzo.classList.add("prezzoRiepilogo");
+    Prezzo.innerHTML = costoUnitario;
+    
     var Qta = newRow.insertCell(3);
+    Qta.classList.add("qtaRiepilogo");
     Qta.innerHTML = quantitaOrdine;
+    
     var Totale = newRow.insertCell(4);
     Totale.classList.add("text-end");
-    Totale.innerHTML = '<span>Є</span> <span>260</span>';
+    Totale.classList.add("totaleRiepilogo");
+    Totale.innerHTML = costoUnitario*quantitaOrdine;
     
     // Ora hai aggiunto una nuova riga in alto alla tabella
 }
@@ -741,16 +747,6 @@ function aggiungiAOrdineProvvisorio() {
     if(codiceArticolo){
         aggiungiRigaProvvisorio(fotoPathArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario,codiceArticolo);
         aggiungiRigaRiepilogo(codiceArticolo,descrizioneArticolo,quantitaOrdine,costoUnitario);
-        // Definisci un array vuoto per gli oggetti
-        let ordine = ordine || [];
-
-        // Crea e aggiungi oggetti all'array
-        const ordine1 = {
-        codiceArticolo: 'Articolo123',
-        quantitaOrdine: 5
-        };
-        ordini.push(ordine1);
-        console.log(ordine);
     }
     
 

@@ -182,7 +182,6 @@ async function updContatoreOrd() {
 }
 
 async function getRigaOrd(cdOrdine){
-	console.log('controller: '+cdOrdine);
 	var rigaOrdineIncr= 0;
 	try {
 		const ordine = await Ordine.findOne({codiceOrdine:cdOrdine});
@@ -190,18 +189,24 @@ async function getRigaOrd(cdOrdine){
 			let rigaOrdine = ordine.rigaOrdine;
 			rigaOrdine++;
 			rigaOrdineIncr = rigaOrdine;
-			console.log('controller1: '+ rigaOrdineIncr);
 		}else{
 			rigaOrdineIncr=1;
-			console.log('controller2: '+ rigaOrdineIncr);
 		}
-		
 		return rigaOrdineIncr;
 	} catch (error) {
 		throw new Error('Impossibile trovare il ordine');
-		console.log('controller3: ');
 	}
 }
+
+async function getOrdini() {
+	try {
+	  //const ordini = await Articolo.find({statoArticolo:{ $ne: false }});
+	  const ordini = await Ordine.find();
+	  return ordini;
+	} catch (error) {
+	  throw new Error('Impossibile ottenere i ordini');
+	}
+  };
 
   module.exports =  {
 	getClienti,
@@ -213,5 +218,6 @@ async function getRigaOrd(cdOrdine){
 	updArticolo,
 	getContatoreOrd,
 	updContatoreOrd,
-	getRigaOrd
+	getRigaOrd,
+	getOrdini
 };

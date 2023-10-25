@@ -820,12 +820,7 @@ module.exports = function (app) {
        });
 
        app.post('/inserisci-ordine', isUserAllowed, urlencodeParser, async (req, res) => { 
-            //console.log(req.body);
-             // Dati da inviare
-            var ordiniDaInserire = [
-                  {codiceArticolo: "6", quantitaOrdine: 2, prezzoOrdine: 3, valoreOrdine: 4, clienteOrdine: "admin@gmail.com"},
-                  {codiceArticolo: "5", quantitaOrdine: 12, prezzoOrdine: 13, valoreOrdine: 14, clienteOrdine: "admin1@gmail.com"}
-            ];
+            var ordiniDaInserire = req.body;
             try {
                   //reperisco numero ordine
                   const contatoreNew = await controller.getContatoreOrd();
@@ -849,7 +844,8 @@ module.exports = function (app) {
                                     try {
                                           const result = await nuovoOrdine.save()
                                           if(result) {
-                                                console.log('Ordine salvato con successo:', result);
+                                                //console.log('Ordine salvato con successo:', result);
+                                                console.log('Ordine salvato con successo');
                                           }else{
                                                 console.error('Errore nel salvataggio dell\'ordine:', error);
                                           }
@@ -859,7 +855,6 @@ module.exports = function (app) {
                               }
                         }
                         res.redirect('/lista-ordini');
-                              
                   }else{
                         console.log('Ordine non inserito!');
                         req.flash('error', 'Ordine non inserito!');
@@ -874,18 +869,18 @@ module.exports = function (app) {
 
       app.get('/lista-ordini', isUserAllowed, async (req, res) => {
             try {
-                  const articolo = await controller.getArticoli();
-                  if(articolo[0]!==undefined){
-                        res.locals = { title: 'Articoli' };
-                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                  const ordini = await controller.getOrdini();
+                  if(ordini[0]!==undefined){
+                        res.locals = { title: 'Ordini' };
+                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
-                        res.locals = { title: 'Articoli' };
-                        req.flash('message', 'Articoli non trovati!');
-                        res.render('Articoli/lista-articoli', { 'message': req.flash('message'), 'error': req.flash('error'), 'Articoli': articolo, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                        res.locals = { title: 'Ordini' };
+                        req.flash('message', 'Ordini non trovati!');
+                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }
             } catch (error) {
                   req.flash('error', 'Errore lettura dati!');
-                  res.render('/lista-clienti');
+                  res.render('/lista-ordini');
             }
       });
 
