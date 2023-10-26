@@ -13,12 +13,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Articoli</h4>
+            <h4 class="mb-0">Ordini</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="\inserisci-articolo">Inserisci Articolo</a></li>
-                    <li class="breadcrumb-item active">Articoli</li>
+                    <li class="breadcrumb-item"><a href="\inserisci-ordine">Inserisci Ordine</a></li>
+                    <li class="breadcrumb-item active">Ordini</li>
                 </ol>
             </div>
 
@@ -43,36 +43,27 @@
         <% } %>
         <div>
             <div>
-                <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Articoli</button> 
+                <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Ordini</button> 
             </div>
 
             <div class="table-responsive mb-4">
-                <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabArticoli">
+                <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabOrdini">
                     <thead>
                         <tr>
-                            <!--
-                            <th style="width: 20px;">
-                                <div class="form-check text-center">
-                                    <input type="checkbox" class="form-check-input" id="customercheck">
-                                    <label class="form-check-label" for="customercheck"></label>
-                                </div>
-                            </th>
-                            -->
-                            <th>Codice</th>
-                            <th>Descrizione</th>
+                            <th>Codice ordine</th>
+                            <th>Riga</th>
+                            <th>Codice articolo</th>
                             <th>Quantità</th>
-                            <th>Costo</th>
                             <th style="width: 120px;">Action</th>
                         </tr>
                     </thead>
-                    <!--Admin vede tutti i clienti, gli altri solo il proprio più i patner creati-->
                     <tbody>
-                        <% for (let articolo of Articoli) { %>                            
+                        <% for (let ordine of Ordini) { %>                            
                             <tr>
-                            <td  class="badge bg-pill bg-soft-primary font-size-12 cdArticolo"><%= articolo.codiceArticolo%></td>
-                            <td class="px-3 text-warning"><%= articolo.descrizioneArticolo%></td>
-                            <td class="px-3 text-success"><%= articolo.quantitaArticolo%></td>
-                            <td class="px-3 text-danger partner"><%= articolo.costoArticolo%></td>
+                            <td  class="cdOrdine"><%= ordine.codiceOrdine%></td>
+                            <td><%= ordine.rigaOrdine%></td>
+                            <td><%= ordine.codiceArticolo%></td>
+                            <td class="partner"><%= ordine.quantitaOrdine%></td>
                             <td>
                                 <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
                                 <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
@@ -92,25 +83,25 @@
 <script>
 $(document).ready(function() {
     // Aggiungi un gestore di eventi al click sul link
-    $('.tabArticoli').on('click', '.linkAggiorna', function() {
+    $('.tabOrdini').on('click', '.linkAggiorna', function() {
       // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
+        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
       // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
-        window.location.href = '/aggiorna-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
+        window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
     });
-    $('.tabArticoli').on('click', '.linkCancella', function() {
+    $('.tabOrdini').on('click', '.linkCancella', function() {
       // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
+        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
       // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/disabilita-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
+        window.location.href = '/disabilita-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
     });
-    $('.tabArticoli').on('click', '.linkDettaglio', function() {
+    $('.tabOrdini').on('click', '.linkDettaglio', function() {
       // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
+        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
       // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/dettaglio-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
+        window.location.href = '/dettaglio-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
     });
-    $('.tabArticoli').on('click', function() {
+    $('.tabOrdini').on('click', function() {
     });
   });
 </script>
@@ -134,6 +125,6 @@ $(document).ready(function() {
 <script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
 
 <!-- init js -->
-<script src="public/assets/js/pages/articoli-datatables.init.js"></script>
+<script src="public/assets/js/pages/ordini-datatables.init.js"></script>
 
 <%- contentFor('BottomJs') %>

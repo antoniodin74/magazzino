@@ -2,10 +2,9 @@
 
 <!-- DataTables -->
 <link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
 <!-- Responsive datatable examples -->
-<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />  
+<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
 <%- contentFor('breadcrumb') %>
 
@@ -31,102 +30,87 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <% if(error.length> 0) { %>
-            <div id="elementoDaRimuovere1" class="alert alert-danger text-center mb-4 flash" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-        <% if(message.length> 0) { %>
-            <div id="elementoDaRimuovere2" class="alert alert-success text-center mb-4 flash" role="alert">
-                <%= message %>
-            </div>
-        <% } %>
         <div>
-            <div>
-                <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Ordini</button> 
-            </div>
-
-            <div class="table-responsive mb-4">
-                <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabOrdini">
-                    <thead>
-                        <tr>
-                            <!--
-                            <th style="width: 20px;">
-                                <div class="form-check text-center">
-                                    <input type="checkbox" class="form-check-input" id="customercheck">
-                                    <label class="form-check-label" for="customercheck"></label>
-                                </div>
-                            </th>
-                            -->
-                            <th>Codice ordine</th>
-                            <th>Riga</th>
-                            <th>Codice articolo</th>
-                            <th>Quantità</th>
-                            <th style="width: 120px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% for (let ordine of Ordini) { %>                            
-                            <tr>
-                            <td  class="cdOrdine"><%= ordine.codiceOrdine%></td>
-                            <td><%= ordine.rigaOrdine%></td>
-                            <td><%= ordine.codiceArticolo%></td>
-                            <td class="partner"><%= ordine.quantitaOrdine%></td>
-                            <td>
-                                <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
-                                <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
-                                <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
-                            </td>
-                        </tr>
-                        <%}%> 
-                    </tbody>
-                </table>
-            </div>
+            <% if(error.length> 0) { %>
+                <div id="elementoDaRimuovere1" class="alert alert-danger text-center mb-4 flash" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+            <% if(message.length> 0) { %>
+                <div id="elementoDaRimuovere2" class="alert alert-success text-center mb-4 flash" role="alert">
+                    <%= message %>
+                </div>
+            <% } %>
+                <div>
+                    <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Ordini</button> 
+                </div>
         </div>
+        <div class="table-responsive mb-4">
+            <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                <thead>
+                    <tr class="bg-transparent">
+                        <th>Codice ordine</th>
+                        <th>Riga</th>
+                        <th>Codice articolo</th>
+                        <th>Quantità</th>
+                        <th style="width: 120px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <% for (let ordine of Ordini) { %> 
+                            <tr>
+                                <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdine"><%= ordine.codiceOrdine%></a> </td>
+                                <td class="px-3 text-warning">
+                                    <%= ordine.rigaOrdine%>
+                                </td>
+                                <td class="px-3 text-success"><%= ordine.codiceArticolo%></td>
+                                <td class="px-3 text-danger">
+                                    <%= ordine.quantitaOrdine%>
+                                </td>
+                                <td>
+                                    <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
+                                    <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                    <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
+                                </td>
+                            </tr>
+                        <%}%> 
+                </tbody>
+            </table>
+        </div>
+        <!-- end table -->
     </div>
 </div>
 <!-- end row -->
 
 <%- contentFor('FooterJs') %>
 <script>
-$(document).ready(function() {
-    // Aggiungi un gestore di eventi al click sul link
-    $('.tabOrdini').on('click', '.linkAggiorna', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
-      // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
-        window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
-    });
-    $('.tabOrdini').on('click', '.linkCancella', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
-      // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/disabilita-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
-    });
-    $('.tabOrdini').on('click', '.linkDettaglio', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
-      // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/dettaglio-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
-    });
-    $('.tabOrdini').on('click', function() {
-    });
-  });
-</script>
-
+    $(document).ready(function() {
+        // Aggiungi un gestore di eventi al click sul link
+        $('.tabOrdini').on('click', '.linkAggiorna', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
+            window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+        $('.tabOrdini').on('click', '.linkCancella', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+            window.location.href = '/disabilita-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+        $('.tabOrdini').on('click', '.linkDettaglio', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+            window.location.href = '/dettaglio-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+        $('.tabOrdini').on('click', function() {
+        });
+      });
+    </script>
 <!-- Required datatable js -->
 <script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-<!-- Buttons examples -->
-<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-<script src="public/assets/libs/jszip/jszip.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
-<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
 
 <!-- Responsive examples -->
 <script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
