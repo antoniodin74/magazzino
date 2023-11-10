@@ -45,39 +45,78 @@
                     <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Ordini</button> 
                 </div>
         </div>
-        <div class="table-responsive mb-4">
-            <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
-                <thead>
-                    <tr class="bg-transparent">
-                        <th>Codice ordine</th>
-                        <th>Riga</th>
-                        <th>Codice articolo</th>
-                        <th>Quantità</th>
-                        <th style="width: 120px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <% for (let ordine of Ordini) { %> 
-                            <tr>
-                                <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdine"><%= ordine.codiceOrdine%></a> </td>
-                                <td class="px-3 text-warning">
-                                    <%= ordine.rigaOrdine%>
-                                </td>
-                                <td class="px-3 text-success"><%= ordine.codiceArticolo%></td>
-                                <td class="px-3 text-danger">
-                                    <%= ordine.quantitaOrdine%>
-                                </td>
-                                <td>
-                                    <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
-                                    <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
-                                    <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
-                                </td>
+        <div class="row">
+            <div class="col-6">
+                <div class="table-responsive mb-4">
+                    <table id="datatable-buttonsX" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                        <thead>
+                            <tr class="bg-transparent">
+                                <th>Codice ordine</th>
+                                <th>Quantità</th>
+                                <th>Valore</th>
+                                <th style="width: 120px;">Action</th>
                             </tr>
-                        <%}%> 
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                                <% for (let ordinex of OrdiniX) { %> 
+                                    <tr>
+                                        <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdine"><%= ordinex.codiceOrdine%></a> </td>
+                                        <td class="px-3 text-danger">
+                                            <%= ordinex.quantitaOrdine%>
+                                        </td>
+                                        <td class="px-3 text-danger">
+                                            <%= ordinex.valoreOrdine%>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
+                                        </td>
+                                    </tr>
+                                <%}%> 
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table -->
+            </div>
+            <div class="col-6">
+                <div class="table-responsive mb-4">
+                    <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                        <thead>
+                            <tr class="bg-transparent">
+                                <th>Codice ordine</th>
+                                <th>Riga</th>
+                                <th>Codice articolo</th>
+                                <th>Quantità</th>
+                                <th style="width: 120px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <% for (let ordine of Ordini) { %> 
+                                    <tr>
+                                        <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdine"><%= ordine.codiceOrdine%></a> </td>
+                                        <td class="px-3 text-warning">
+                                            <%= ordine.rigaOrdine%>
+                                        </td>
+                                        <td class="px-3 text-success"><%= ordine.codiceArticolo%></td>
+                                        <td class="px-3 text-danger">
+                                            <%= ordine.quantitaOrdine%>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
+                                        </td>
+                                    </tr>
+                                <%}%> 
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table -->
+            </div>
+            
         </div>
-        <!-- end table -->
+       
     </div>
 </div>
 <!-- end row -->

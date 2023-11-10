@@ -869,14 +869,15 @@ module.exports = function (app) {
 
       app.get('/lista-ordini', isUserAllowed, async (req, res) => {
             try {
+                  const ordiniX = await controller.getOrdiniX();
                   const ordini = await controller.getOrdini();
                   if(ordini[0]!==undefined){
                         res.locals = { title: 'Ordini' };
-                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'OrdiniX': ordiniX, 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
                         res.locals = { title: 'Ordini' };
                         req.flash('message', 'Ordini non trovati!');
-                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
+                        res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'OrdiniX': ordiniX, 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }
             } catch (error) {
                   req.flash('error', 'Errore lettura dati!');

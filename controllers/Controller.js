@@ -208,6 +208,37 @@ async function getOrdini() {
 	}
   };
 
+  async function getOrdiniX() {
+	try {
+		const ordini =  await Ordine.aggregate([
+			{
+				$group: {
+					_id: '$codiceOrdine', // Raggruppa per numero di ordine
+					quantitaOrdine: { $sum: '$quantitaOrdine' }, // Calcola la somma dei valori di ogni riga
+					valoreOrdine: { $sum: '$valoreOrdine' } // Calcola la somma dei valori di ogni riga
+				}
+			},
+			{
+				$project: {
+					codiceOrdine: '$_id', // Rinomina _id a codiceOrdine
+					quantitaOrdine: 1,
+					valoreOrdine: 1, // Mantieni il campo valoreTotale
+					_id: 0 // Escludi il campo _id dal risultato
+				}
+			  },
+			{
+				$sort: {
+					codiceOrdine: 1 // Ordina per codiceOrdine in ordine ascendente (1) o discendente (-1)
+				}
+			}
+		]);
+		return ordini;
+	} catch (error) {
+		console.log(error);
+		throw new Error('Impossibile ottenere i ordini');
+	}
+  };
+
   module.exports =  {
 	getClienti,
 	getCliente,
@@ -219,5 +250,6 @@ async function getOrdini() {
 	getContatoreOrd,
 	updContatoreOrd,
 	getRigaOrd,
-	getOrdini
+	getOrdini,
+	getOrdiniX
 };
