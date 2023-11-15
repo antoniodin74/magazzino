@@ -239,6 +239,15 @@ async function getOrdini() {
 	}
   };
 
+  async function getOrdine(cdOrdine) {
+	try {
+	  const ordine = await Ordine.find({codiceOrdine:cdOrdine});
+	  return ordine;
+	} catch (error) {
+	  throw new Error('Impossibile ottenere ordine');
+	}
+  };
+
   module.exports =  {
 	getClienti,
 	getCliente,
@@ -251,5 +260,6 @@ async function getOrdini() {
 	updContatoreOrd,
 	getRigaOrd,
 	getOrdini,
-	getOrdiniX
+	getOrdiniX,
+	getOrdine
 };

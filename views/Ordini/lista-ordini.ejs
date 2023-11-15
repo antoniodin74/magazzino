@@ -46,9 +46,9 @@
                 </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-6" id="divTesta">
                 <div class="table-responsive mb-4">
-                    <table id="datatable-buttonsX" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                    <table id="datatable-testa" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdiniTesta" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
                         <thead>
                             <tr class="bg-transparent">
                                 <th>Codice ordine</th>
@@ -60,7 +60,7 @@
                         <tbody>
                                 <% for (let ordinex of OrdiniX) { %> 
                                     <tr>
-                                        <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdine"><%= ordinex.codiceOrdine%></a> </td>
+                                        <td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdineTesta"><%= ordinex.codiceOrdine%></a> </td>
                                         <td class="px-3 text-danger">
                                             <%= ordinex.quantitaOrdine%>
                                         </td>
@@ -79,15 +79,16 @@
                 </div>
                 <!-- end table -->
             </div>
-            <div class="col-6">
+            <div class="col-6" id="divDetta" style="display: none;">
                 <div class="table-responsive mb-4">
-                    <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdini" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                    <table id="datatable-detta" class="table table-centered datatable dt-responsive nowrap table-card-list tabOrdiniDetta" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
                         <thead>
                             <tr class="bg-transparent">
-                                <th>Codice ordine</th>
                                 <th>Riga</th>
                                 <th>Codice articolo</th>
                                 <th>Quantità</th>
+                                <th>Prezzo</th>
+                                <th>Valore</th>
                                 <th style="width: 120px;">Action</th>
                             </tr>
                         </thead>
@@ -102,10 +103,16 @@
                                         <td class="px-3 text-danger">
                                             <%= ordine.quantitaOrdine%>
                                         </td>
+                                        <td class="px-3 text-danger">
+                                            <%= ordine.prezzoOrdine%>
+                                        </td>
+                                        <td class="px-3 text-danger">
+                                            <%= ordine.valoreOrdine%>
+                                        </td>
                                         <td>
-                                            <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
-                                            <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
-                                            <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-primary linkAggiornaD"><i class="uil uil-pen font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-danger linkCancellaD"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                            <a href="#" class="px-3 text-success linkDettaglioD"><i class="uil uil-book-open font-size-18"></i></a>
                                         </td>
                                     </tr>
                                 <%}%> 
@@ -125,26 +132,87 @@
 <script>
     $(document).ready(function() {
         // Aggiungi un gestore di eventi al click sul link
-        $('.tabOrdini').on('click', '.linkAggiorna', function() {
+        $('.tabOrdiniTesta').on('click', '.cdOrdineTesta', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdineTesta = $(this).closest('tr').find('.cdOrdineTesta').text();
+           // JavaScript per rendere invisibile l'elemento
+          fetchDataOrdine(cdOrdineTesta);
+          document.getElementById("divDetta").style.display = "block";
+            // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
+            //window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+
+        // Aggiungi un gestore di eventi al click sul link
+        $('.tabOrdiniTesta').on('click', '.linkAggiorna', function() {
           // Ottieni il valore del codice articolo corrispondente
             var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
           // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
             window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
         });
-        $('.tabOrdini').on('click', '.linkCancella', function() {
+
+        $('.tabOrdiniTesta').on('click', '.linkCancella', function() {
           // Ottieni il valore del codice articolo corrispondente
             var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
           // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
             window.location.href = '/disabilita-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
         });
-        $('.tabOrdini').on('click', '.linkDettaglio', function() {
+
+        $('.tabOrdiniTesta').on('click', '.linkDettaglio', function() {
           // Ottieni il valore del codice articolo corrispondente
             var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
           // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
             window.location.href = '/dettaglio-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
         });
+
+        // Aggiungi un gestore di eventi al click sul link
+        $('.tabOrdiniDetta').on('click', '.linkAggiornaD', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
+            window.location.href = '/aggiorna-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+
+        $('.tabOrdiniDetta').on('click', '.linkCancellaD', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+            window.location.href = '/disabilita-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+
+        $('.tabOrdiniDetta').on('click', '.linkDettaglioD', function() {
+          // Ottieni il valore del codice articolo corrispondente
+            var cdOrdine = $(this).closest('tr').find('.cdOrdine').text();
+          // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+            window.location.href = '/dettaglio-ordine?cdOrdine=' + encodeURIComponent(cdOrdine);
+        });
+
         $('.tabOrdini').on('click', function() {
         });
+
+        async function fetchDataOrdine(cdOrdine) {
+            await fetch(`/ordine-dettaglio-fetch?cdOrdine=${cdOrdine}`)
+            .then(function(res){
+                return res.json();
+            })
+            .then(function(ordine){
+                // Rimuovi tutte le righe esistenti
+                var table = $('#datatable-detta').DataTable();
+                table.clear().draw();
+                // Aggiungi nuove righe (esempio)
+                var newData = [];
+                ordine.forEach(item => {
+                const rigaOrdine = (item.rigaOrdine !== undefined) ? item.rigaOrdine : " ";
+                const codiceArticolo = (item.codiceArticolo !== undefined) ? item.codiceArticolo : " ";
+                const quantitaOrdine = (item.quantitaOrdine !== undefined) ? item.quantitaOrdine.$numberDecimal : " ";
+                const prezzoOrdine = (item.prezzoOrdine !== undefined) ? item.prezzoOrdine.$numberDecimal : " ";
+                const valoreOrdine = (item.valoreOrdine !== undefined) ? item.valoreOrdine.$numberDecimal : " ";
+                var anchor = '<a href="#" class="px-3 text-primary linkAggiornaD"><i class="uil uil-pen font-size-18"></i></a><a href="#" class="px-3 text-danger linkCancellaD"><i class="uil uil-trash-alt font-size-18"></i></a><a href="#" class="px-3 text-success linkDettaglioD"><i class="uil uil-book-open font-size-18"></i></a>';
+                var dati = [rigaOrdine, codiceArticolo, quantitaOrdine, prezzoOrdine, valoreOrdine,anchor];
+                newData.push(dati);
+                })
+                table.rows.add(newData).draw();
+                })
+        }
       });
     </script>
 <!-- Required datatable js -->

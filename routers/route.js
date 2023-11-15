@@ -870,7 +870,8 @@ module.exports = function (app) {
       app.get('/lista-ordini', isUserAllowed, async (req, res) => {
             try {
                   const ordiniX = await controller.getOrdiniX();
-                  const ordini = await controller.getOrdini();
+                  const ordini=[];
+                  //const ordini = await controller.getOrdini();
                   if(ordini[0]!==undefined){
                         res.locals = { title: 'Ordini' };
                         res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'OrdiniX': ordiniX, 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
@@ -885,4 +886,18 @@ module.exports = function (app) {
             }
       });
 
+      app.get('/ordine-dettaglio-fetch', isUserAllowed, async (req, res) => {
+            const cdOrdine = (req.query.cdOrdine);
+            try {
+                  const ordine = await controller.getOrdine(cdOrdine);
+                  if(ordine){
+                        res.locals = { title: 'Ordine' };
+                        res.json(ordine);
+                  }else{
+                        console.log('no Ordine');
+                  }
+            } catch (error) {
+                  console.log(error);
+            }
+      });
 }
