@@ -120,8 +120,7 @@
                     </table>
                 </div>
                 <!-- end table -->
-            </div>
-            
+            </div>          
         </div>
        
     </div>
@@ -213,6 +212,43 @@
                 table.rows.add(newData).draw();
                 })
         }
+
+
+        async function reloadData1() {
+            await fetch(`/ordini-testate-fetch`)
+            .then(function(res){
+                return res.json();
+            })
+            .then(function(ordini){
+                // Rimuovi tutte le righe esistenti
+                var table = $('#datatable-testa').DataTable();
+                table.clear().draw();
+                // Aggiungi nuove righe (esempio)
+                var newData = [];
+                ordini.forEach(item => {
+                const codiceOrdine = (item.codiceOrdine  ?? true) ? item.codiceOrdine : " ";
+                const quantitaOrdine = (item.quantitaOrdine !== undefined) ? item.quantitaOrdine.$numberDecimal : " ";
+                const valoreOrdine = (item.valoreOrdine !== undefined) ? item.valoreOrdine.$numberDecimal : " ";
+                var anchor = '<a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a><a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a><a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>';
+                const elemCodiceOrdine = '<td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdineTesta">'+codiceOrdine+'</a> </td>'
+                const elemQuantitaOrdine = '<td class="px-3 text-danger">'+quantitaOrdine+'</td>'
+                console.log(elemQuantitaOrdine);
+                const elemValoreOrdine = '<td><a href="javascript: void(0);" class="badge bg-pill bg-soft-primary font-size-12 cdOrdineTesta">'+valoreOrdine+'</a> </td>'
+
+                var dati = [elemCodiceOrdine, elemQuantitaOrdine, elemValoreOrdine,anchor];
+                newData.push(dati);
+                })
+                table.rows.add(newData).draw();
+                })
+        }
+
+        // Funzione per ricaricare i dati
+      function reloadData() {
+        // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
+        window.location.href = '/lista-ordini';
+      }
+        // Chiamata alla funzione ogni tot tempo (ad esempio, ogni 5 secondi)
+      //setInterval(reloadData1, 5000);
       });
     </script>
 <!-- Required datatable js -->

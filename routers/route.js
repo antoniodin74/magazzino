@@ -872,12 +872,13 @@ module.exports = function (app) {
                   const ordiniX = await controller.getOrdiniX();
                   const ordini=[];
                   //const ordini = await controller.getOrdini();
-                  if(ordini[0]!==undefined){
+                  if(ordiniX[0]!==undefined){
                         res.locals = { title: 'Ordini' };
+                        req.flash('message', 'Ordini caricati!');
                         res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'OrdiniX': ordiniX, 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
                         res.locals = { title: 'Ordini' };
-                        req.flash('message', 'Ordini non trovati!');
+                        req.flash('message', 'Ordini non caricati!');
                         res.render('Ordini/lista-ordini', { 'message': req.flash('message'), 'error': req.flash('error'), 'OrdiniX': ordiniX, 'Ordini': ordini, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }
             } catch (error) {
@@ -898,6 +899,37 @@ module.exports = function (app) {
                   }
             } catch (error) {
                   console.log(error);
+            }
+      });
+
+      app.get('/ordini-testate-fetch', isUserAllowed, async (req, res) => {
+            try {
+                  const ordiniX = await controller.getOrdiniX();
+                  if(ordiniX[0]){
+                        res.locals = { title: 'Ordini' };
+                        res.json(ordiniX);
+                  }else{
+                        console.log('no Ordini');
+                  }
+            } catch (error) {
+                  console.log(error);
+            }
+      });
+
+      app.get('/aggiorna-ordine', isUserAllowed, urlencodeParser, async (req, res) => {
+            const cdOrdine = (req.query.cdOrdine);
+            try {
+                  const ordine = await controller.getOrdine(cdOrdine);
+                  if(ordine){
+                        res.locals = { title: 'Modifica Ordine' };
+                        res.render('Ordini/aggiorna-ordine', { 'message': req.flash('message'), 'error': req.flash('error'), 'ordine': ordine });
+                  }else{
+                        req.flash('message', 'Ordine non trovato!');
+                        res.redirect('/lista-ordini');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Ordine non trovato!');
+                  res.redirect('/lista-ordini');
             }
       });
 }
