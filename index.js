@@ -1,28 +1,29 @@
 require('dotenv').config();
-var app = require('express')();
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 var db = require('./config/database')
 var express = require('express');
+var app = require('express')();
 var path = require('path');
 var http = require('http').Server(app);
 var validator = require('express-validator');
-
-
-// import controller
-var AuthController = require('./controllers/AuthController');
-
-// import Router file
-var pageRouter = require('./routers/route');
-
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var i18n = require("i18n-express");
+
+// import controller
+var AuthController = require('./controllers/AuthController');
+// import Router file
+var pageRouter = require('./routers/route');
+
+// Middleware setup
 app.use(bodyParser.json());
-var urlencodeParser = bodyParser.urlencoded({ extended: true });
+//var urlencodeParser = bodyParser.urlencoded({ extended: true });
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Session configuration
 app.use(session({
   key: 'user_sid',
   secret: 'clikeyart_ant',
@@ -32,16 +33,11 @@ app.use(session({
     mongoUrl: process.env.MONGODB_URI
   }),
   cookie: {
-    expires: 1200000
+    maxAge: 20 * 60 * 1000 // 20 minutes
   }
 }));
-/*
-app.use(session({
-  resave: false,
-  saveUninitialized: true,
-  secret: 'nodedemo'
-}));
-*/
+
+// i18n setup
 app.use(flash());
 app.use(i18n({
   translationsPath: path.join(__dirname, 'i18n'), // <--- use here. Specify translations files path.
@@ -49,6 +45,7 @@ app.use(i18n({
   textsVarName: 'translation'
 }));
 
+// Static files
 app.use('/public', express.static('public'));
 app.use('/uploads', express.static('uploads'));
 app.get('/layouts/', function (req, res) {
@@ -66,12 +63,23 @@ app.use(expressLayouts);
 
 // Define All Route 
 pageRouter(app);
+
+// Default route
 app.get('/', function (req, res) {
   res.redirect('/');
 });
 
-const PORT = 8000 || process.env.PORT;
-
+// Server startup
+const PORT = process.env.PORT || 8000;
 const server = http.listen(PORT, function () {
   console.log('listening on *:' + PORT);
 })  ;
+
+
+// Error handling (opzionale ma consigliato)
+process.on('uncaughtException', err => {
+  console.error('🔥 Errore non gestito:', err);
+});
+process.on('unhandledRejection', err => {
+  console.error('⚠️ Rejection non gestita:', err);
+});

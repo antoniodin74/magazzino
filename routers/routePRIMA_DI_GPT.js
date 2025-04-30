@@ -59,22 +59,19 @@ const storageArticoli = multer.diskStorage({
 module.exports = function (app) {
 
       function isUserAllowed(req, res, next) {
-
             const token = req.cookies.token;
-            if (!token) return res.redirect('/login');
-
-            try {
-              const decoded = jwt.verify(token, jwtSecret);
-              req.UserId = decoded.userId;
-              next();
-            } catch (err) {
-              console.error('JWT Error:', err.message);
-              return res.redirect('/login');
+            if (token) {
+                  var decoded = jwt.verify(token, jwtSecret);
+                  req.UserId = decoded.userId;
+                  return next();
             }
-          }
+            else  {
+                  res.redirect('/login');      
+            }
 
-      // Homepage redirect protetto
-      app.get('/', isUserAllowed, (req, res) => {
+      }
+
+      app.get('/', isUserAllowed, function (req, res) {
             res.redirect('/lista-clienti');
       });
       
@@ -89,8 +86,7 @@ module.exports = function (app) {
             try {
                   const utente = await controller.getClienti();
                   if(utente){
-                        sess = req.session;
-                        res.locals = { title: 'Utenti' };
+                        res.locals = { title: 'Clienti' };
                         res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
                         req.flash('message', 'Utenti non trovati!');
@@ -120,7 +116,7 @@ module.exports = function (app) {
             try {
                   const utente = await controller.getClienti();
                   if(utente){
-                        res.locals = { title: 'Utenti' };
+                        res.locals = { title: 'Clienti' };
                         res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente, 'Tipo' : sess.user.tipo, 'EmailLogin' : sess.user.email });
                   }else{
                         req.flash('message', 'Utenti non trovati!');
@@ -132,42 +128,29 @@ module.exports = function (app) {
             }
       });
 
-      app.get('/aggiorna-cliente', isUserAllowed, async (req, res) => {
-            const email = req.query.email?.trim();
-          
-            if (!email) {
-              req.flash('error', 'Email non fornita.');
-              return res.redirect('/lista-clienti');
-            }
-          
+      app.get('/aggiorna-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
+            const email = (req.query.email);
             try {
-              const utente = await controller.getCliente(email);
-          
-              if (!utente) {
-                req.flash('error', 'Utente non trovato!');
-                return res.redirect('/lista-clienti');
-              }
-          
-              res.render('Clienti/aggiorna-cliente', {
-                title: 'Modifica Cliente',
-                message: req.flash('message'),
-                error: req.flash('error'),
-                utente
-              });
-          
+                  const utente = await controller.getCliente(email);
+                  if(utente){
+                        res.locals = { title: 'Modifica Cliente' };
+                        res.render('Clienti/aggiorna-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
+                  }else{
+                        req.flash('message', 'Utente non trovato!');
+                        res.redirect('/login');
+                  }
             } catch (error) {
-              console.error('Errore durante il recupero cliente:', error);
-              req.flash('error', 'Errore interno. Riprova più tardi.');
-              res.redirect('/lista-clienti');
+                  req.flash('message', 'Utente non trovato!');
+                  res.redirect('/lista-clienti');
             }
-          });
+      });
 
       app.get('/disabilita-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
             const email = (req.query.email);
             try {
                   const utente = await controller.getCliente(email);
                   if(utente){
-                        res.locals = { title: 'Modifica Utente' };
+                        res.locals = { title: 'Modifica Cliente' };
                         res.render('Clienti/disabilita-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
                   }else{
                         req.flash('message', 'Utente non trovato!');
@@ -179,49 +162,42 @@ module.exports = function (app) {
             }
       });
 
-      app.post('/aggiornaCliente', urlencodeParser, (req, res) => {
-            uploadClienti(req, res, async function (err) {
-              if (err instanceof multer.MulterError || err) {
-                console.error('Errore upload:', err);
-                req.flash('error', 'Errore nel caricamento file.');
-                return res.redirect('/lista-clienti');
-              }
-          console.log(req.file?.path);
-              const fotoPath = req.file?.path || "";
-              const email = req.body.emailHidden?.trim();
-          
-              if (!email) {
-                req.flash('error', 'Email cliente mancante.');
-                return res.redirect('/lista-clienti');
-              }
-          
-              const objUtente = {
-                nome: req.body.nome?.trim(),
-                cognome: req.body.cognome?.trim(),
-                piva: req.body.piva?.trim(),
-                note: req.body.note?.trim(),
-                email,
-                fotoPath
-              };
-          
-              try {
-                const utenteAggiornato = await controller.updCliente(objUtente);
-          
-                if (utenteAggiornato) {
-                  req.flash('message', 'Utente aggiornato con successo!');
-                } else {
-                  req.flash('error', 'Utente non trovato o non aggiornato.');
-                }
-          
-                res.redirect('/lista-clienti');
-          
-              } catch (error) {
-                console.error('Errore aggiornamento cliente:', error);
-                req.flash('error', 'Errore durante l\'aggiornamento del cliente.');
-                res.redirect('/lista-clienti');
-              }
-            });
-          });
+      app.post('/aggiornaCliente', urlencodeParser, async (req, res) =>  {
+            uploadClienti(req, res, async function (err){
+                  if (req.file !== undefined) {
+                        var fotoPath = req.file.path;
+                  } else {
+                        var fotoPath = "";
+                  } 
+                  let objUtente = {
+                        nome : req.body.nome,
+                        cognome: req.body.cognome,
+                        piva: req.body.piva,
+                        note: req.body.note,
+                        email: req.body.emailHidden,
+                        fotoPath: fotoPath,
+                  }
+                  try {
+                        const utente = await controller.updCliente(objUtente);
+                        if(utente){
+                              req.flash('message', 'Utente aggiornato!');
+                              res.redirect('/lista-clienti');
+                        }else{
+                              req.flash('message', 'Utente non aggiornato!');
+                              res.redirect('/login');
+                        }
+                  } catch (error) {
+                        
+                  }
+
+                  if (err instanceof multer.MulterError) {
+                        res.send(err)
+                  } else if (err) {
+                        res.send(err)
+                  }
+            })
+            
+	});
 
       app.post('/disabilitaCliente', urlencodeParser, async (req, res) =>  {
                   let objUtente = {

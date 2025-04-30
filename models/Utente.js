@@ -55,6 +55,9 @@ const utenteschema = new mongoose.Schema({
     partner: {
         type: String,
         default: ''
+    },
+    resetTokenExpires: {
+         type: Date
     }
 })
 

@@ -13,12 +13,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Clienti</h4>
+            <h4 class="mb-0">Utenti</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="\inserisci-cliente">Inserisci Cliente</a></li>
-                    <li class="breadcrumb-item active">Clienti</li>
+                    <li class="breadcrumb-item"><a href="\inserisci-cliente">Inserisci Utente</a></li>
+                    <li class="breadcrumb-item active">Utenti</li>
                 </ol>
             </div>
 
@@ -44,7 +44,7 @@
         
         <div>
             <div>
-                <button id="aggiungiC" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Clienti</button> 
+                <button id="aggiungiC" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Utente</button> 
             </div>
             <div class="table-responsive mb-4">
                 <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabClienti">
@@ -92,17 +92,17 @@
                             <td class="email"><%= dato.email%></td>
                             <td class="partner"><%= dato.partner%></td>
                             <td>
+                                <% if (dato.tipo==='A') { %>
+                                <div class="badge bg-pill bg-soft-primary font-size-12">Admin</div>
+                                <%} else {%>
+                                <div class="badge bg-pill bg-soft-warning font-size-12">Utente</div>
+                                <%}%>
+                            </td>
+                            <td>
                                 <% if (dato.stato===true) { %>
                                 <div class="badge bg-pill bg-soft-success font-size-12">Active</div>
                                 <%} else {%>
                                 <div class="badge bg-pill bg-soft-danger font-size-12">Deactive</div>
-                                <%}%>
-                            </td>
-                            <td>
-                                <% if (dato.tipo==='A') { %>
-                                <div class="badge bg-pill bg-soft-primary font-size-12">Admin</div>
-                                <%} else {%>
-                                <div class="badge bg-pill bg-soft-warning font-size-12">Cliente</div>
                                 <%}%>
                             </td>
                             <td>

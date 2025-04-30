@@ -53,46 +53,41 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 	users: users,
 });
 
-const sendResetPasswordMail = async (name, email, tokenMail, host) => {
+const sendResetPasswordMail = async(name, email, tokenMail, host)=>{
+	//console.log(host);
+	const url = "http://" + host + "/" + "auth-reset-password?token=" + tokenMail;
+	//console.log(url);
 	try {
-	  const resetUrl = new URL(`/auth-reset-password?token=${tokenMail}`, process.env.HOST);
-  
-	  const transporter = nodemailer.createTransport({
-		host: 'smtp.gmail.com',
-		port: 587,
-		secure: false,
-		requireTLS: true,
-		auth: {
-		  user: mail.emailUser,
-		  pass: mail.emailPassword
+		const transporter = nodemailer.createTransport({
+			host:'smtp.gmail.com',
+			port:587,
+			secure:false,
+			requireTLS:true,
+			auth:{
+				user:mail.emailUser,
+				pass:mail.emailPassword
+			}
+		});
+
+		const mailOptions = {
+			from:mail.emailUser,
+			to:email,
+			subject:'reset password',
+			html:'<p> Ciao '+name+',  per favore copia il link <a href="'+url+'"> e resetta la password</a>'
 		}
-	  });
-  
-	  const mailOptions = {
-		from: `"Supporto" <${mail.emailUser}>`,
-		to: email,
-		subject: 'Reset della password',
-		html: `
-		  <p>Ciao <strong>${name}</strong>,</p>
-		  <p>Hai richiesto il reset della tua password.</p>
-		  <p>Clicca sul seguente link per reimpostarla:</p>
-		  <p><a href="${resetUrl.href}">${resetUrl.href}</a></p>
-		  <br>
-		  <p>Se non hai effettuato tu questa richiesta, ignora semplicemente questa email.</p>
-		  <hr>
-		  <p>Grazie,<br>Il team di supporto</p>
-		`
-	  };
-  
-	  const info = await transporter.sendMail(mailOptions);
-	  console.log("📨 Email inviata:", info.response);
-  
+
+		transporter.sendMail(mailOptions,function(error,info){
+			if(error){
+				console.log(error);
+			}else{
+				console.log("Mail è stata inviata:- ",info.response)
+			}
+		})
+
 	} catch (error) {
-	  console.error('❌ Errore invio email di reset:', error.message);
-	  throw new Error('Errore durante l\'invio della mail');
+		res.status(400).send(({success:false,msg:error.message}));	
 	}
-  };
-  
+}
 
 module.exports = function (app) {
 
@@ -236,91 +231,64 @@ module.exports = function (app) {
 		res.render('Auth/auth-forgot-password', { 'message': req.flash('message'), 'error': req.flash('error') });
 	});
 
-	app.post('/post-forgot-password', urlencodeParser, async (req, res) => {
-		const email = req.body.email?.trim();
-		const host = req.headers.host;
-	  
-		if (!email) {
-		  req.flash('error', 'Email obbligatoria.');
-		  return res.redirect('/forgot-password');
-		}
-	  
-		try {
-		  const utente = await Utente.findOne({ email });
-	  
-		  if (!utente) {
-			req.flash('error', 'Utente non trovato!');
-			return res.redirect('/forgot-password');
-		  }
-	  
-		  const resetToken = randomstring.generate();
-		  const expiresAt = new Date(Date.now() + 3600000); // 1 ora da adesso
-		  const updatedUtente = await Utente.findOneAndUpdate(
-			{ email },
-			{
-				$set: {
-				  tokenMail: resetToken,
-				  resetTokenExpires: expiresAt
-				}
-			  },
-			{ new: true }
-		  );
-	  
-		  await sendResetPasswordMail(updatedUtente.nome, updatedUtente.email, resetToken, host);
-	  
-		  req.flash('message', 'Controlla la tua email per resettare la password!');
-		  res.redirect('/login');
-	  
-		} catch (error) {
-		  console.error('Errore reset password:', error);
-		  req.flash('error', 'Errore durante l\'invio dell\'email di reset.');
-		  res.redirect('/forgot-password');
-		}
-	  });
+	app.post('/post-forgot-password', urlencodeParser, function (req, res) {
+		var host = req.headers.host;
+		var utente = req.body.email
+		Utente.findOne({email:utente})
+		.then(utente => {
+			if(utente){
+				const randomString = randomstring.generate();
+				const email = req.body.email;
+				Utente.findOneAndUpdate({email:email},{$set:{tokenMail:randomString}})
+				.then(utenteupd => {
+					sendResetPasswordMail(utenteupd.nome, 'antonio.din74@gmail.com', randomString, host);
+					req.flash('message', 'Controlla la tua email e resetta la password!');
+					res.redirect('/login');
+				})
+				.catch(error => {
+					console.log(error);
+				})
+				
+			}else{
+				req.flash('error', 'Utente non trovato!');
+				res.redirect('/forgot-password');
+			}
+		})
+	});
 
 	app.get('/auth-reset-password', function (req, res) {
 		const tokenMail = req.query.token;
 			res.render('Auth/auth-reset-password', { 'message': req.flash('message'), 'error': req.flash('error'), 'token': tokenMail });
 	});
 
-	app.post('/reset-password', urlencodeParser, async (req, res) => {
-		const { token, password } = req.body;
-	  console.log(token);
-		if (!token || !password) {
-		  req.flash('error', 'Token o password mancanti.');
-		  return res.redirect('/');
-		}
-	  
-		try {
-		  const utente = await Utente.findOne({ tokenMail: token });
-	  
-		  if (!utente || !utente.resetTokenExpires || utente.resetTokenExpires < Date.now()) {
-			req.flash('error', 'Token scaduto o non valido!');
-			return res.redirect('/forgot-password');
-		  }
-	  
-		  const hashedPass = await bcrypt.hash(password, 10);
-	  
-		  await Utente.findOneAndUpdate(
-			{ tokenMail: token },
-			{
-				$set: {
-				  password: hashedPass,
-				  tokenMail: '',
-				  resetTokenExpires: null
-				}
+	app.post('/reset-password', urlencodeParser, function (req, res) {
+		const tokenMail = req.body.token;
+		const newPassword = req.body.password; 
+		Utente.findOne({tokenMail:tokenMail})
+		.then(utente => {
+			if(utente){
+				//const newPassword = 'anto1dino1';
+				bcrypt.hash(newPassword, 10, function(err, hashedPass) {
+					if(err) {
+						console.log(err);
+					}
+					Utente.findOneAndUpdate({tokenMail:utente.tokenMail},{$set:{password:hashedPass,tokenMail:''}})
+					.then(utenteupd => {
+						req.flash('message', 'Password cambiata con successo!');
+						res.redirect('/login');
+					})
+					.catch(error => {
+						res.json({
+							message:error
+						})
+					})			
+				})
+			}else{
+				req.flash('error', 'tokenMail scaduto!');
+				res.redirect('/');
 			}
-		  );
-	  
-		  req.flash('message', 'Password aggiornata con successo!');
-		  res.redirect('/login');
-	  
-		} catch (err) {
-		  console.error('Errore reset password:', err);
-		  req.flash('error', 'Errore durante il reset della password.');
-		  res.redirect('/');
-		}
-	  });
+		})
+	});
 	
 
 	app.get('/logout', function (req, res) {
