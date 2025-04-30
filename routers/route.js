@@ -141,19 +141,17 @@ module.exports = function (app) {
             }
           
             try {
-              const utente = await controller.getCliente(email);
-          
+              const Arrayutente = await controller.getClienti(email);
+              const utente = Arrayutente[0]
               if (!utente) {
                 req.flash('error', 'Utente non trovato!');
                 return res.redirect('/lista-clienti');
               }
-          
               res.render('Clienti/aggiorna-cliente', {
                 title: 'Modifica Cliente',
                 message: req.flash('message'),
                 error: req.flash('error'),
-                utente,
-                session: req.session  // <-- importante!
+                utente
               });
           
             } catch (error) {
@@ -166,10 +164,10 @@ module.exports = function (app) {
       app.get('/disabilita-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
             const email = (req.query.email);
             try {
-                  const utente = await controller.getCliente(email);
+                  const utente = await controller.getClienti(email);
                   if(utente){
                         res.locals = { title: 'Modifica Utente' };
-                        res.render('Clienti/disabilita-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
+                        res.render('Clienti/disabilita-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente[0] });
                   }else{
                         req.flash('message', 'Utente non trovato!');
                         res.redirect('/login');
@@ -246,10 +244,10 @@ module.exports = function (app) {
       app.get('/dettaglio-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
             const email = (req.query.email);
             try {
-                  const utente = await controller.getCliente(email);
+                  const utente = await controller.getClienti(email);
                   if(utente){
                         res.locals = { title: 'Dettaglio Cliente' };
-                        res.render('Clienti/dettaglio-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
+                        res.render('Clienti/dettaglio-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente[0] });
                   }else{
                         req.flash('message', 'Utente non trovato!');
                         res.redirect('/lista-clienti');

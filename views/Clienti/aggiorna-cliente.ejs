@@ -94,7 +94,7 @@
                                 <label class="form-label" for="note">Note</label>
                                 <textarea class="form-control" id="note" name="note" rows="4"><%= utente.note%></textarea>
                             </div>
-                            <% if (session.user && session.user.tipo === 'A') { %>
+                            <% if (utente.tipo === 'A') { %>
                                 <div class="mb-3 mt-3">
                                     <label class="form-label" for="tipo">Ruolo</label>
                                     <select id="tipo" name="tipo" class="form-select">

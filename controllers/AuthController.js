@@ -105,48 +105,48 @@ module.exports = function (app) {
 
 	  app.post('/post-login', express.urlencoded({ extended: false }), async (req, res) => {
 		const { email, password } = req.body;
+	  
 		try {
 		  const utente = await Utente.findOne({ email });
-
+	  
 		  if (!utente) {
 			req.flash('message', 'Utente non trovato!');
 			return res.redirect('/login');
 		  }
-	
+	  
 		  const passwordMatch = await bcrypt.compare(password, utente.password);
-
+	  
 		  if (!passwordMatch) {
-
 			req.flash('message', 'Password errata!');
 			return res.redirect('/login');
 		  }
-	
-		  if (!utente.stato) {
-
-			req.flash('message', 'Utente disattivato!');
+	  
+		  // ✅ Solo utenti con stato true possono loggarsi
+		  if (utente.stato !== true) {
+			req.flash('message', 'Utente disattivato. Accesso negato!');
 			return res.redirect('/login');
 		  }
-	
+	  
 		  const token = jwt.sign({ userId: utente._id }, jwtSecret, { expiresIn: '1h' });
 		  res.cookie('token', token, { httpOnly: true });
-
+	  
 		  req.session.user = {
 			username: utente.nome,
 			email: utente.email,
 			foto: utente.fotoPath,
 			tipo: utente.tipo
 		  };
-
+	  
 		  req.flash('message', 'Utente loggato!');
 		  res.redirect('/');
-	
+	  
 		} catch (err) {
-
 		  console.error('Errore login:', err);
 		  req.flash('error', 'Errore interno del server.');
 		  res.redirect('/login');
 		}
 	  });
+	  
 
 
 	app.get('/register', function (req, res) {

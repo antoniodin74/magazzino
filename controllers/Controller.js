@@ -7,16 +7,22 @@ const Articolo = require('../models/Articolo');
 const Contatore = require('../models/Contatore');
 const Ordine = require('../models/Ordine');
 
-async function getClienti() {
+async function getClienti(email = '') {
 	try {
-	  const clienti = await Utente.find();
-	  return clienti;
-	} catch (error) {
-	  throw new Error('Impossibile ottenere i clienti');
-	}
-  };
+	  const filtro = email
+		? { email: { $regex: email, $options: 'i' } } // ricerca case-insensitive
+		: {};
 
-async function getCliente(email) {
+	  const clienti = await Utente.find(filtro).sort({ nome: 1 });
+	  return clienti;
+  
+	} catch (error) {
+	  console.error('Errore in getClienti:', error);
+	  throw new Error('Impossibile ottenere i clienti dal database');
+	}
+  }
+
+/* async function getCliente(email) {
 try {
 	var utente = email;
 	const cliente = await Utente.findOne({email:utente});
@@ -24,7 +30,7 @@ try {
 } catch (error) {
 	throw new Error('Impossibile trovare il cliente');
 }
-};
+}; */
 
 async function updCliente(objUtente) {
 
@@ -250,7 +256,7 @@ async function getOrdini() {
 
   module.exports =  {
 	getClienti,
-	getCliente,
+	/* getCliente, */
 	updCliente,
 	getArticoli,
 	getContatoreArt,
