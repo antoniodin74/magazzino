@@ -58,12 +58,12 @@
                             <h5 class="font-size-16"><%= utente.partner%></h5>
                             <p class="mb-1">P.iva :</p>
                             <h5 class="font-size-16"><%= utente.piva%></h5>
-                            <p class="mb-1">Tipo :</p>
-                            <% if (utente.tipo==='A') { %>
-                            <div class="badge bg-pill bg-soft-primary font-size-12">Admin</div>
-                            <%} else {%>
-                            <div class="badge bg-pill bg-soft-warning font-size-12">Cliente</div>
-                            <%}%>
+                            <p class="mb-1">Ruolo :</p>
+                        <% if (utente.tipo === 'A') { %>
+                            <span class="badge bg-primary">Amministratore</span>
+                        <% } else { %>
+                            <span class="badge bg-warning text-dark">Cliente</span>
+                        <% } %>
                         </div>
                     </div>
                 </div>

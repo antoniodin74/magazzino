@@ -152,7 +152,8 @@ module.exports = function (app) {
                 title: 'Modifica Cliente',
                 message: req.flash('message'),
                 error: req.flash('error'),
-                utente
+                utente,
+                session: req.session  // <-- importante!
               });
           
             } catch (error) {
@@ -186,7 +187,6 @@ module.exports = function (app) {
                 req.flash('error', 'Errore nel caricamento file.');
                 return res.redirect('/lista-clienti');
               }
-          console.log(req.file?.path);
               const fotoPath = req.file?.path || "";
               const email = req.body.emailHidden?.trim();
           
@@ -201,7 +201,8 @@ module.exports = function (app) {
                 piva: req.body.piva?.trim(),
                 note: req.body.note?.trim(),
                 email,
-                fotoPath
+                fotoPath,
+                tipo: req.body.tipo || ''  // <-- aggiunto qui
               };
           
               try {
