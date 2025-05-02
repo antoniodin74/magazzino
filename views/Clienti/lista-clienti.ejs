@@ -109,7 +109,19 @@
                                 <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
                                 <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
                                 <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
-                            </td>
+                              
+                                <% if (Tipo === 'A') { %>
+                                  <form method="post" action="/toggle-stato" style="display:inline;">
+                                    <input type="hidden" name="email" value="<%= dato.email %>">
+                                    <button type="submit"
+                                            class="btn btn-sm <%= dato.stato ? 'btn-outline-danger' : 'btn-outline-success' %>"
+                                            title="<%= dato.stato ? 'Disattiva utente' : 'Attiva utente' %>">
+                                      <%= dato.stato ? 'Disattiva' : 'Attiva     ' %>
+                                    </button>
+                                  </form>
+                                <% } %>
+                              </td>
+                              
                         </tr>
                             <% } %>
 

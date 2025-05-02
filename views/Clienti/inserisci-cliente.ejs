@@ -11,12 +11,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Inserisci nuovo cliente</h4>
+            <h4 class="mb-0">Inserisci nuovo utente</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="/lista-clienti">Clienti</a></li>
-                    <li class="breadcrumb-item active">Inserisci nuovo cliente</li>
+                    <li class="breadcrumb-item"><a href="/lista-clienti">Utenti</a></li>
+                    <li class="breadcrumb-item active">Inserisci nuovo utente</li>
                 </ol>
             </div>
 
@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <div class="flex-1 overflow-hidden">
-                                <h5 class="font-size-16 mb-1">Informazioni del Cliente</h5>
+                                <h5 class="font-size-16 mb-1">Informazioni del Utente</h5>
                                 <p class="text-muted text-truncate mb-0">Compila tutte le informazioni di seguito</p>
                             </div>
                             <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
@@ -128,7 +128,15 @@
                                 <label class="form-label" for="note">Note</label>
                                 <textarea class="form-control" id="note" name="note" rows="4"></textarea>
                             </div>
-                       
+                            <% if (session.user && session.user.tipo === 'A') { %>
+                                <div class="mb-3 mt-3">
+                                    <label class="form-label" for="tipo">Ruolo</label>
+                                    <select id="tipo" name="tipo" class="form-select">
+                                        <option value="">Utente</option>
+                                        <option value="A">Amministratore</option>
+                                    </select>
+                                </div>
+                            <% } %>
                     </div>
                 </div>
             </div>

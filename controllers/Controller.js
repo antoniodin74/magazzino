@@ -9,18 +9,18 @@ const Ordine = require('../models/Ordine');
 
 async function getClienti(email = '') {
 	try {
-	  const filtro = email
-		? { email: { $regex: email, $options: 'i' } } // ricerca case-insensitive
-		: {};
+		const filtro = email
+			? { email: { $regex: email, $options: 'i' } } // ricerca case-insensitive
+			: {};
 
-	  const clienti = await Utente.find(filtro).sort({ nome: 1 });
-	  return clienti;
-  
+		const clienti = await Utente.find(filtro).sort({ nome: 1 });
+		return clienti;
+
 	} catch (error) {
-	  console.error('Errore in getClienti:', error);
-	  throw new Error('Impossibile ottenere i clienti dal database');
+		console.error('Errore in getClienti:', error);
+		throw new Error('Impossibile ottenere i clienti dal database');
 	}
-  }
+}
 
 /* async function getCliente(email) {
 try {
@@ -32,7 +32,7 @@ try {
 }
 }; */
 
-async function updCliente(objUtente) {
+/* async function updCliente(objUtente) {
 
 	try {
 		let utente = objUtente.email;
@@ -46,42 +46,63 @@ async function updCliente(objUtente) {
 	} catch (error) {
 		throw new Error('Impossibile trovare il cliente');
 	}
-};
+}; */
+async function updCliente(objUtente) {
+	try {
+		const { email, ...updateData } = objUtente;
+
+		if (!email) {
+			throw new Error('Email non fornita per l\'aggiornamento');
+		}
+
+		const clienteAggiornato = await Utente.findOneAndUpdate(
+			{ email },
+			{ $set: updateData },
+			{ new: true, runValidators: true }
+		);
+
+		return clienteAggiornato;
+
+	} catch (error) {
+		console.error('Errore in updCliente:', error);
+		throw new Error('Impossibile aggiornare il cliente');
+	}
+}
 
 async function getArticoli() {
 	try {
-	  const articoli = await Articolo.find({statoArticolo:{ $ne: false }});
-	  return articoli;
+		const articoli = await Articolo.find({ statoArticolo: { $ne: false } });
+		return articoli;
 	} catch (error) {
-	  throw new Error('Impossibile ottenere i articoli');
+		throw new Error('Impossibile ottenere i articoli');
 	}
-  };
+};
 
 async function getContatoreArt() {
 	try {
 		var coll = 'Articolo'
-		const contatore = await Contatore.findOne({collezione:coll});
-		if(contatore){
+		const contatore = await Contatore.findOne({ collezione: coll });
+		if (contatore) {
 			let contatoreArt = contatore.valoreContatore;
 			contatoreArt++;
 			const contatoreIncr = contatoreArt;
 			try {
-				const contatoreUpd = await Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
-				if(contatoreUpd) {
+				const contatoreUpd = await Contatore.findOneAndUpdate({ collezione: contatore.collezione }, { $set: { valoreContatore: contatoreIncr } }, { returnOriginal: false })
+				if (contatoreUpd) {
 					const contatoreNew = contatoreUpd.valoreContatore;
 					return contatoreNew;
 				} else {
 					console.log('Impossibile aggiornare contatore');
 					throw new Error('Impossibile aggiornare contatore');
-				}	
+				}
 			} catch (error) {
 				console.log('Impossibile aggiornare contatore');
 				throw new Error('Impossibile aggiornare contatore');
-				
+
 			}
 		} else {
 			const contatoreSave = await updContatoreArt();
-			if(contatoreSave){
+			if (contatoreSave) {
 				const contatoreNew = contatoreSave.valoreContatore;
 				return contatoreNew;
 			} else {
@@ -89,7 +110,7 @@ async function getContatoreArt() {
 				throw new Error('aggiornamento primo contatore articolo non riuscito');
 			}
 		}
-		
+
 	} catch (error) {
 		console.log('Impossibile aggiornare contatore');
 		throw new Error('Impossibile aggiornare contatore');
@@ -98,10 +119,10 @@ async function getContatoreArt() {
 
 async function updContatoreArt() {
 	try {
-		let contatoreNew = new Contatore ({
-			collezione : 'Articolo',
+		let contatoreNew = new Contatore({
+			collezione: 'Articolo',
 			valoreContatore: 1
-			})
+		})
 		const contatoreSave = await contatoreNew.save()
 		return contatoreSave
 	} catch (error) {
@@ -112,22 +133,22 @@ async function updContatoreArt() {
 
 async function getArticolo(cdArticolo) {
 	try {
-		const articolo = await Articolo.findOne({codiceArticolo:cdArticolo});
+		const articolo = await Articolo.findOne({ codiceArticolo: cdArticolo });
 		return articolo;
 	} catch (error) {
 		throw new Error('Impossibile trovare articolo');
 	}
-	};
+};
 
 async function updArticolo(objArticolo) {
 	const cdArticolo = objArticolo.codiceArticolo;
 	try {
 		let articolo = await Articolo.findOneAndUpdate(
-			{codiceArticolo:cdArticolo},
+			{ codiceArticolo: cdArticolo },
 			{
 				$set: objArticolo
 			},
-			)
+		)
 		return articolo;
 	} catch (error) {
 		throw new Error('Impossibile trovare il articolo');
@@ -137,28 +158,28 @@ async function updArticolo(objArticolo) {
 async function getContatoreOrd() {
 	try {
 		var coll = 'Ordine'
-		const contatore = await Contatore.findOne({collezione:coll});
-		if(contatore){
+		const contatore = await Contatore.findOne({ collezione: coll });
+		if (contatore) {
 			let contatoreOrd = contatore.valoreContatore;
 			contatoreOrd++;
 			const contatoreIncr = contatoreOrd;
 			try {
-				const contatoreUpd = await Contatore.findOneAndUpdate({collezione:contatore.collezione},{$set:{valoreContatore:contatoreIncr}},{ returnOriginal: false })
-				if(contatoreUpd) {
+				const contatoreUpd = await Contatore.findOneAndUpdate({ collezione: contatore.collezione }, { $set: { valoreContatore: contatoreIncr } }, { returnOriginal: false })
+				if (contatoreUpd) {
 					const contatoreNew = contatoreUpd.valoreContatore;
 					return contatoreNew;
 				} else {
 					console.log('Impossibile aggiornare contatore');
 					throw new Error('Impossibile aggiornare contatore');
-				}	
+				}
 			} catch (error) {
 				console.log('Impossibile aggiornare contatore');
 				throw new Error('Impossibile aggiornare contatore');
-				
+
 			}
 		} else {
 			const contatoreSave = await updContatoreOrd();
-			if(contatoreSave){
+			if (contatoreSave) {
 				const contatoreNew = contatoreSave.valoreContatore;
 				return contatoreNew;
 			} else {
@@ -166,7 +187,7 @@ async function getContatoreOrd() {
 				throw new Error('aggiornamento primo contatore ordine non riuscito');
 			}
 		}
-		
+
 	} catch (error) {
 		console.log('Impossibile aggiornare contatore');
 		throw new Error('Impossibile aggiornare contatore');
@@ -175,10 +196,10 @@ async function getContatoreOrd() {
 
 async function updContatoreOrd() {
 	try {
-		let contatoreNew = new Contatore ({
-			collezione : 'Ordine',
+		let contatoreNew = new Contatore({
+			collezione: 'Ordine',
 			valoreContatore: 1
-			})
+		})
 		const contatoreSave = await contatoreNew.save()
 		return contatoreSave
 	} catch (error) {
@@ -187,16 +208,16 @@ async function updContatoreOrd() {
 	}
 }
 
-async function getRigaOrd(cdOrdine){
-	var rigaOrdineIncr= 0;
+async function getRigaOrd(cdOrdine) {
+	var rigaOrdineIncr = 0;
 	try {
-		const ordine = await Ordine.findOne({codiceOrdine:cdOrdine});
-		if(ordine){
+		const ordine = await Ordine.findOne({ codiceOrdine: cdOrdine });
+		if (ordine) {
 			let rigaOrdine = ordine.rigaOrdine;
 			rigaOrdine++;
 			rigaOrdineIncr = rigaOrdine;
-		}else{
-			rigaOrdineIncr=1;
+		} else {
+			rigaOrdineIncr = 1;
 		}
 		return rigaOrdineIncr;
 	} catch (error) {
@@ -206,17 +227,17 @@ async function getRigaOrd(cdOrdine){
 
 async function getOrdini() {
 	try {
-	  //const ordini = await Articolo.find({statoArticolo:{ $ne: false }});
-	  const ordini = await Ordine.find();
-	  return ordini;
+		//const ordini = await Articolo.find({statoArticolo:{ $ne: false }});
+		const ordini = await Ordine.find();
+		return ordini;
 	} catch (error) {
-	  throw new Error('Impossibile ottenere i ordini');
+		throw new Error('Impossibile ottenere i ordini');
 	}
-  };
+};
 
-  async function getOrdiniX() {
+async function getOrdiniX() {
 	try {
-		const ordini =  await Ordine.aggregate([
+		const ordini = await Ordine.aggregate([
 			{
 				$group: {
 					_id: '$codiceOrdine', // Raggruppa per numero di ordine
@@ -231,7 +252,7 @@ async function getOrdini() {
 					valoreOrdine: 1, // Mantieni il campo valoreTotale
 					_id: 0 // Escludi il campo _id dal risultato
 				}
-			  },
+			},
 			{
 				$sort: {
 					codiceOrdine: 1 // Ordina per codiceOrdine in ordine ascendente (1) o discendente (-1)
@@ -243,18 +264,18 @@ async function getOrdini() {
 		console.log(error);
 		throw new Error('Impossibile ottenere i ordini');
 	}
-  };
+};
 
-  async function getOrdine(cdOrdine) {
+async function getOrdine(cdOrdine) {
 	try {
-	  const ordine = await Ordine.find({codiceOrdine:cdOrdine});
-	  return ordine;
+		const ordine = await Ordine.find({ codiceOrdine: cdOrdine });
+		return ordine;
 	} catch (error) {
-	  throw new Error('Impossibile ottenere ordine');
+		throw new Error('Impossibile ottenere ordine');
 	}
-  };
+};
 
-  module.exports =  {
+module.exports = {
 	getClienti,
 	/* getCliente, */
 	updCliente,
