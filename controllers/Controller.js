@@ -69,16 +69,26 @@ async function updCliente(objUtente) {
 	}
 }
 
-async function getArticoli() {
+/* async function getArticoli() {
 	try {
 		const articoli = await Articolo.find({ statoArticolo: { $ne: false } });
 		return articoli;
 	} catch (error) {
 		throw new Error('Impossibile ottenere i articoli');
 	}
-};
+}; */
 
-async function getContatoreArt() {
+async function getArticoli() {
+    try {
+        return await Articolo.find({ statoArticolo: { $ne: false } });
+    } catch (error) {
+        console.error('Errore in getArticoli:', error.message);
+        throw new Error('Errore durante il recupero degli articoli dal database');
+    }
+}
+
+
+/* async function getContatoreArt() {
 	try {
 		var coll = 'Articolo'
 		const contatore = await Contatore.findOne({ collezione: coll });
@@ -115,7 +125,83 @@ async function getContatoreArt() {
 		console.log('Impossibile aggiornare contatore');
 		throw new Error('Impossibile aggiornare contatore');
 	}
+} */
+
+async function getContatoreArt() {
+	try {
+		const coll = 'Articolo';
+		let contatore = await Contatore.findOne({ collezione: coll });
+
+		// Se il contatore esiste, incrementalo
+		if (contatore) {
+			const contatoreIncr = contatore.valoreContatore + 1;
+			const contatoreUpd = await Contatore.findOneAndUpdate(
+				{ collezione: contatore.collezione },
+				{ $set: { valoreContatore: contatoreIncr } },
+				{ new: true } // Usa "new" per restituire il documento aggiornato
+			);
+
+			if (!contatoreUpd) {
+				throw new Error('Impossibile aggiornare contatore');
+			}
+
+			return contatoreUpd.valoreContatore;
+		}
+
+		// Se non esiste, crea un nuovo contatore
+		const contatoreSave = await updContatoreArt();
+		if (!contatoreSave) {
+			throw new Error('Aggiornamento primo contatore articolo non riuscito');
+		}
+
+		return contatoreSave.valoreContatore;
+
+	} catch (error) {
+		console.error(error.message || 'Impossibile aggiornare contatore');
+		throw new Error('Impossibile aggiornare contatore');
+	}
 }
+
+/* async function updContatoreArt() {
+	try {
+		const contatoreNew = new Contatore({
+			collezione: 'Articolo',
+			valoreContatore: 1
+		});
+		return await contatoreNew.save();
+	} catch (error) {
+		console.error('Aggiornamento primo contatore articolo non riuscito');
+		throw new Error('Aggiornamento primo contatore articolo non riuscito');
+	}
+} */
+
+async function updContatoreArt() {
+	try {
+		// Creazione del nuovo contatore
+		const contatoreNew = new Contatore({
+			collezione: 'Articolo',
+			valoreContatore: 1
+		});
+
+		// Salvataggio del nuovo contatore
+		const contatoreSaved = await contatoreNew.save();
+		return contatoreSaved;
+	} catch (error) {
+		// Log dell'errore con maggiori dettagli
+		console.error('Errore durante l\'inserimento del contatore Articolo:', error.message);
+		throw new Error('Errore durante l\'inserimento del contatore Articolo');
+	}
+}
+
+
+async function getArticolo(cdArticolo) {
+	try {
+		return await Articolo.findOne({ codiceArticolo: cdArticolo });
+	} catch (error) {
+		throw new Error('Impossibile trovare articolo');
+	}
+}
+
 
 async function updContatoreArt() {
 	try {

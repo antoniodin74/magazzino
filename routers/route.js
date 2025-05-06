@@ -309,12 +309,21 @@ module.exports = function (app) {
           
 
       // Articolo
-      app.get('/inserisci-articolo', isUserAllowed, function (req, res) {
+      /* app.get('/inserisci-articolo', isUserAllowed, function (req, res) {
             res.locals = { title: 'Inserisci Articolo' };
             res.render('Articoli/inserisci-articolo', { 'message': req.flash('message'), 'error': req.flash('error') });
-      });
+      }); */
 
-      app.get('/lista-articoli', isUserAllowed, async (req, res) => {
+      app.get('/inserisci-articolo', isUserAllowed, (req, res) => {
+            res.render('Articoli/inserisci-articolo', {
+                title: 'Inserisci Articolo',
+                message: req.flash('message'),
+                error: req.flash('error')
+            });
+        });
+        
+
+      /* app.get('/lista-articoli', isUserAllowed, async (req, res) => {
             try {
                   const articolo = await controller.getArticoli();
                   if (articolo[0] !== undefined) {
@@ -329,7 +338,32 @@ module.exports = function (app) {
                   req.flash('error', 'Errore lettura dati!');
                   res.render('/lista-clienti');
             }
-      });
+      }); */
+
+      app.get('/lista-articoli', isUserAllowed, async (req, res) => {
+            try {
+                const articoli = await controller.getArticoli();
+                const articoliTrovati = Array.isArray(articoli) && articoli.length > 0;
+        
+                if (!articoliTrovati) {
+                    req.flash('message', 'Articoli non trovati!');
+                }
+        
+                res.locals.title = 'Articoli';
+                res.render('Articoli/lista-articoli', {
+                    message: req.flash('message'),
+                    error: req.flash('error'),
+                    Articoli: articoli || [],
+                    Tipo: req.session.user.tipo,
+                    EmailLogin: req.session.user.email
+                });
+            } catch (error) {
+                console.error('Errore nella lettura articoli:', error);
+                req.flash('error', 'Errore lettura dati!');
+                return res.redirect('/lista-clienti');
+            }
+        });
+        
 
       app.get('/lista-articoli-fetch', isUserAllowed, async (req, res) => {
 
@@ -346,7 +380,7 @@ module.exports = function (app) {
             }
       });
 
-      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {
+      /* app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {
             try {
                   const contatoreNew = await controller.getContatoreArt();
                   if (contatoreNew) {
@@ -390,9 +424,53 @@ module.exports = function (app) {
                   req.flash('error', 'Articolo non inserito!');
                   res.redirect('/lista-articoli');
             }
-      });
+      }); */
 
-      app.get('/aggiorna-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
+      app.post('/inserisci-articolo', isUserAllowed, async (req, res) => {
+            try {
+                const contatoreNew = await controller.getContatoreArt();
+                if (!contatoreNew) {
+                    req.flash('error', 'Articolo non inserito2!');
+                    return res.redirect('/lista-articoli');
+                }
+        
+                uploadArticoli(req, res, async (err) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).send(err);
+                    }
+        
+                    const fotoPath = req.file?.path || "";
+        
+                    const nuovoArticolo = new Articolo({
+                        codiceArticolo: contatoreNew,
+                        descrizioneArticolo: req.body.descrizione,
+                        quantitaArticolo: req.body.quantita,
+                        costoArticolo: req.body.costo,
+                        noteArticolo: req.body.note,
+                        fotoPathArticolo: fotoPath
+                    });
+        
+                    try {
+                        await nuovoArticolo.save();
+                        req.flash('message', 'Articolo inserito!');
+                    } catch (saveError) {
+                        console.error(saveError);
+                        req.flash('error', 'Articolo non inserito!');
+                    }
+        
+                    res.redirect('/lista-articoli');
+                });
+        
+            } catch (error) {
+                console.error(error);
+                req.flash('error', 'Articolo non inserito!');
+                res.redirect('/lista-articoli');
+            }
+        });
+        
+
+      /* app.get('/aggiorna-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
             const cdArticolo = (req.query.cdArticolo);
             try {
                   const articolo = await controller.getArticolo(cdArticolo);
@@ -407,7 +485,35 @@ module.exports = function (app) {
                   req.flash('message', 'Articolo non trovato!');
                   res.redirect('/lista-articoli');
             }
-      });
+      }); */
+
+      app.get('/aggiorna-articolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const cdArticolo = req.query.cdArticolo;
+        
+            try {
+                const articolo = await controller.getArticolo(cdArticolo);
+        
+                if (articolo) {
+                    res.locals.title = 'Modifica Articolo';
+                    res.render('Articoli/aggiorna-articolo', {
+                        message: req.flash('message'),
+                        error: req.flash('error'),
+                        articolo: articolo
+                    });
+                } else {
+                    handleError(req, res, 'Articolo non trovato!');
+                }
+            } catch (error) {
+                handleError(req, res, 'Errore durante il recupero dell\'articolo');
+            }
+        });
+        
+        // Funzione per gestire gli errori e i redirect
+        function handleError(req, res, message) {
+            req.flash('message', message);
+            res.redirect('/lista-articoli');
+        }
+        
 
       app.post('/aggiorna-articolo', urlencodeParser, async (req, res) => {
             uploadArticoli(req, res, async function (err) {
