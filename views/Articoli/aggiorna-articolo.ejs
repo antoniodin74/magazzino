@@ -94,6 +94,34 @@
                                         <input id="costo" name="costo" type="number" step="any"  class="form-control" value="<%= articolo.costoArticolo%>" required>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="categoria">Categoria</label>
+                                            <select id="categoria" name="categoria" class="form-select select2" required>
+                                                <option value="">Seleziona una categoria</option> <!-- Opzione per nessuna categoria selezionata -->
+                                                <% categorie.forEach(cat => { %>
+                                                    <option value="<%= cat._id %>" <%= articolo.categoria && articolo.categoria.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.nome %></option>
+                                                <% }) %>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="unitaMisura">Unità di Misura</label>
+                                            <select id="unitaMisura" name="unitaMisura" class="form-select select2" required>
+                                                <option value="">Seleziona un'unità di misura</option> <!-- Opzione per nessuna unità di misura selezionata -->
+                                                <% unitaMisura.forEach(um => { %>
+                                                    <option value="<%= um._id %>" <%= articolo.unitaMisura && articolo.unitaMisura.toString() === um._id.toString() ? 'selected' : '' %>><%= um.sigla %> - <%= um.descrizione %></option>
+                                                <% }) %>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div class="mb-0">
                                 <label class="form-label" for="note">Note</label>
@@ -159,9 +187,13 @@
 <%- contentFor('FooterJs') %>
 
 <script>
+    $(document).ready(function () {
+    $('.select2').select2();
+  });
     function resetForm() {
       document.getElementById("formAggiungiArticolo").reset();
     }
+    
     </script>
 <!-- select 2 plugin -->
 <script src="public/assets/libs/select2/js/select2.min.js"></script>

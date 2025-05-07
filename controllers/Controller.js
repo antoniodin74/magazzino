@@ -4,6 +4,8 @@ var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const Articolo = require('../models/Articolo');
+const Categoria = require('../models/Categoria');
+const UnitaMisura = require('../models/UnitaMisura');
 const Contatore = require('../models/Contatore');
 const Ordine = require('../models/Ordine');
 
@@ -194,13 +196,27 @@ async function updContatoreArt() {
 }
 
 
-async function getArticolo(cdArticolo) {
+/* async function getArticolo(cdArticolo) {
 	try {
 		return await Articolo.findOne({ codiceArticolo: cdArticolo });
 	} catch (error) {
 		throw new Error('Impossibile trovare articolo');
 	}
+} */
+
+async function getArticolo(codiceArticolo) {
+    try {
+        const articolo = await Articolo.findOne({ codiceArticolo });
+        if (!articolo) {
+            throw new Error(`Articolo con codice "${codiceArticolo}" non trovato.`);
+        }
+        return articolo;
+    } catch (error) {
+        console.error(`Errore nel recupero dell'articolo (${codiceArticolo}):`, error.message);
+        throw new Error('Errore durante la ricerca dell\'articolo.');
+    }
 }
+
 
 
 async function updContatoreArt() {
@@ -226,7 +242,7 @@ async function getArticolo(cdArticolo) {
 	}
 };
 
-async function updArticolo(objArticolo) {
+/* async function updArticolo(objArticolo) {
 	const cdArticolo = objArticolo.codiceArticolo;
 	try {
 		let articolo = await Articolo.findOneAndUpdate(
@@ -239,7 +255,32 @@ async function updArticolo(objArticolo) {
 	} catch (error) {
 		throw new Error('Impossibile trovare il articolo');
 	}
-};
+}; */
+
+async function updArticolo(objArticolo) {
+    try {
+        const { codiceArticolo, ...updateFields } = objArticolo;
+
+        const updated = await Articolo.findOneAndUpdate(
+            { codiceArticolo },
+            { $set: updateFields },
+            { new: true, runValidators: true }
+        );
+
+        return updated;
+    } catch (error) {
+        console.error('Errore aggiornamento articolo:', error);
+        throw new Error('Impossibile aggiornare l\'articolo');
+    }
+}
+
+async function getCategorie() {
+    return await Categoria.find().lean();
+}
+
+async function getUnitaMisura() {
+    return await UnitaMisura.find().lean();
+}
 
 async function getContatoreOrd() {
 	try {
@@ -369,6 +410,8 @@ module.exports = {
 	getContatoreArt,
 	getArticolo,
 	updArticolo,
+	getCategorie,
+    getUnitaMisura,
 	getContatoreOrd,
 	updContatoreOrd,
 	getRigaOrd,

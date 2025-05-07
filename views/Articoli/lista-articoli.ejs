@@ -1,125 +1,98 @@
 <%- contentFor('HeaderCss') %>
-
-<!-- DataTables -->
-<link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-
-<!-- Responsive datatable examples -->
-<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />  
+<link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
 <%- contentFor('breadcrumb') %>
-
-<!-- start page title -->
 <div class="row">
-    <div class="col-12">
-        <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Articoli</h4>
-
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="\inserisci-articolo">Inserisci Articolo</a></li>
-                    <li class="breadcrumb-item active">Articoli</li>
-                </ol>
-            </div>
-
-        </div>
+  <div class="col-12">
+    <div class="page-title-box d-flex align-items-center justify-content-between">
+      <h4 class="mb-0">Articoli</h4>
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item"><a href="/inserisci-articolo">Inserisci Articolo</a></li>
+          <li class="breadcrumb-item active">Articoli</li>
+        </ol>
+      </div>
     </div>
+  </div>
 </div>
-<!-- end page title -->
 
 <%- contentFor('body') %>
-
 <div class="row">
-    <div class="col-lg-12">
-        <% if(error.length> 0) { %>
-            <div id="elementoDaRimuovere1" class="alert alert-danger text-center mb-4 flash" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-        <% if(message.length> 0) { %>
-            <div id="elementoDaRimuovere2" class="alert alert-success text-center mb-4 flash" role="alert">
-                <%= message %>
-            </div>
-        <% } %>
-        <div>
-            <div>
-                <button id="aggiungiA" type="button" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-plus me-1"></i> Aggiungi Articoli</button> 
-            </div>
+  <div class="col-lg-12">
+    <% if (error.length) { %>
+      <div class="alert alert-danger text-center mb-4 flash" role="alert"><%= error %></div>
+    <% } %>
+    <% if (message.length) { %>
+      <div class="alert alert-success text-center mb-4 flash" role="alert"><%= message %></div>
+    <% } %>
 
-            <div class="table-responsive mb-4">
-                <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabArticoli">
-                    <thead>
-                        <tr>
-                            <!--
-                            <th style="width: 20px;">
-                                <div class="form-check text-center">
-                                    <input type="checkbox" class="form-check-input" id="customercheck">
-                                    <label class="form-check-label" for="customercheck"></label>
-                                </div>
-                            </th>
-                            -->
-                            <th>Codice</th>
-                            <th>Descrizione</th>
-                            <th>Quantità</th>
-                            <th>Costo</th>
-                            <th style="width: 120px;">Action</th>
-                        </tr>
-                    </thead>
-                    <!--Admin vede tutti i clienti, gli altri solo il proprio più i patner creati-->
-                    <tbody>
-                        <% for (let articolo of Articoli) { %>                            
-                            <tr>
-                            <td  class="badge bg-pill bg-soft-primary font-size-12 cdArticolo"><%= articolo.codiceArticolo%></td>
-                            <td class="px-3 text-warning"><%= articolo.descrizioneArticolo%></td>
-                            <td class="px-3 text-success"><%= articolo.quantitaArticolo%></td>
-                            <td class="px-3 text-danger partner"><%= articolo.costoArticolo%></td>
-                            <td>
-                                <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
-                                <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
-                                <a href="#" class="px-3 text-success linkDettaglio"><i class="uil uil-book-open font-size-18"></i></a>
-                            </td>
-                        </tr>
-                        <%}%> 
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div>
+      <button id="aggiungiA" class="btn btn-success waves-effect waves-light mb-3">
+        <i class="mdi mdi-plus me-1"></i> Aggiungi Articoli
+      </button>
+
+      <div class="table-responsive mb-4">
+        <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabArticoli">
+          <thead>
+            <tr>
+              <th>Codice</th>
+              <th>Descrizione</th>
+              <th>Quantità</th>
+              <th>Costo</th>
+              <th style="width: 120px;">Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let articolo of Articoli) { %>
+              <tr>
+                <td class="cdArticolo"><%= articolo.codiceArticolo %></td>
+                <td class="px-3 text-warning"><%= articolo.descrizioneArticolo %></td>
+                <td class="px-3 text-success"><%= articolo.quantitaArticolo %></td>
+                <td class="px-3 text-danger partner"><%= articolo.costoArticolo %></td>
+                <td>
+                  <a href="#" class="px-2 text-primary linkAzioni" data-action="aggiorna" title="Aggiorna Articolo">
+                    <i class="uil uil-pen font-size-18"></i>
+                  </a>
+                  <a href="#" class="px-2 text-danger linkAzioni" data-action="disabilita" title="Disabilita Articolo">
+                    <i class="uil uil-trash-alt font-size-18"></i>
+                  </a>
+                  <a href="#" class="px-2 text-success linkAzioni" data-action="dettaglio" title="Dettaglio Articolo">
+                    <i class="uil uil-book-open font-size-18"></i>
+                  </a>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
-<!-- end row -->
 
 <%- contentFor('FooterJs') %>
 <script>
-$(document).ready(function() {
-    // Aggiungi un gestore di eventi al click sul link
-    $('.tabArticoli').on('click', '.linkAggiorna', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
-      // Chiamata alla route "aggiorna-articolo" passando il valore di cdArticolo
-        window.location.href = '/aggiorna-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
-    });
-    $('.tabArticoli').on('click', '.linkCancella', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
-      // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/disabilita-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
-    });
-    $('.tabArticoli').on('click', '.linkDettaglio', function() {
-      // Ottieni il valore del codice articolo corrispondente
-        var cdArticolo = $(this).closest('tr').find('.cdArticolo').text();
-      // Chiamata alla route "aggiorna-cliente" passando il valore di cdArticolo
-        window.location.href = '/dettaglio-articolo?cdArticolo=' + encodeURIComponent(cdArticolo);
-    });
-    $('.tabArticoli').on('click', function() {
+  $(document).ready(function () {
+    $('.tabArticoli').on('click', '.linkAzioni', function (e) {
+      e.preventDefault();
+      const codice = $(this).closest('tr').find('.cdArticolo').text().trim();
+      const action = $(this).data('action');
+      const routeMap = {
+        aggiorna: '/aggiorna-articolo',
+        disabilita: '/disabilita-articolo',
+        dettaglio: '/dettaglio-articolo'
+      };
+      if (routeMap[action]) {
+        window.location.href = `${routeMap[action]}?cdArticolo=${encodeURIComponent(codice)}`;
+      }
     });
   });
 </script>
 
-<!-- Required datatable js -->
+<!-- DataTables JS -->
 <script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-<!-- Buttons examples -->
 <script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
 <script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
 <script src="public/assets/libs/jszip/jszip.min.js"></script>
@@ -128,12 +101,8 @@ $(document).ready(function() {
 <script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
 <script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
 <script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-
-<!-- Responsive examples -->
 <script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-
-<!-- init js -->
 <script src="public/assets/js/pages/articoli-datatables.init.js"></script>
 
 <%- contentFor('BottomJs') %>
