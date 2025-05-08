@@ -91,6 +91,30 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="categoria">Categoria</label>
+                                        <select id="categoria" name="categoria" class="form-select select2" required>
+                                            <option value="">Seleziona una categoria</option>
+                                            <% categorie.forEach(cat => { %>
+                                                <option value="<%= cat._id %>"><%= cat.nome %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="unitaMisura">Unità di Misura</label>
+                                        <select id="unitaMisura" name="unitaMisura" class="form-select select2" required>
+                                            <option value="">Seleziona un'unità di misura</option>
+                                            <% unitaMisura.forEach(um => { %>
+                                                <option value="<%= um._id %>"><%= um.sigla %> - <%= um.descrizione %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="mb-0">
                                 <label class="form-label" for="note">Note</label>
                                 <textarea class="form-control" id="note" name="note" rows="4"></textarea>

@@ -1,0 +1,105 @@
+<%- contentFor('HeaderCss') %>
+<link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+
+<%- contentFor('breadcrumb') %>
+<div class="row">
+  <div class="col-12">
+    <div class="page-title-box d-flex align-items-center justify-content-between">
+      <h4 class="mb-0">Categorie Articolo</h4>
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item"><a href="/inserisci-catarticolo">Inserisci Categoria Articolo</a></li>
+          <li class="breadcrumb-item active">Categorie Articolo</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+  <div class="col-lg-12">
+    <% if (error.length) { %>
+      <div class="alert alert-danger text-center mb-4 flash" role="alert"><%= error %></div>
+    <% } %>
+    <% if (message.length) { %>
+      <div class="alert alert-success text-center mb-4 flash" role="alert"><%= message %></div>
+    <% } %>
+
+    <div>
+      <button id="aggiungiCat" class="btn btn-success waves-effect waves-light mb-3">
+        <i class="mdi mdi-plus me-1"></i> Aggiungi Categoria Articolo
+      </button>
+
+      <div class="table-responsive mb-4">
+        <table id="datatable-buttons" class="table table-centered datatable nowrap mb-0 table-card-list tabCatArticolo">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Descrizione</th>
+              <th style="width: 120px;">Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let catarticolo of CatArticolo) { %>
+              <tr>
+                <td class="nome" data-id="<%= catarticolo._id %>"><%= catarticolo.nome %></td>
+                <td class="px-3 text-warning"><%= catarticolo.descrizione %></td>
+                <td>
+                  <a href="#" class="px-2 text-primary linkAzioni" data-action="aggiorna" title="Aggiorna Articolo">
+                    <i class="uil uil-pen font-size-18"></i>
+                  </a>
+                  <a href="#" class="px-2 text-danger linkAzioni" data-action="disabilita" title="Disabilita Articolo">
+                    <i class="uil uil-trash-alt font-size-18"></i>
+                  </a>
+                  <a href="#" class="px-2 text-success linkAzioni" data-action="dettaglio" title="Dettaglio Articolo">
+                    <i class="uil uil-book-open font-size-18"></i>
+                  </a>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script>
+  $(document).ready(function () {
+    $('.tabCatArticolo').on('click', '.linkAzioni', function (e) {
+      e.preventDefault();
+      const codice = $(this).closest('tr').find('.nome').data('id'); // usa data-id invece del testo
+      const action = $(this).data('action');
+      const routeMap = {
+        aggiorna: '/aggiorna-catarticolo',
+        disabilita: '/disabilita-catarticolo',
+        dettaglio: '/dettaglio-catarticolo'
+      };
+      if (routeMap[action]) {
+        window.location.href = `${routeMap[action]}?id=${encodeURIComponent(codice)}`;
+      }
+    });
+  });
+</script>
+
+
+<!-- DataTables JS -->
+<script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="public/assets/libs/jszip/jszip.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+<script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="public/assets/js/pages/categorie-articolo-datatables.init.js"></script>
+
+<%- contentFor('BottomJs') %>

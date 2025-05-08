@@ -314,8 +314,12 @@ module.exports = function (app) {
             res.render('Articoli/inserisci-articolo', { 'message': req.flash('message'), 'error': req.flash('error') });
       }); */
 
-      app.get('/inserisci-articolo', isUserAllowed, (req, res) => {
+      app.get('/inserisci-articolo', isUserAllowed, async (req, res) => {
+            const categorie = await controller.getCategorie();      // <-- Recupera categorie
+            const unitaMisura = await controller.getUnitaMisura();  // <-- Recupera unità di misura
             res.render('Articoli/inserisci-articolo', {
+                categorie: categorie,
+                unitaMisura: unitaMisura,
                 title: 'Inserisci Articolo',
                 message: req.flash('message'),
                 error: req.flash('error')
@@ -448,7 +452,9 @@ module.exports = function (app) {
                         quantitaArticolo: req.body.quantita,
                         costoArticolo: req.body.costo,
                         noteArticolo: req.body.note,
-                        fotoPathArticolo: fotoPath
+                        fotoPathArticolo: fotoPath,
+                        categoria: req.body.categoria || null,
+                        unitaMisura: req.body.unitaMisura || null
                     });
         
                     try {
@@ -574,7 +580,8 @@ module.exports = function (app) {
                     noteArticolo: req.body.note,
                     fotoPathArticolo: fotoPath,
                     categoria: req.body.categoria || null,  // Gestione categoria (può essere vuoto o nullo)
-                    unitaMisura: req.body.unitaMisura || null  // Gestione unità di misura (può essere vuoto o nullo)
+                    unitaMisura: req.body.unitaMisura || null,  // Gestione unità di misura (può essere vuoto o nullo)
+                    updatedAt: new Date()  
                 };
         
                 try {
@@ -720,6 +727,83 @@ module.exports = function (app) {
                 res.redirect('/lista-articoli');
             }
         });
+        
+      app.get('/categorie-articolo', isUserAllowed, async (req, res) => {
+      try {
+            const catArticolo = await controller.getCatArticolo();
+            const catArticoloTrovati = Array.isArray(catArticolo) && catArticolo.length > 0;
+      
+            if (!catArticoloTrovati) {
+                  req.flash('message', 'Categorie articolo non trovate!');
+            }
+      
+            res.locals.title = 'Categorie articolo';
+            res.render('Articoli/categoria-articolo', {
+                  message: req.flash('message'),
+                  error: req.flash('error'),
+                  CatArticolo: catArticolo || [],
+                  Tipo: req.session.user.tipo,
+                  EmailLogin: req.session.user.email
+            });
+      } catch (error) {
+            console.error('Errore nella lettura categoria articolo:', error);
+            req.flash('error', 'Errore lettura dati!');
+            return res.redirect('/lista-articoli');
+      }
+      });
+
+      app.get('/aggiorna-catarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const id = req.query.id; // Usa 'id' 
+            
+            try {
+                  const Arraycatarticolo = await controller.getCatArticolo(id);
+                  const catarticolo = Arraycatarticolo[0];
+
+                  if (catarticolo) {
+                        res.locals.title = 'Modifica Categoria Articolo';
+                        res.render('Articoli/aggiorna-catarticolo', {
+                        message: req.flash('message'),
+                        error: req.flash('error'),
+                        catarticolo: catarticolo
+                        });
+                  } else {
+                        handleError(req, res, 'Categoria Articolo non trovata!');
+                  }
+            } catch (error) {
+                  handleError(req, res, 'Errore durante il recupero della categoria articolo');
+            }
+      });
+
+      app.post('/aggiorna-catarticolo', urlencodeParser, async (req, res) => {
+            const categoriaId = req.body.idHidden; // id nascosto nel form
+            const descrizione = req.body.descrizione;
+            
+            if (!categoriaId || !descrizione) {
+			req.flash('error', 'Dati mancanti per l\'aggiornamento');
+			return res.redirect('/categorie-articolo');
+		}
+
+            const objCategoria = {
+                nome: req.body.nome,
+                descrizione: req.body.descrizione,
+                updatedAt: new Date()
+            };
+        
+            try {
+                const aggiornata = await controller.updCatArticolo(categoriaId, objCategoria);
+        
+                if (aggiornata) {
+                    req.flash('message', 'Categoria aggiornata con successo!');
+                } else {
+                    req.flash('error', 'Categoria non trovata o non aggiornata.');
+                }
+            } catch (error) {
+                console.error('Errore aggiornamento categoria:', error);
+                req.flash('error', 'Errore durante l\'aggiornamento della categoria.');
+            }
+        
+            res.redirect('/categorie-articolo');
+      });
         
 
       // Ordine

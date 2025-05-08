@@ -52,6 +52,7 @@ try {
 async function updCliente(objUtente) {
 	try {
 		const { email, ...updateData } = objUtente;
+		updateData.updatedAt = new Date();
 
 		if (!email) {
 			throw new Error('Email non fornita per l\'aggiornamento');
@@ -226,7 +227,7 @@ async function getArticolo(codiceArticolo) {
 
 
 
-async function updContatoreArt() {
+/* async function updContatoreArt() {
 	try {
 		let contatoreNew = new Contatore({
 			collezione: 'Articolo',
@@ -238,7 +239,7 @@ async function updContatoreArt() {
 		console.log('aggiornamento primo contatore articolo non riuscito');
 		throw new Error('aggiornamento primo contatore articolo non riuscito');
 	}
-}
+} */
 
 /* async function updArticolo(objArticolo) {
 	const cdArticolo = objArticolo.codiceArticolo;
@@ -259,6 +260,9 @@ async function updArticolo(objArticolo) {
     try {
         const { codiceArticolo, ...updateFields } = objArticolo;
 
+		// Aggiorna sempre il campo updatedAt con la data corrente
+        updateFields.updatedAt = new Date();
+
         const updated = await Articolo.findOneAndUpdate(
             { codiceArticolo },
             { $set: updateFields },
@@ -271,6 +275,44 @@ async function updArticolo(objArticolo) {
         throw new Error('Impossibile aggiornare l\'articolo');
     }
 }
+
+/* async function getCatArticolo() {
+    try {
+        return await Categoria.find({ attiva: { $ne: false } })
+            .sort({ nome: 1 }) // opzionale: ordina per nome
+            .lean();
+    } catch (error) {
+        console.error('Errore in getCatArticolo:', error.message);
+        throw new Error('Errore durante il recupero delle categorie articolo dal database');
+    }
+} */
+
+async function getCatArticolo(id = '') {
+    try {
+        // Se viene passato un _id, cerca la categoria con quell'_id, altrimenti recupera tutte le categorie
+        const filtro = id
+            ? { _id: id } // Cerca per _id
+            : {}; // Recupera tutte le categorie se _id non è passato
+
+        const categorie = await Categoria.find(filtro).sort({ nome: 1 }); // Ordina per nome
+        return categorie;
+    } catch (error) {
+        console.error('Errore in getCategorie:', error);
+        throw new Error('Impossibile ottenere le categorie dal database');
+    }
+}
+
+async function updCatArticolo(id, datiCategoria) {
+    try {
+        const aggiornata = await Categoria.findByIdAndUpdate(id, datiCategoria, { new: true });
+        return aggiornata;
+    } catch (error) {
+        console.error('Errore in updCategoria:', error);
+        throw new Error('Errore durante l\'aggiornamento della categoria');
+    }
+}
+
+
 
 async function getCategorie() {
     return await Categoria.find().lean();
@@ -409,6 +451,8 @@ module.exports = {
 	getArticolo,
 	updArticolo,
 	getCategorie,
+	getCatArticolo,
+	updCatArticolo,
     getUnitaMisura,
 	getContatoreOrd,
 	updContatoreOrd,
