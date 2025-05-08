@@ -98,25 +98,35 @@
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="categoria">Categoria</label>
+                                            <%
+                                            const articoloCategoriaId = articolo.categoria?._id?.toString?.() || articolo.categoria?.toString?.();
+                                            %>
                                             <select id="categoria" name="categoria" class="form-select select2" required>
-                                                <option value="">Seleziona una categoria</option> <!-- Opzione per nessuna categoria selezionata -->
-                                                <% categorie.forEach(cat => { %>
-                                                    <option value="<%= cat._id %>" <%= articolo.categoria && articolo.categoria.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.nome %></option>
-                                                <% }) %>
+                                            <option value="" <%= !articoloCategoriaId ? 'selected' : '' %>>Seleziona una categoria</option>
+                                            <% categorie.forEach(cat => { 
+                                                const catId = cat._id.toString();
+                                            %>
+                                                <option value="<%= catId %>" <%= articoloCategoriaId === catId ? 'selected' : '' %>><%= cat.nome %></option>
+                                            <% }) %>
                                             </select>
-                                            
                                         </div>
                                     </div>
                                 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="unitaMisura">Unità di Misura</label>
-                                            <select id="unitaMisura" name="unitaMisura" class="form-select select2" required>
-                                                <option value="">Seleziona un'unità di misura</option> <!-- Opzione per nessuna unità di misura selezionata -->
-                                                <% unitaMisura.forEach(um => { %>
-                                                    <option value="<%= um._id %>" <%= articolo.unitaMisura && articolo.unitaMisura.toString() === um._id.toString() ? 'selected' : '' %>><%= um.sigla %> - <%= um.descrizione %></option>
-                                                <% }) %>
-                                            </select>
+                                            <%
+  const articoloUnitaMisuraId = articolo.unitaMisura?._id?.toString?.() || articolo.unitaMisura?.toString?.();
+%>
+<select id="unitaMisura" name="unitaMisura" class="form-select select2" required>
+  <option value="" <%= !articoloUnitaMisuraId ? 'selected' : '' %>>Seleziona un'unità di misura</option>
+  <% unitaMisura.forEach(um => {
+       const umId = um._id.toString();
+  %>
+    <option value="<%= umId %>" <%= articoloUnitaMisuraId === umId ? 'selected' : '' %>><%= um.sigla %> - <%= um.descrizione %></option>
+  <% }) %>
+</select>
+
                                             
                                         </div>
                                     </div>

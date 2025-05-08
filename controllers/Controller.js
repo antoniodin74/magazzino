@@ -82,7 +82,11 @@ async function updCliente(objUtente) {
 
 async function getArticoli() {
     try {
-        return await Articolo.find({ statoArticolo: { $ne: false } });
+        return await Articolo.find({ statoArticolo: { $ne: false } })
+            .populate('categoria', 'nome') // solo il campo 'nome'
+            .populate('unitaMisura', 'sigla descrizione') // solo i campi necessari
+            .sort({ codiceArticolo: 1 }) // opzionale: ordina per codice
+            .lean();
     } catch (error) {
         console.error('Errore in getArticoli:', error.message);
         throw new Error('Errore durante il recupero degli articoli dal database');
@@ -206,7 +210,10 @@ async function updContatoreArt() {
 
 async function getArticolo(codiceArticolo) {
     try {
-        const articolo = await Articolo.findOne({ codiceArticolo });
+        const articolo = await Articolo.findOne({ codiceArticolo })
+            .populate('categoria', 'nome')
+            .populate('unitaMisura', 'sigla descrizione')
+            .lean();
         if (!articolo) {
             throw new Error(`Articolo con codice "${codiceArticolo}" non trovato.`);
         }
@@ -232,15 +239,6 @@ async function updContatoreArt() {
 		throw new Error('aggiornamento primo contatore articolo non riuscito');
 	}
 }
-
-async function getArticolo(cdArticolo) {
-	try {
-		const articolo = await Articolo.findOne({ codiceArticolo: cdArticolo });
-		return articolo;
-	} catch (error) {
-		throw new Error('Impossibile trovare articolo');
-	}
-};
 
 /* async function updArticolo(objArticolo) {
 	const cdArticolo = objArticolo.codiceArticolo;

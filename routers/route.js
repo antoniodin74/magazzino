@@ -492,7 +492,6 @@ module.exports = function (app) {
         
             try {
                 const articolo = await controller.getArticolo(cdArticolo);
-        
                 if (articolo) {
                   const categorie = await controller.getCategorie();      // <-- Recupera categorie
                   const unitaMisura = await controller.getUnitaMisura();  // <-- Recupera unità di misura
@@ -617,6 +616,7 @@ module.exports = function (app) {
         
             try {
                 const articolo = await controller.getArticolo(codiceArticolo);
+
                 if (!articolo) {
                     req.flash('message', 'Articolo non trovato!');
                     return res.redirect('/lista-articoli');

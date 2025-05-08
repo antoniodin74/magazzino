@@ -41,6 +41,8 @@
               <th>Descrizione</th>
               <th>Quantità</th>
               <th>Costo</th>
+              <th>Categoria</th> 
+              <th>Unità di Misura</th> 
               <th style="width: 120px;">Azioni</th>
             </tr>
           </thead>
@@ -51,6 +53,12 @@
                 <td class="px-3 text-warning"><%= articolo.descrizioneArticolo %></td>
                 <td class="px-3 text-success"><%= articolo.quantitaArticolo %></td>
                 <td class="px-3 text-danger partner"><%= articolo.costoArticolo %></td>
+                <td class="px-3">
+                  <%= articolo.categoria?.nome || '-' %> <!-- Mostra il nome se presente -->
+                </td>
+                <td class="px-3">
+                  <%= articolo.unitaMisura ? `${articolo.unitaMisura.sigla} - ${articolo.unitaMisura.descrizione}` : '-' %>
+                </td>
                 <td>
                   <a href="#" class="px-2 text-primary linkAzioni" data-action="aggiorna" title="Aggiorna Articolo">
                     <i class="uil uil-pen font-size-18"></i>

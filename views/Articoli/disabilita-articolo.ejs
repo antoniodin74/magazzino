@@ -110,8 +110,8 @@
                                             <ul class="list-unstyled product-desc-list text-muted">
                                                 <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> Quantità <%= articolo.quantitaArticolo%></li>
                                                 <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> Costo <%= articolo.costoArticolo%></li>
-                                                <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> All Sizes available</li>
-                                                <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> 4 Different Color</li>
+                                                <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> Categoria <%= articolo.categoria?.nome || '-' %></li>
+                                                <li><i class="mdi mdi-circle-medium me-1 align-middle"></i> Unità di misura <%= articolo.unitaMisura ? `${articolo.unitaMisura.sigla} - ${articolo.unitaMisura.descrizione}` : '-' %></li>
                                             </ul>
                                               
                                         </div>
