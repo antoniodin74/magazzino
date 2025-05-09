@@ -1,0 +1,116 @@
+<%- contentFor('HeaderCss') %>
+
+    <!-- select2 css -->
+    <link href="public/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+
+ 
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0"><%= title%></h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="/categorie-articolo">Categorie Articolo</a></li>
+                    <li class="breadcrumb-item active"><%= title%></li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+<% if(error.length> 0) { %>
+    <div class="alert alert-danger text-center mb-4 flash" role="alert">
+        <%= error %>
+    </div>
+<% } %>
+<% if(message.length> 0) { %>
+    <div class="alert alert-success text-center mb-4 flash" role="alert">
+        <%= message %>
+    </div>
+<% } %>
+<form method="get" action="/categorie-articolo" id="formAggiornaCatArticolo">
+<div class="row">
+    <div class="col-lg-12">
+        <div id="addproduct-accordion" class="custom-accordion">
+            <div class="card">
+                <a href="#addproduct-billinginfo-collapse" class="text-dark" data-bs-toggle="collapse" aria-expanded="true" aria-controls="addproduct-billinginfo-collapse">
+                    <div class="p-4">
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-soft-primary text-primary">
+                                        01
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <h5 class="font-size-16 mb-1">Informazioni della Categoria Articolo</h5>
+                                <p class="text-muted text-truncate mb-0">Compila tutte le informazioni di seguito</p>
+                            </div>
+                            <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
+                        </div>
+                        
+                    </div>
+                </a>
+
+                <div id="addproduct-billinginfo-collapse" class="collapse show" data-bs-parent="#addproduct-accordion">
+                    <div class="p-4 border-top">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nomeCategoria">Nome</label>
+                                        <input id="nomeCategoria" name="nomeCategoria" type="text" class="form-control" value="<%= catarticolo.nome%>" disabled>
+                                        <input id="id" name="idHidden" type="text" class="form-control" value="<%= catarticolo._id%>" hidden>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="descrizione">Descrizione</label>
+                                        <input id="descrizione" name="descrizione" type="text" class="form-control" value="<%= catarticolo.descrizione%>" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+
+<div class="row mb-4">
+    <div class="col text-end">
+        <button type="submit" class="btn btn-success"> <i class="uil uil-file-alt me-1"></i> Ok </button>
+    </div> <!-- end col -->
+</div> <!-- end row-->
+
+</form>
+<%- contentFor('FooterJs') %>
+
+<script>
+    $(document).ready(function () {
+    $('.select2').select2();
+  });
+    function resetForm() {
+      document.getElementById("formAggiornaCatArticolo").reset();
+    }
+    
+    </script>
+<!-- select 2 plugin -->
+<script src="public/assets/libs/select2/js/select2.min.js"></script>
+
+<!-- init js -->
+<script src="public/assets/js/pages/ecommerce-add-product.init.js"></script>
+
+<%- contentFor('BottomJs') %>

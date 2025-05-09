@@ -287,8 +287,10 @@ async function updArticolo(objArticolo) {
     }
 } */
 
-async function getCatArticolo(id = '') {
+/* async function getCatArticolo(id = '') {
     try {
+		// Filtro base: solo categorie attive
+        const filtroBase = { attivo: true };
         // Se viene passato un _id, cerca la categoria con quell'_id, altrimenti recupera tutte le categorie
         const filtro = id
             ? { _id: id } // Cerca per _id
@@ -300,7 +302,26 @@ async function getCatArticolo(id = '') {
         console.error('Errore in getCategorie:', error);
         throw new Error('Impossibile ottenere le categorie dal database');
     }
+} */
+
+async function getCatArticolo(id = '') {
+    try {
+        // Filtro base: solo categorie attive
+        const filtro = { attiva: true };
+
+        // Se viene passato un id, aggiungilo al filtro
+        if (id) {
+            filtro._id = id;
+        }
+
+        const categorie = await Categoria.find(filtro).sort({ nome: 1 }); // Ordina per nome
+        return categorie;
+    } catch (error) {
+        console.error('Errore in getCategorie:', error);
+        throw new Error('Impossibile ottenere le categorie dal database');
+    }
 }
+
 
 async function updCatArticolo(id, datiCategoria) {
     try {

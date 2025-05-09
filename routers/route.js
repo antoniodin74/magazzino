@@ -4,6 +4,8 @@ var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
 const Articolo = require('../models/Articolo');
+const Categoria = require('../models/Categoria');
+const UnitaMisura = require('../models/UnitaMisura');
 const Contatore = require('../models/Contatore');
 const Ordine = require('../models/Ordine');
 const controller = require('../controllers/Controller');
@@ -752,6 +754,32 @@ module.exports = function (app) {
       }
       });
 
+      app.get('/inserisci-catarticolo', isUserAllowed, async (req, res) => {
+            res.render('Articoli/inserisci-catarticolo', {
+                title: 'Inserisci Categoria Articolo',
+                message: req.flash('message'),
+                error: req.flash('error')
+            });
+        });
+
+      app.post('/inserisci-catarticolo', isUserAllowed, async (req, res) => {
+      try {
+            const nuovaCategoria = new Categoria({
+                  nome: req.body.nomeCategoria,
+                  descrizione: req.body.descrizione,
+            });
+
+            await nuovaCategoria.save();
+            req.flash('message', 'Categoria articolo inserita con successo!');
+      } catch (error) {
+            console.error('Errore durante l\'inserimento della categoria articolo:', error);
+            req.flash('error', 'Errore durante l\'inserimento della categoria.');
+      }
+
+      res.redirect('/categorie-articolo');
+      });
+        
+
       app.get('/aggiorna-catarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
             const id = req.query.id; // Usa 'id' 
             
@@ -804,7 +832,78 @@ module.exports = function (app) {
         
             res.redirect('/categorie-articolo');
       });
+
+      app.get('/disabilita-catarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const idCategoria = req.query.id;
+
+            try {
+                const Arraycategoria = await controller.getCatArticolo(idCategoria);
+                const categoria = Arraycategoria[0];
+                if (!categoria) {
+                    req.flash('message', 'Categoria non trovata!');
+                    return res.redirect('/categorie-articolo');
+                }
         
+                res.locals.title = 'Disabilita Categoria Articolo';
+                res.render('Articoli/disabilita-catarticolo', {
+                    message: req.flash('message'),
+                    error: req.flash('error'),
+                    catarticolo: categoria
+                });
+            } catch (error) {
+                console.error('Errore durante il recupero della categoria:', error);
+                req.flash('error', 'Errore durante il caricamento della categoria.');
+                res.redirect('/lista-categorie-articoli');
+            }
+        });
+        
+      app.post('/disabilita-catarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const idCategoria = req.body.idHidden;
+            
+            const objcatArticolo = {
+                  _id: idCategoria,
+                  attiva: false,
+                  updatedAt: new Date()
+            };
+            
+            try {
+                  const risultato = await controller.updCatArticolo(idCategoria, objcatArticolo);
+            
+                  if (!risultato) {
+                        req.flash('error', 'Categoria non trovata o non aggiornata!');
+                        return res.redirect('/categorie-articolo');
+                  }
+            
+                  req.flash('message', 'Categoria disabilitata con successo!');
+            } catch (error) {
+                  console.error('Errore durante la disabilitazione della categoria:', error);
+                  req.flash('error', 'Errore durante la disabilitazione della categoria!');
+            }
+            
+            res.redirect('/categorie-articolo');
+      });
+        
+      app.get('/dettaglio-catarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const id = req.query.id; 
+            
+            try {
+                  const Arraycatarticolo = await controller.getCatArticolo(id);
+                  const catarticolo = Arraycatarticolo[0];
+
+                  if (catarticolo) {
+                        res.locals.title = 'Dettaglio Categoria Articolo';
+                        res.render('Articoli/dettaglio-catarticolo', {
+                        message: req.flash('message'),
+                        error: req.flash('error'),
+                        catarticolo: catarticolo
+                        });
+                  } else {
+                        handleError(req, res, 'Categoria Articolo non trovata!');
+                  }
+            } catch (error) {
+                  handleError(req, res, 'Errore durante il recupero della categoria articolo');
+            }
+      });
 
       // Ordine
       app.get('/inserisci-ordine', isUserAllowed, function (req, res) {
