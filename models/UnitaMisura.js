@@ -15,9 +15,17 @@ const unitaMisuraSchema = new mongoose.Schema({
         enum: ['peso', 'volume', 'unità'], 
         required: true 
     },
-    attiva: { 
-        type: Boolean, 
-        default: true 
+    attiva: {
+        type: Boolean,
+        default: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
 

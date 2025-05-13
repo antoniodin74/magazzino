@@ -334,9 +334,36 @@ async function updCatArticolo(id, datiCategoria) {
 }
 
 
-
 async function getCategorie() {
     return await Categoria.find().lean();
+}
+
+async function getUnmArticolo(id = '') {
+    try {
+        // Filtro base: solo categorie attive
+        const filtro = { attiva: true };
+
+        // Se viene passato un id, aggiungilo al filtro
+        if (id) {
+            filtro._id = id;
+        }
+
+        const unitamisure = await UnitaMisura.find(filtro).sort({ nome: 1 }); // Ordina per nome
+        return unitamisure;
+    } catch (error) {
+        console.error('Errore in getUnmArticolo:', error);
+        throw new Error('Impossibile ottenere le unità di misura dal database');
+    }
+}
+
+async function updUnmArticolo(id, datiUnitamisura) {
+    try {
+        const aggiornata = await UnitaMisura.findByIdAndUpdate(id, datiUnitamisura, { new: true });
+        return aggiornata;
+    } catch (error) {
+        console.error('Errore in updUnmArticolo:', error);
+        throw new Error('Errore durante l\'aggiornamento dell\ unità di misura');
+    }
 }
 
 async function getUnitaMisura() {
@@ -474,6 +501,8 @@ module.exports = {
 	getCategorie,
 	getCatArticolo,
 	updCatArticolo,
+	getUnmArticolo,
+	updUnmArticolo,
     getUnitaMisura,
 	getContatoreOrd,
 	updContatoreOrd,
