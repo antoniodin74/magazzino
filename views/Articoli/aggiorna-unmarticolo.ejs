@@ -81,7 +81,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label" for="tipo">Tipo</label>
-                                        <input id="tipo" name="descrizione" type="text" class="form-control" value="<%= unmarticolo.tipo%>" required>
+                                        <input id="tipo" name="tipo" type="text" class="form-control" value="<%= unmarticolo.tipo%>" required>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +97,9 @@
 
 <div class="row mb-4">
     <div class="col text-end">
-        <button onclick="resetForm()" class="btn btn-danger"> <i class="uil uil-times me-1"></i> Cancella </button>
+        <button type="button" class="btn btn-danger" onclick="window.location.href='/unitamisure-articolo'">
+            <i class="uil uil-times me-1"></i> Annulla
+          </button>          
         <button type="submit" class="btn btn-success"> <i class="uil uil-file-alt me-1"></i> Salva </button>
     </div> <!-- end col -->
 </div> <!-- end row-->

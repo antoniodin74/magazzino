@@ -853,7 +853,7 @@ module.exports = function (app) {
             } catch (error) {
                 console.error('Errore durante il recupero della categoria:', error);
                 req.flash('error', 'Errore durante il caricamento della categoria.');
-                res.redirect('/lista-categorie-articoli');
+                res.redirect('/categorie-articolo');
             }
         });
         
@@ -979,11 +979,11 @@ module.exports = function (app) {
       });
 
       app.post('/aggiorna-unmarticolo', urlencodeParser, async (req, res) => {
-            const cunitamisuraId = req.body.idHidden; // id nascosto nel form
+            const unitamisuraId = req.body.idHidden; // id nascosto nel form
             const descrizione = req.body.descrizione;
             const tipo = req.body.tipo;
-            
-            if (!cunitamisuraId || !descrizione || !tipo) {
+
+            if (!unitamisuraId || !descrizione || !tipo) {
 			req.flash('error', 'Dati mancanti per l\'aggiornamento');
 			return res.redirect('/unitamisure-articolo');
 		}
@@ -996,7 +996,7 @@ module.exports = function (app) {
             };
         
             try {
-                const aggiornata = await controller.updUnmArticolo(cunitamisuraId, objUnitamisura);
+                const aggiornata = await controller.updUnmArticolo(unitamisuraId, objUnitamisura);
         
                 if (aggiornata) {
                     req.flash('message', 'Unità di misura aggiornata con successo!');
@@ -1008,10 +1008,80 @@ module.exports = function (app) {
                 req.flash('error', 'Errore durante l\'aggiornamento dell\' unità di misura.');
             }
         
-            res.redirect('/categorie-articolo');
+            res.redirect('/unitamisure-articolo');
       });
 
+      app.get('/disabilita-unmarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const idUnitamisura = req.query.id;
 
+            try {
+                const Arrayunistamisura = await controller.getUnmArticolo(idUnitamisura);
+                const unitamisura = Arrayunistamisura[0];
+                if (!unitamisura) {
+                    req.flash('message', 'Unità di misura non trovata!');
+                    return res.redirect('/unitamisure-articolo');
+                }
+        
+                res.locals.title = 'Disabilita Unità di misura Articolo';
+                res.render('Articoli/disabilita-unmarticolo', {
+                    message: req.flash('message'),
+                    error: req.flash('error'),
+                    unmarticolo: unitamisura
+                });
+            } catch (error) {
+                console.error('Errore durante il recupero dell\' unità di misura:', error);
+                req.flash('error', 'Errore durante il caricamento dell\' unità di misura.');
+                res.redirect('/unitamisure-articolo');
+            }
+      });
+        
+      app.post('/disabilita-unmarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const idUnitamisura = req.body.idHidden;
+            
+            const objunmArticolo = {
+                  _id: idUnitamisura,
+                  attiva: false,
+                  updatedAt: new Date()
+            };
+            
+            try {
+                  const risultato = await controller.updUnmArticolo(idUnitamisura, objunmArticolo);
+            
+                  if (!risultato) {
+                        req.flash('error', 'Unità di misura non trovata o non aggiornata!');
+                        return res.redirect('/unitamisure-articolo');
+                  }
+            
+                  req.flash('message', 'Unità di misura disabilitata con successo!');
+            } catch (error) {
+                  console.error('Errore durante la disabilitazione dell\' unità di misura:', error);
+                  req.flash('error', 'Errore durante la disabilitazione dell\' unità di misura');
+            }
+            
+            res.redirect('/unitamisure-articolo');
+      });
+
+      app.get('/dettaglio-unmarticolo', isUserAllowed, urlencodeParser, async (req, res) => {
+            const id = req.query.id; 
+            
+            try {
+                  const Arrayunmarticolo = await controller.getUnmArticolo(id);
+                  const unmarticolo = Arrayunmarticolo[0];
+
+                  if (unmarticolo) {
+                        res.locals.title = 'Dettaglio Unità di misura Articolo';
+                        res.render('Articoli/dettaglio-unmarticolo', {
+                        message: req.flash('message'),
+                        error: req.flash('error'),
+                        unmarticolo: unmarticolo
+                        });
+                  } else {
+                        handleError(req, res, 'Unità di misura Articolo non trovata!');
+                  }
+            } catch (error) {
+                  handleError(req, res, 'Errore durante il recupero dell\' unità di misura articolo');
+            }
+      });
 
       // Ordine
       app.get('/inserisci-ordine', isUserAllowed, function (req, res) {
