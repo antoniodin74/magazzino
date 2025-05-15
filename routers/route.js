@@ -11,6 +11,7 @@ const Ordine = require('../models/Ordine');
 const controller = require('../controllers/Controller');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
+const session = require('express-session');
 const jwtSecret = process.env.JWT_SECRET;
 
 
@@ -222,7 +223,8 @@ module.exports = function (app) {
                         note: req.body.note?.trim(),
                         email,
                         fotoPath,
-                        tipo: req.body.tipo || ''  // <-- aggiunto qui
+                        tipo: req.body.tipo || '',
+                        modificatoDa: req.session.user?._id || null
                   };
 
                   try {
@@ -456,7 +458,8 @@ module.exports = function (app) {
                         noteArticolo: req.body.note,
                         fotoPathArticolo: fotoPath,
                         categoria: req.body.categoria || null,
-                        unitaMisura: req.body.unitaMisura || null
+                        unitaMisura: req.body.unitaMisura || null,
+                        creatoDa: req.session.user?._id || null
                     });
         
                     try {
@@ -581,8 +584,9 @@ module.exports = function (app) {
                     costoArticolo: req.body.costo,
                     noteArticolo: req.body.note,
                     fotoPathArticolo: fotoPath,
-                    categoria: req.body.categoria || null,  // Gestione categoria (può essere vuoto o nullo)
-                    unitaMisura: req.body.unitaMisura || null,  // Gestione unità di misura (può essere vuoto o nullo)
+                    categoria: req.body.categoria || null,  
+                    unitaMisura: req.body.unitaMisura || null,  
+                    modificatoDa: req.session.user?._id || null,
                     updatedAt: new Date()  
                 };
         
@@ -671,7 +675,9 @@ module.exports = function (app) {
             try {
                 const articoloAggiornato = await controller.updArticolo({
                     codiceArticolo,
-                    statoArticolo: false
+                    statoArticolo: false,
+                    modificatoDa: req.session.user?._id || null,
+                    updatedAt: new Date()
                 });
         
                 if (articoloAggiornato) {
@@ -767,6 +773,7 @@ module.exports = function (app) {
             const nuovaCategoria = new Categoria({
                   nome: req.body.nomeCategoria,
                   descrizione: req.body.descrizione,
+                  creatoDa: req.session.user?._id || null
             });
 
             await nuovaCategoria.save();
@@ -814,6 +821,7 @@ module.exports = function (app) {
             const objCategoria = {
                 nome: req.body.nome,
                 descrizione: req.body.descrizione,
+                modificatoDa: req.session.user?._id || null,
                 updatedAt: new Date()
             };
         
@@ -863,6 +871,7 @@ module.exports = function (app) {
             const objcatArticolo = {
                   _id: idCategoria,
                   attiva: false,
+                  modificatoDa: req.session.user?._id || null,
                   updatedAt: new Date()
             };
             
@@ -943,7 +952,8 @@ module.exports = function (app) {
                   const nuovaUnmarticolo = new UnitaMisura({
                         sigla: req.body.sigla,
                         descrizione: req.body.descrizione,
-                        tipo: req.body.tipo
+                        tipo: req.body.tipo,
+                        creatoDa: req.session.user?._id || null
                   });
 
                   await nuovaUnmarticolo.save();
@@ -992,6 +1002,7 @@ module.exports = function (app) {
                 sigla: req.body.sigla,
                 descrizione: req.body.descrizione,
                 tipo: req.body.tipo,
+                modificatoDa: req.session.user?._id || null,
                 updatedAt: new Date()
             };
         
@@ -1041,6 +1052,7 @@ module.exports = function (app) {
             const objunmArticolo = {
                   _id: idUnitamisura,
                   attiva: false,
+                  modificatoDa: req.session.user?._id || null,
                   updatedAt: new Date()
             };
             

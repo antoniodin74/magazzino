@@ -134,7 +134,8 @@ module.exports = function (app) {
 			username: utente.nome,
 			email: utente.email,
 			foto: utente.fotoPath,
-			tipo: utente.tipo
+			tipo: utente.tipo,
+			_id: utente._id
 		  };
 	  
 		  req.flash('message', 'Utente loggato!');
@@ -191,7 +192,7 @@ module.exports = function (app) {
 		  } else {
 			return res.status(400).send('Tipo registrazione non valido.');
 		  }
-	  
+
 		  try {
 			const hashedPass = await bcrypt.hash(req.body.password, 10);
 	  
@@ -208,7 +209,8 @@ module.exports = function (app) {
 			  note: req.body.note,
 			  fotoPath,
 			  stato: true,
-			  partner: partnerEmail
+			  partner: partnerEmail,
+			  creatoDa: isAdminInsert && sessionUser?._id ? sessionUser._id : null
 			});
 	  
 			await nuovoUtente.save();

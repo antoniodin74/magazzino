@@ -40,6 +40,16 @@ const articoloschema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    creatoDa: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Utente',
+        default: null
+    },
+    modificatoDa: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Utente',
+        default: null
+    },
     createdAt: { 
         type: Date, 
         default: Date.now 
